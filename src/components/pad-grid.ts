@@ -64,31 +64,42 @@ export class PadGrid extends LitElement {
       : `grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); grid-auto-rows: 48px;`;
 
     return html`
-      <div class="layout">
-        <div class="grid" style=${gridStyle}>
-          ${controls.map(
-            (control) => html`
-              <pad-control
-                .control=${control}
-                .assignedClass=${controlIdToClass.get(control.id) ?? null}
-                ?active=${this.activeControlId === control.id}
-                .hitCount=${this.hitCounts[control.id] ?? 0}
-                .selected=${highlightedControlIds.has(control.id)}
-                .editable=${this.selectedClass !== null}
-                style=${gridDimensions
-                  ? `grid-row: ${control.position.row + 1}; grid-column: ${control.position.col + 1};`
-                  : ''}
-              ></pad-control>
-            `
-          )}
+      <div class="unit">
+        <div class="unit-head">
+          <div class="unit-knobs">
+            <span class="unit-knob"></span>
+            <span class="unit-knob"></span>
+            <span class="unit-knob"></span>
+            <span class="unit-knob"></span>
+          </div>
+          <div class="unit-screen">${this.deviceConfig.name}</div>
         </div>
-        ${gridDimensions && decorative
-          ? html`
-              <div class="accessory-column">
-                ${decorative.map((label) => html`<div class="accessory">${label}</div>`)}
-              </div>
-            `
-          : nothing}
+        <div class="layout">
+          <div class="grid" style=${gridStyle}>
+            ${controls.map(
+              (control) => html`
+                <pad-control
+                  .control=${control}
+                  .assignedClass=${controlIdToClass.get(control.id) ?? null}
+                  ?active=${this.activeControlId === control.id}
+                  .hitCount=${this.hitCounts[control.id] ?? 0}
+                  .selected=${highlightedControlIds.has(control.id)}
+                  .editable=${this.selectedClass !== null}
+                  style=${gridDimensions
+                    ? `grid-row: ${control.position.row + 1}; grid-column: ${control.position.col + 1};`
+                    : ''}
+                ></pad-control>
+              `
+            )}
+          </div>
+          ${gridDimensions && decorative
+            ? html`
+                <div class="accessory-column">
+                  ${decorative.map((label) => html`<div class="accessory">${label}</div>`)}
+                </div>
+              `
+            : nothing}
+        </div>
       </div>
     `;
   }
@@ -96,6 +107,53 @@ export class PadGrid extends LitElement {
   static styles = css`
     :host {
       display: block;
+    }
+
+    .unit {
+      padding: 14px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #2a2a30 0%, #1c1c21 100%);
+      border: 1px solid #38383f;
+      box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .unit-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .unit-knobs {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .unit-knob {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #55555f, #1a1a1e 75%);
+      border: 1px solid #3a3a44;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .unit-screen {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 4px;
+      background: #0a0f0a;
+      border: 1px solid #1e2a1e;
+      color: #7fffb0;
+      font: 700 10px/1 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 6px rgba(127, 255, 176, 0.5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .layout {

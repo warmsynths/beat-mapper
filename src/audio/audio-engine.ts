@@ -2,6 +2,7 @@ import Meyda, { type MeydaFeaturesObject } from 'meyda';
 import {
   EngineState,
   type AudioEngineConfig,
+  type LevelDetail,
   type TransientFrame,
 } from './types.ts';
 
@@ -9,10 +10,16 @@ const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum'
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
-  rmsThreshold: 0.045,
+  onsetMargin: 0.025,
   onsetHoldMs: 30,
   cooldownMs: 120,
 };
+
+// Exponential-moving-average smoothing for the ambient noise floor: small
+// enough that a loud hit (which stops updating the floor the instant it
+// crosses the gate) can't itself drag the floor up, but fast enough to track
+// a room/mic's real ambient level within a few hundred ms.
+const NOISE_FLOOR_ALPHA = 0.05;
 
 // getUserMedia's DOMException.message is technically accurate but not
 // actionable ("Requested device not found" tells you nothing about what to
@@ -47,7 +54,7 @@ function describeMicError(err: unknown): string {
  * Events:
  *   - 'state-change'        detail: EngineState
  *   - 'transient-detected'  detail: TransientFrame[]  (frames captured during ONSET_HOLD)
- *   - 'level'                detail: number  (throttled rms, for live VU-style UI)
+ *   - 'level'                detail: LevelDetail  (throttled rms + current gate, for live VU-style UI)
  *   - 'error'                detail: Error
  */
 export class AudioEngine extends EventTarget {
@@ -62,6 +69,8 @@ export class AudioEngine extends EventTarget {
   private holdTimer: ReturnType<typeof setTimeout> | null = null;
   private config: AudioEngineConfig;
   private lastLevelEmitAt = 0;
+  /** Rolling ambient rms level, updated only while LISTENING (see NOISE_FLOOR_ALPHA). */
+  private noiseFloor = 0;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -140,6 +149,7 @@ export class AudioEngine extends EventTarget {
     this.holdTimer = null;
     this.cooldownTimer = null;
     this.holdBuffer = [];
+    this.noiseFloor = 0;
   }
 
   private onFeatures(raw: Partial<MeydaFeaturesObject>): void {
@@ -154,13 +164,18 @@ export class AudioEngine extends EventTarget {
       zcr: raw.zcr ?? 0,
     };
 
-    this.maybeEmitLevel(frame.rms);
+    // Only LISTENING updates the floor — the onset itself and its decay
+    // tail (ONSET_HOLD/COOLDOWN) must never feed back into what counts as
+    // "ambient", or the gate would chase the hit it's supposed to catch.
+    if (this.state === EngineState.LISTENING) {
+      this.noiseFloor += (frame.rms - this.noiseFloor) * NOISE_FLOOR_ALPHA;
+    }
+    const gate = this.noiseFloor + this.config.onsetMargin;
+    this.maybeEmitLevel(frame.rms, gate);
 
     switch (this.state) {
       case EngineState.LISTENING:
-        if (frame.rms >= this.config.rmsThreshold) {
-          this.beginOnsetHold(frame);
-        }
+        if (frame.rms >= gate) this.beginOnsetHold(frame);
         break;
 
       case EngineState.ONSET_HOLD:
@@ -192,11 +207,11 @@ export class AudioEngine extends EventTarget {
     }, this.config.cooldownMs);
   }
 
-  private maybeEmitLevel(rms: number): void {
+  private maybeEmitLevel(level: number, threshold: number): void {
     const now = performance.now();
     if (now - this.lastLevelEmitAt < 33) return; // ~30fps, cheap enough for a UI meter
     this.lastLevelEmitAt = now;
-    this.dispatchEvent(new CustomEvent<number>('level', { detail: rms }));
+    this.dispatchEvent(new CustomEvent<LevelDetail>('level', { detail: { level, threshold } }));
   }
 
   private setState(next: EngineState): void {
