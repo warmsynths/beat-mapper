@@ -21,6 +21,10 @@ export class PadGrid extends LitElement {
   @property({ attribute: false })
   hitCounts: Record<string, number> = {};
 
+  /** Class currently selected in the pattern grid, if any — its mapped pad(s) light up and become clickable to remap. */
+  @property({ attribute: false })
+  selectedClass: DrumClass | null = null;
+
   @state()
   private activeControlId: string | null = null;
 
@@ -49,9 +53,11 @@ export class PadGrid extends LitElement {
     const { gridDimensions, controls, classMapping, decorative } = this.deviceConfig;
 
     const controlIdToClass = new Map<string, DrumClass>();
-    for (const [drumClass, controlId] of Object.entries(classMapping) as [DrumClass, string][]) {
-      controlIdToClass.set(controlId, drumClass);
+    for (const [drumClass, controlIds] of Object.entries(classMapping) as [DrumClass, string[]][]) {
+      for (const controlId of controlIds) controlIdToClass.set(controlId, drumClass);
     }
+
+    const highlightedControlIds = new Set(this.selectedClass ? classMapping[this.selectedClass] : []);
 
     const gridStyle = gridDimensions
       ? `grid-template-columns: repeat(${gridDimensions.cols}, 1fr); grid-template-rows: repeat(${gridDimensions.rows}, 1fr);`
@@ -67,6 +73,8 @@ export class PadGrid extends LitElement {
                 .assignedClass=${controlIdToClass.get(control.id) ?? null}
                 ?active=${this.activeControlId === control.id}
                 .hitCount=${this.hitCounts[control.id] ?? 0}
+                .selected=${highlightedControlIds.has(control.id)}
+                .editable=${this.selectedClass !== null}
                 style=${gridDimensions
                   ? `grid-row: ${control.position.row + 1}; grid-column: ${control.position.col + 1};`
                   : ''}
