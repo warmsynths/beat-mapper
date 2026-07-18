@@ -137,7 +137,10 @@ export class PatternGrid extends LitElement {
 
     .scroll {
       overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
       flex: 1;
+      min-width: 0;
     }
 
     .lanes-steps {
