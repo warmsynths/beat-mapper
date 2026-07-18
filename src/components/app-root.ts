@@ -2,7 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { provide } from '@lit/context';
 import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG } from '../audio/audio-engine.ts';
-import { EngineState, type TransientFrame } from '../audio/types.ts';
+import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
 import {
   classifyTransient,
   DEFAULT_CLASSIFIER_THRESHOLDS,
@@ -20,6 +20,7 @@ import {
 import { getControls, type DeviceConfig } from '../devices/device-config.ts';
 import { sp404mkiiConfig } from '../devices/sp404mkii.ts';
 import { po33Config } from '../devices/po33.ts';
+import { po32Config } from '../devices/po32.ts';
 import { BeatBus } from '../state/beat-bus.ts';
 import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
 import { CLASS_COLORS, DRUM_CLASS_LANES } from '../ui/theme.ts';
@@ -30,11 +31,12 @@ import './bank-selector.ts';
 import './knob-control.ts';
 import './level-meter.ts';
 
-const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config];
+const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 
-// SENS knob: raises/lowers the onset gate — quieter beatboxing needs it lower.
-const SENS_MIN = 0.02;
-const SENS_MAX = 0.2;
+// SENS knob: raises/lowers how far above the ambient noise floor a sound has
+// to rise to register as a hit — quieter beatboxing needs a smaller margin.
+const SENS_MIN = 0.005;
+const SENS_MAX = 0.05;
 
 // TONE knob: scales the kick/hat centroid split thresholds together so the
 // classifier can be biased for a lower or higher-pitched voice.
@@ -72,11 +74,12 @@ export class AppRoot extends LitElement {
   @state()
   private level = 0;
 
+  /** Current absolute onset gate (ambient floor + margin), as reported live by the engine. */
   @state()
-  private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.rmsThreshold;
+  private levelThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
 
   @state()
-  private rmsThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.rmsThreshold;
+  private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
 
   @state()
   private tone = 1.0;
@@ -130,8 +133,9 @@ export class AppRoot extends LitElement {
     this.sessionPhase = 'idle';
   };
 
-  private onLevel = (event: CustomEvent<number>): void => {
-    this.level = event.detail;
+  private onLevel = (event: CustomEvent<LevelDetail>): void => {
+    this.level = event.detail.level;
+    this.levelThreshold = event.detail.threshold;
   };
 
   private onTransient = (event: CustomEvent<TransientFrame[]>): void => {
@@ -244,11 +248,12 @@ export class AppRoot extends LitElement {
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
     // The knob is labeled SENS: cranking it up should make the mic pick up
-    // quieter input, i.e. LOWER the rms gate. The knob's own value climbs
-    // from SENS_MIN to SENS_MAX as it's turned up, so invert it here rather
-    // than making "turn up SENS" require a louder voice to trigger.
-    this.rmsThreshold = SENS_MIN + SENS_MAX - this.sensitivity;
-    this.engine.updateConfig({ rmsThreshold: this.rmsThreshold });
+    // quieter input, i.e. a SMALLER margin above the ambient floor. The
+    // knob's own value climbs from SENS_MIN to SENS_MAX as it's turned up,
+    // so invert it here rather than making "turn up SENS" require a louder
+    // voice to trigger.
+    const onsetMargin = SENS_MIN + SENS_MAX - this.sensitivity;
+    this.engine.updateConfig({ onsetMargin });
   };
 
   private onToneChange = (event: CustomEvent<number>): void => {
@@ -306,86 +311,107 @@ export class AppRoot extends LitElement {
           </div>
         </header>
 
-        <div class="display-row">
-          <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}">
-            <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
-            <div class="readout-inner">
-              <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
-              <span class="readout-class">${this.lastResult ? CLASS_COLORS[this.lastResult.class].label : '--'}</span>
-            </div>
-          </div>
+        <div class="workspace">
+          <section class="col col-analysis">
+            <h2 class="col-title">Analysis &amp; Recording</h2>
 
-          <div class="transport">
-            <select @change=${this.onDeviceChange} ?disabled=${isRecording}>
-              ${DEVICES.map((d) => html`<option value=${d.id}>${d.name}</option>`)}
-            </select>
-            <button type="button" class="rec-button" ?data-active=${isRecording} @click=${() => this.handleRecordButton()}>
-              <span class="dot"></span>
-              ${recordLabel}
-            </button>
-            ${isRecording
+            <div class="record-row">
+              <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}">
+                <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
+                <div class="readout-inner">
+                  <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
+                  <span class="readout-class">${this.lastResult ? CLASS_COLORS[this.lastResult.class].label : '--'}</span>
+                </div>
+              </div>
+
+              <div class="transport">
+                <button type="button" class="rec-button" ?data-active=${isRecording} @click=${() => this.handleRecordButton()}>
+                  <span class="dot"></span>
+                  ${recordLabel}
+                </button>
+                ${isRecording
+                  ? html`
+                      <div class="level-row">
+                        <span class="level-label">MIC</span>
+                        <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
+                      </div>
+                    `
+                  : ''}
+                ${this.errorMessage ? html`<p class="error">${this.errorMessage}</p>` : ''}
+                ${this.infoMessage ? html`<p class="info">${this.infoMessage}</p>` : ''}
+              </div>
+            </div>
+
+            <div class="stream-block">
+              <h3 class="block-label">Input Stream</h3>
+              <beat-timeline></beat-timeline>
+            </div>
+
+            <div class="sequence-block">
+              <h3 class="block-label">Detected Sequence</h3>
+              ${this.sessionPhase === 'reviewing'
+                ? html`
+                    <div class="pattern-header">
+                      <div class="pattern-meta">
+                        <span>${this.recordedHits.length} hits</span>
+                        <span class="dim">·</span>
+                        <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
+                      </div>
+                      <div class="bpm-control">
+                        <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
+                        <span class="bpm-value">${this.bpm} BPM</span>
+                        <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
+                      </div>
+                    </div>
+                    <pattern-grid
+                      .pattern=${this.pattern}
+                      .padLabels=${padLabels}
+                      .selectedClass=${this.selectedClass}
+                      @lane-select=${this.onLaneSelect}
+                    ></pattern-grid>
+                    <p class="mapping-hint">
+                      ${this.selectedClass
+                        ? `Click pads to assign/unassign ${CLASS_COLORS[this.selectedClass].label}.`
+                        : 'Click KICK / SNARE / HAT to see and edit which pads to hit on the real device.'}
+                    </p>
+                  `
+                : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
+            </div>
+          </section>
+
+          <section class="col col-hardware">
+            <div class="hardware-head">
+              <h2 class="col-title">Hardware Mapping</h2>
+              <div class="device-status">
+                <span class="device-status-label">Mapping target</span>
+                <strong>${this.deviceConfig.name}</strong>
+              </div>
+            </div>
+
+            ${this.deviceConfig.banks
               ? html`
-                  <div class="level-row">
-                    <span class="level-label">MIC</span>
-                    <level-meter .level=${this.level} .threshold=${this.rmsThreshold}></level-meter>
+                  <div class="bank-row">
+                    <span class="bank-label">SET</span>
+                    <bank-selector
+                      .banks=${this.deviceConfig.banks}
+                      .active=${this.activeBank}
+                      @bank-change=${this.onBankChange}
+                    ></bank-selector>
                   </div>
                 `
               : ''}
-            ${this.errorMessage ? html`<p class="error">${this.errorMessage}</p>` : ''}
-            ${this.infoMessage ? html`<p class="info">${this.infoMessage}</p>` : ''}
-          </div>
+
+            <pad-grid
+              .hitCounts=${this.hitCounts}
+              .selectedClass=${this.sessionPhase === 'reviewing' ? this.selectedClass : null}
+              @pad-toggle=${this.onPadToggle}
+            ></pad-grid>
+
+            <select class="device-select" @change=${this.onDeviceChange} ?disabled=${isRecording}>
+              ${DEVICES.map((d) => html`<option value=${d.id}>${d.name}</option>`)}
+            </select>
+          </section>
         </div>
-
-        ${this.deviceConfig.banks
-          ? html`
-              <div class="bank-row">
-                <span class="bank-label">SET</span>
-                <bank-selector
-                  .banks=${this.deviceConfig.banks}
-                  .active=${this.activeBank}
-                  @bank-change=${this.onBankChange}
-                ></bank-selector>
-              </div>
-            `
-          : ''}
-
-        <main>
-          <pad-grid
-            .hitCounts=${this.hitCounts}
-            .selectedClass=${this.sessionPhase === 'reviewing' ? this.selectedClass : null}
-            @pad-toggle=${this.onPadToggle}
-          ></pad-grid>
-        </main>
-
-        <footer>
-          ${this.sessionPhase === 'reviewing'
-            ? html`
-                <div class="pattern-header">
-                  <div class="pattern-meta">
-                    <span>${this.recordedHits.length} hits</span>
-                    <span class="dim">·</span>
-                    <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
-                  </div>
-                  <div class="bpm-control">
-                    <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
-                    <span class="bpm-value">${this.bpm} BPM</span>
-                    <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
-                  </div>
-                </div>
-                <pattern-grid
-                  .pattern=${this.pattern}
-                  .padLabels=${padLabels}
-                  .selectedClass=${this.selectedClass}
-                  @lane-select=${this.onLaneSelect}
-                ></pattern-grid>
-                <p class="mapping-hint">
-                  ${this.selectedClass
-                    ? `Click pads above to assign/unassign ${CLASS_COLORS[this.selectedClass].label}.`
-                    : 'Click KICK / SNARE / HAT to see and edit which pads to hit on the real device.'}
-                </p>
-              `
-            : html`<beat-timeline></beat-timeline>`}
-        </footer>
       </div>
     `;
   }
@@ -393,7 +419,7 @@ export class AppRoot extends LitElement {
   static styles = css`
     :host {
       display: block;
-      max-width: 640px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 32px 20px;
       font: 16px/1.5 system-ui, sans-serif;
@@ -490,11 +516,98 @@ export class AppRoot extends LitElement {
       gap: 18px;
     }
 
-    .display-row {
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .col-title {
+      margin: 0 0 16px;
+      font: 700 11px/1 ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9ca3af;
+    }
+
+    .block-label {
+      margin: 0 0 8px;
+      font: 700 9px/1 ui-monospace, monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6b6b78;
+    }
+
+    .stream-block {
+      margin-top: 20px;
+    }
+
+    .sequence-block {
+      margin-top: 20px;
+    }
+
+    .placeholder {
+      margin: 0;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px dashed #34343c;
+      color: #55555f;
+      font: 600 11px/1.4 ui-monospace, monospace;
+      text-align: center;
+    }
+
+    .hardware-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .hardware-head .col-title {
+      margin-bottom: 0;
+    }
+
+    .device-status {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #2e2e36;
+      background: #16161a;
+      font: 700 9px/1.3 ui-monospace, monospace;
+    }
+
+    .device-status-label {
+      color: #6b6b78;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .device-status strong {
+      color: var(--accent);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .device-select {
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .record-row {
       display: flex;
       align-items: center;
       gap: 20px;
-      margin-bottom: 20px;
       position: relative;
     }
 
@@ -674,14 +787,6 @@ export class AppRoot extends LitElement {
       letter-spacing: 0.1em;
       color: #6b6b78;
       flex-shrink: 0;
-    }
-
-    main {
-      margin-bottom: 20px;
-    }
-
-    footer {
-      display: block;
     }
 
     .pattern-header {
