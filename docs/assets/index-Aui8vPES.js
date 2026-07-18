@@ -568,7 +568,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       width: 2px;
       background: rgba(255, 255, 255, 0.65);
     }
-  `}};J([V({type:Number})],Et.prototype,`level`,void 0),J([V({type:Number})],Et.prototype,`threshold`,void 0),Et=J([B(`level-meter`)],Et);var Dt=[ct,ut,ft],Ot=.005,kt=.05,At=.5,jt=2,$=class extends z{constructor(...e){super(...e),this.engine=new Ze,this.bus=new pt,this.deviceConfig=Dt[0],this.engineState=U.IDLE,this.errorMessage=null,this.infoMessage=null,this.activeBank=this.deviceConfig.banks?.[0]??``,this.lastResult=null,this.level=0,this.levelThreshold=Je.onsetMargin,this.sensitivity=.055-Je.onsetMargin,this.tone=1,this.sessionPhase=`idle`,this.recordedHits=[],this.hitCounts={},this.bpm=100,this.pattern={steps:[],totalSteps:16},this.selectedClass=null,this.thresholds={...W},this.recordingStartedAt=0,this.onEngineStateChange=e=>{this.engineState=e.detail,e.detail===U.IDLE&&(this.level=0)},this.onEngineError=e=>{this.errorMessage=e.detail.message,this.sessionPhase=`idle`},this.onLevel=e=>{this.level=e.detail.level,this.levelThreshold=e.detail.threshold},this.onTransient=e=>{let t=this.engine.getSampleRate();if(!t||this.sessionPhase!==`recording`)return;let n=$e(e.detail,t,this.engine.getFftSize(),this.thresholds),[r]=at(this.deviceConfig,this.deviceConfig.classMapping[n.class]);if(!r)return;this.lastResult={class:n.class,confidence:n.confidence};let i={class:n.class,controlId:r.id,controlLabel:r.label,confidence:n.confidence,timeMs:performance.now()-this.recordingStartedAt};this.recordedHits=[...this.recordedHits,i],this.hitCounts={...this.hitCounts,[r.id]:(this.hitCounts[r.id]??0)+1},this.bus.emit({class:n.class,confidence:n.confidence,controlId:r.id,timestamp:performance.now()})},this.onDeviceChange=e=>{let t=e.target.value,n=Dt.find(e=>e.id===t);n&&(this.deviceConfig=n,this.activeBank=n.banks?.[0]??``,this.sessionPhase===`recording`&&this.engine.stop(),this.sessionPhase=`idle`,this.recordedHits=[],this.hitCounts={},this.selectedClass=null)},this.onBankChange=e=>{this.activeBank=e.detail},this.onLaneSelect=e=>{this.selectedClass=this.selectedClass===e.detail?null:e.detail},this.onPadToggle=e=>{let t=this.selectedClass;if(!t)return;let n=e.detail,r={kick:[],snare:[],hat:[]};for(let e of q)r[e]=this.deviceConfig.classMapping[e].filter(e=>e!==n);this.deviceConfig.classMapping[t].includes(n)||(r[t]=[...r[t],n]),this.deviceConfig={...this.deviceConfig,classMapping:r}},this.onSensitivityChange=e=>{this.sensitivity=e.detail;let t=.055-this.sensitivity;this.engine.updateConfig({onsetMargin:t})},this.onToneChange=e=>{this.tone=e.detail,this.thresholds={...this.thresholds,centroidKickMax:W.centroidKickMax*this.tone,centroidHatMin:W.centroidHatMin*this.tone}}}connectedCallback(){super.connectedCallback(),this.engine.addEventListener(`state-change`,this.onEngineStateChange),this.engine.addEventListener(`transient-detected`,this.onTransient),this.engine.addEventListener(`error`,this.onEngineError),this.engine.addEventListener(`level`,this.onLevel)}disconnectedCallback(){super.disconnectedCallback(),this.engine.removeEventListener(`state-change`,this.onEngineStateChange),this.engine.removeEventListener(`transient-detected`,this.onTransient),this.engine.removeEventListener(`error`,this.onEngineError),this.engine.removeEventListener(`level`,this.onLevel),this.engine.stop()}async handleRecordButton(){if(this.errorMessage=null,this.infoMessage=null,this.sessionPhase===`recording`){this.engine.stop(),this.finishRecording();return}this.recordedHits=[],this.hitCounts={},this.pattern={steps:[],totalSteps:16},this.lastResult=null,this.selectedClass=null,this.sessionPhase=`recording`,this.recordingStartedAt=performance.now(),await this.engine.start()}finishRecording(){if(this.recordedHits.length===0){this.sessionPhase=`idle`,this.infoMessage=`No hits detected — try lowering SENS (or beatboxing louder/closer to the mic) and record again.`;return}this.bpm=nt(this.recordedHits),this.pattern=rt(this.recordedHits,this.bpm),this.sessionPhase=`reviewing`}adjustBpm(e){this.bpm=Math.min(180,Math.max(60,this.bpm+e)),this.pattern=rt(this.recordedHits,this.bpm)}render(){let e=this.sessionPhase===`recording`,t=this.lastResult?K[this.lastResult.class].fg:`var(--accent)`,n=this.sessionPhase===`recording`?`recording`:this.sessionPhase===`reviewing`?`complete`:this.engineState.replace(`_`,` `),r=this.sessionPhase===`recording`?`STOP`:this.sessionPhase===`reviewing`?`RECORD AGAIN`:`RECORD`,i={};for(let e of q){let t=at(this.deviceConfig,this.deviceConfig.classMapping[e]);t.length&&(i[e]=t.map(e=>e.label))}return N`
+  `}};J([V({type:Number})],Et.prototype,`level`,void 0),J([V({type:Number})],Et.prototype,`threshold`,void 0),Et=J([B(`level-meter`)],Et);var Dt=[ct,ut,ft],Ot=.005,kt=.05,At=.5,jt=2,$=class extends z{constructor(...e){super(...e),this.engine=new Ze,this.bus=new pt,this.deviceConfig=Dt[0],this.engineState=U.IDLE,this.errorMessage=null,this.infoMessage=null,this.activeBank=this.deviceConfig.banks?.[0]??``,this.lastResult=null,this.level=0,this.levelThreshold=Je.onsetMargin,this.sensitivity=.055-Je.onsetMargin,this.tone=1,this.sessionPhase=`idle`,this.recordedHits=[],this.hitCounts={},this.bpm=100,this.pattern={steps:[],totalSteps:16},this.selectedClass=null,this.thresholds={...W},this.recordingStartedAt=0,this.onEngineStateChange=e=>{this.engineState=e.detail,e.detail===U.IDLE&&(this.level=0)},this.onEngineError=e=>{this.errorMessage=e.detail.message,this.sessionPhase=`idle`},this.onLevel=e=>{this.level=e.detail.level,this.levelThreshold=e.detail.threshold},this.onTransient=e=>{let t=this.engine.getSampleRate();if(!t||this.sessionPhase!==`recording`)return;let n=$e(e.detail,t,this.engine.getFftSize(),this.thresholds),[r]=at(this.deviceConfig,this.deviceConfig.classMapping[n.class]);if(!r)return;this.lastResult={class:n.class,confidence:n.confidence};let i={class:n.class,controlId:r.id,controlLabel:r.label,confidence:n.confidence,timeMs:performance.now()-this.recordingStartedAt};this.recordedHits=[...this.recordedHits,i],this.hitCounts={...this.hitCounts,[r.id]:(this.hitCounts[r.id]??0)+1},this.bus.emit({class:n.class,confidence:n.confidence,controlId:r.id,timestamp:performance.now()})},this.onDeviceChange=e=>{let t=e.target.value,n=Dt.find(e=>e.id===t);n&&(this.deviceConfig=n,this.activeBank=n.banks?.[0]??``,this.sessionPhase===`recording`&&this.engine.stop(),this.sessionPhase=`idle`,this.recordedHits=[],this.hitCounts={},this.selectedClass=null)},this.onBankChange=e=>{this.activeBank=e.detail},this.onLaneSelect=e=>{this.toggleSelectedClass(e.detail)},this.onPadToggle=e=>{let t=this.selectedClass;if(!t)return;let n=e.detail,r={kick:[],snare:[],hat:[]};for(let e of q)r[e]=this.deviceConfig.classMapping[e].filter(e=>e!==n);this.deviceConfig.classMapping[t].includes(n)||(r[t]=[...r[t],n]),this.deviceConfig={...this.deviceConfig,classMapping:r}},this.onSensitivityChange=e=>{this.sensitivity=e.detail;let t=.055-this.sensitivity;this.engine.updateConfig({onsetMargin:t})},this.onToneChange=e=>{this.tone=e.detail,this.thresholds={...this.thresholds,centroidKickMax:W.centroidKickMax*this.tone,centroidHatMin:W.centroidHatMin*this.tone}}}connectedCallback(){super.connectedCallback(),this.engine.addEventListener(`state-change`,this.onEngineStateChange),this.engine.addEventListener(`transient-detected`,this.onTransient),this.engine.addEventListener(`error`,this.onEngineError),this.engine.addEventListener(`level`,this.onLevel)}disconnectedCallback(){super.disconnectedCallback(),this.engine.removeEventListener(`state-change`,this.onEngineStateChange),this.engine.removeEventListener(`transient-detected`,this.onTransient),this.engine.removeEventListener(`error`,this.onEngineError),this.engine.removeEventListener(`level`,this.onLevel),this.engine.stop()}async handleRecordButton(){if(this.errorMessage=null,this.infoMessage=null,this.sessionPhase===`recording`){this.engine.stop(),this.finishRecording();return}this.recordedHits=[],this.hitCounts={},this.pattern={steps:[],totalSteps:16},this.lastResult=null,this.selectedClass=null,this.sessionPhase=`recording`,this.recordingStartedAt=performance.now(),await this.engine.start()}finishRecording(){if(this.recordedHits.length===0){this.sessionPhase=`idle`,this.infoMessage=`No hits detected — try lowering SENS (or beatboxing louder/closer to the mic) and record again.`;return}this.bpm=nt(this.recordedHits),this.pattern=rt(this.recordedHits,this.bpm),this.sessionPhase=`reviewing`}adjustBpm(e){this.bpm=Math.min(180,Math.max(60,this.bpm+e)),this.pattern=rt(this.recordedHits,this.bpm)}toggleSelectedClass(e){this.selectedClass=this.selectedClass===e?null:e}render(){let e=this.sessionPhase===`recording`,t=this.lastResult?K[this.lastResult.class].fg:`var(--accent)`,n=this.sessionPhase===`recording`?`recording`:this.sessionPhase===`reviewing`?`complete`:this.engineState.replace(`_`,` `),r=this.sessionPhase===`recording`?`STOP`:this.sessionPhase===`reviewing`?`RECORD AGAIN`:`RECORD`,i={};for(let e of q){let t=at(this.deviceConfig,this.deviceConfig.classMapping[e]);t.length&&(i[e]=t.map(e=>e.label))}return N`
       <div class="panel">
         <span class="screw tl"></span>
         <span class="screw tr"></span>
@@ -654,9 +654,6 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
                       .selectedClass=${this.selectedClass}
                       @lane-select=${this.onLaneSelect}
                     ></pattern-grid>
-                    <p class="mapping-hint">
-                      ${this.selectedClass?`Click pads to assign/unassign ${K[this.selectedClass].label}.`:`Click KICK / SNARE / HAT to see and edit which pads to hit on the real device.`}
-                    </p>
                   `:N`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
             </div>
           </section>
@@ -679,6 +676,27 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
                       @bank-change=${this.onBankChange}
                     ></bank-selector>
                   </div>
+                `:``}
+            ${this.sessionPhase===`reviewing`?N`
+                  <div class="class-select-row">
+                    ${[`kick`,`snare`,`hat`].map(e=>N`
+                        <button
+                          type="button"
+                          class="class-select"
+                          ?data-selected=${this.selectedClass===e}
+                          style="--class-fg: ${K[e].fg}; --class-glow: ${K[e].glow}"
+                          @click=${()=>this.toggleSelectedClass(e)}
+                        >
+                          <span class="class-select-name">${K[e].label}</span>
+                          <span class="class-select-pads">
+                            ${i[e]?.length?i[e].map(e=>`P${e}`).join(` `):`no pad`}
+                          </span>
+                        </button>
+                      `)}
+                  </div>
+                  <p class="mapping-hint">
+                    ${this.selectedClass?`Showing ${K[this.selectedClass].label} pads — tap pads below to assign/unassign.`:`Tap a sound to light up its pads on the device below.`}
+                  </p>
                 `:``}
 
             <pad-grid
@@ -1131,8 +1149,59 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       text-align: center;
     }
 
+    .class-select-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .class-select {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 6px;
+      border-radius: 8px;
+      border: 1px solid #3a3a44;
+      background: linear-gradient(#232329, #16161a);
+      cursor: pointer;
+      transition:
+        border-color 100ms,
+        box-shadow 100ms,
+        background-color 100ms;
+    }
+
+    .class-select-name {
+      font: 800 12px/1 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      color: var(--class-fg);
+    }
+
+    .class-select-pads {
+      font: 700 9px/1 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      color: #6b6b78;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .class-select[data-selected] {
+      border-color: var(--class-fg);
+      box-shadow:
+        0 0 12px var(--class-glow),
+        inset 0 0 10px color-mix(in srgb, var(--class-fg) 12%, transparent);
+    }
+
+    .class-select[data-selected] .class-select-pads {
+      color: var(--class-fg);
+    }
+
     .mapping-hint {
-      margin: 10px 0 0;
+      margin: 6px 0 14px;
       font: 600 11px/1.4 ui-monospace, monospace;
       color: #6b6b78;
     }
