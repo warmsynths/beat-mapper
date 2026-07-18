@@ -92,9 +92,9 @@ export class PatternGrid extends LitElement {
 
     .pattern {
       display: flex;
-      border: 1px solid var(--border, #2e303a);
-      border-radius: 8px;
-      background: #08080b;
+      border: 1px solid var(--border, var(--color-border-subtle));
+      border-radius: var(--radius-lg);
+      background: var(--color-well);
       overflow: hidden;
     }
 
@@ -102,17 +102,17 @@ export class PatternGrid extends LitElement {
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      border-right: 1px solid var(--border, #2e303a);
+      border-right: 1px solid var(--border, var(--color-border-subtle));
     }
 
     .lane-label {
       height: 32px;
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 0 10px;
-      font: 700 10px/1 ui-monospace, monospace;
-      letter-spacing: 0.06em;
+      gap: var(--space-1-5);
+      padding: 0 var(--space-3);
+      font: var(--weight-bold) var(--text-sm) / 1 var(--font-mono);
+      letter-spacing: var(--tracking-wide);
       white-space: nowrap;
       background: none;
       border: none;
@@ -166,11 +166,11 @@ export class PatternGrid extends LitElement {
       content: '';
       width: 14px;
       height: 14px;
-      border-radius: 4px;
+      border-radius: var(--radius-xs);
       background: rgba(255, 255, 255, 0.04);
       transition:
-        background-color 80ms,
-        box-shadow 80ms;
+        background-color var(--duration-fast),
+        box-shadow var(--duration-fast);
     }
 
     .step[data-beat-start] {

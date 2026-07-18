@@ -66,7 +66,7 @@ export class KnobControl extends LitElement {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: var(--space-1-5);
       user-select: none;
       touch-action: none;
     }
@@ -74,9 +74,9 @@ export class KnobControl extends LitElement {
     .knob {
       width: 44px;
       height: 44px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #4a4a54, #1a1a20 72%);
-      border: 1px solid #3a3a44;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle at 35% 30%, #4a4a54, var(--color-surface-1) 72%);
+      border: 1px solid var(--color-border);
       box-shadow:
         0 2px 5px rgba(0, 0, 0, 0.5),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
@@ -94,18 +94,18 @@ export class KnobControl extends LitElement {
       left: 50%;
       width: 2px;
       height: 16px;
-      background: var(--accent, #ffb020);
+      background: var(--color-accent);
       transform-origin: 50% 100%;
       transform: translate(-50%, -100%) rotate(var(--angle));
       border-radius: 1px;
-      box-shadow: 0 0 5px var(--accent, #ffb020);
+      box-shadow: 0 0 5px var(--color-accent);
       pointer-events: none;
     }
 
     .label {
-      font: 700 9px/1 ui-monospace, monospace;
-      letter-spacing: 0.08em;
-      color: var(--text-dim, #6b6b78);
+      font: var(--weight-bold) var(--text-xs) / 1 var(--font-mono);
+      letter-spacing: var(--tracking-wider);
+      color: var(--color-text-dim);
     }
   `;
 }

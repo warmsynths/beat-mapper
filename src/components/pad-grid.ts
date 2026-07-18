@@ -129,47 +129,45 @@ export class PadGrid extends LitElement {
     }
 
     .unit {
-      padding: 14px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #2a2a30 0%, #1c1c21 100%);
-      border: 1px solid #38383f;
-      box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: var(--space-4);
+      border-radius: var(--radius-2xl);
+      background: linear-gradient(180deg, var(--color-surface-5) 0%, var(--color-surface-1) 100%);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md), var(--shadow-inset-highlight);
     }
 
     .unit-head {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
     }
 
     .unit-knobs {
       display: flex;
-      gap: 8px;
+      gap: var(--space-2);
       flex-shrink: 0;
     }
 
     .unit-knob {
       width: 20px;
       height: 20px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #55555f, #1a1a1e 75%);
-      border: 1px solid #3a3a44;
+      border-radius: var(--radius-full);
+      background: radial-gradient(circle at 35% 30%, var(--color-border-strong), var(--color-surface-1) 75%);
+      border: 1px solid var(--color-border);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     .unit-screen {
       flex: 1;
-      padding: 6px 10px;
-      border-radius: 4px;
-      background: #0a0f0a;
-      border: 1px solid #1e2a1e;
-      color: #7fffb0;
-      font: 700 10px/1 ui-monospace, monospace;
-      letter-spacing: 0.06em;
-      text-shadow: 0 0 6px rgba(127, 255, 176, 0.5);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-xs);
+      background: var(--color-lcd);
+      border: 1px solid var(--color-lcd-border);
+      color: var(--color-lcd-fg);
+      font: var(--weight-bold) var(--text-sm) / 1 var(--font-mono);
+      letter-spacing: var(--tracking-wide);
+      text-shadow: 0 0 6px var(--color-lcd-glow);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -178,12 +176,12 @@ export class PadGrid extends LitElement {
     .layout {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: var(--space-3);
     }
 
     .grid {
       display: grid;
-      gap: 10px;
+      gap: var(--space-3);
       flex: 1;
       min-width: 220px;
       max-width: 420px;
@@ -192,7 +190,7 @@ export class PadGrid extends LitElement {
     .accessory-column {
       display: grid;
       grid-template-rows: repeat(4, 1fr);
-      gap: 10px;
+      gap: var(--space-3);
       width: 84px;
       flex-shrink: 0;
     }
@@ -202,9 +200,9 @@ export class PadGrid extends LitElement {
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 4px;
-      border-radius: 9px;
-      border: 1px dashed #34343c;
+      padding: var(--space-1);
+      border-radius: var(--radius-xl);
+      border: 1px dashed var(--color-border-panel);
       background: repeating-linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.015) 0px,
@@ -212,9 +210,9 @@ export class PadGrid extends LitElement {
         transparent 2px,
         transparent 6px
       );
-      color: #55555f;
-      font: 700 8px/1.2 ui-monospace, monospace;
-      letter-spacing: 0.05em;
+      color: var(--color-border-strong);
+      font: var(--weight-bold) var(--text-2xs) / 1.2 var(--font-mono);
+      letter-spacing: var(--tracking-normal);
     }
   `;
 }
