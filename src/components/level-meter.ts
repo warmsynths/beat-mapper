@@ -36,20 +36,20 @@ export class LevelMeter extends LitElement {
     .track {
       position: relative;
       height: 6px;
-      border-radius: 3px;
-      background: #101014;
-      border: 1px solid #2e2e36;
+      border-radius: var(--radius-2xs);
+      background: var(--color-well-soft);
+      border: 1px solid var(--color-border-subtle);
       overflow: hidden;
     }
 
     .fill {
       height: 100%;
-      background: linear-gradient(90deg, #38e1ff, var(--accent, #ffb020));
-      transition: width 40ms linear;
+      background: linear-gradient(90deg, var(--color-snare), var(--color-accent));
+      transition: width 40ms var(--ease-linear);
     }
 
     .track[data-hot] .fill {
-      background: linear-gradient(90deg, var(--accent, #ffb020), #ff5a3c);
+      background: linear-gradient(90deg, var(--color-accent), var(--color-kick));
     }
 
     .marker {
