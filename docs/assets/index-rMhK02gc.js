@@ -129,7 +129,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
         box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 18px var(--class-glow, rgba(255, 176, 32, 0.8));
       }
     }
-  `}};J([V({attribute:!1})],Y.prototype,`control`,void 0),J([V({attribute:!1})],Y.prototype,`assignedClass`,void 0),J([V({type:Boolean,reflect:!0})],Y.prototype,`active`,void 0),J([V({type:Number})],Y.prototype,`hitCount`,void 0),J([V({type:Boolean,reflect:!0})],Y.prototype,`selected`,void 0),J([V({type:Boolean})],Y.prototype,`editable`,void 0),Y=J([B(`pad-control`)],Y);var gt=220,X=class extends z{constructor(...e){super(...e),this.hitCounts={},this.selectedClass=null,this.activeControlId=null,this.flashTimer=null,this.onBeat=e=>{this.activeControlId=e.detail.controlId,this.flashTimer&&clearTimeout(this.flashTimer),this.flashTimer=setTimeout(()=>{this.activeControlId=null},gt)}}connectedCallback(){super.connectedCallback(),this.bus.addEventListener(`beat`,this.onBeat)}disconnectedCallback(){super.disconnectedCallback(),this.bus.removeEventListener(`beat`,this.onBeat),this.flashTimer&&clearTimeout(this.flashTimer)}render(){let{gridDimensions:e,controls:t,classMapping:n,decorative:r}=this.deviceConfig,i=new Map;for(let[e,t]of Object.entries(n))for(let n of t)i.set(n,e);let a=new Set(this.selectedClass?n[this.selectedClass]:[]),o=e?`grid-template-columns: repeat(${e.cols}, 1fr); grid-template-rows: repeat(${e.rows}, 1fr);`:`grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); grid-auto-rows: 48px;`;return N`
+  `}};J([V({attribute:!1})],Y.prototype,`control`,void 0),J([V({attribute:!1})],Y.prototype,`assignedClass`,void 0),J([V({type:Boolean,reflect:!0})],Y.prototype,`active`,void 0),J([V({type:Number})],Y.prototype,`hitCount`,void 0),J([V({type:Boolean,reflect:!0})],Y.prototype,`selected`,void 0),J([V({type:Boolean})],Y.prototype,`editable`,void 0),Y=J([B(`pad-control`)],Y);var gt=220,X=class extends z{constructor(...e){super(...e),this.hitCounts={},this.selectedClass=null,this.activeControlId=null,this.flashTimer=null,this.onBeat=e=>{this.activeControlId=e.detail.controlId,this.flashTimer&&clearTimeout(this.flashTimer),this.flashTimer=setTimeout(()=>{this.activeControlId=null},gt)}}connectedCallback(){super.connectedCallback(),this.bus.addEventListener(`beat`,this.onBeat)}disconnectedCallback(){super.disconnectedCallback(),this.bus.removeEventListener(`beat`,this.onBeat),this.flashTimer&&clearTimeout(this.flashTimer)}render(){let{gridDimensions:e,controls:t,classMapping:n,decorative:r}=this.deviceConfig,i=new Map;for(let[e,t]of Object.entries(n))for(let n of t)i.set(n,e);let a=new Set(this.selectedClass?n[this.selectedClass]:[]),o=e?`grid-template-columns: repeat(${e.cols}, minmax(0, 1fr)); grid-template-rows: repeat(${e.rows}, 1fr);`:`grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); grid-auto-rows: 48px;`;return N`
       <div class="unit">
         <div class="unit-head">
           <div class="unit-knobs">
@@ -215,6 +215,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
 
     .layout {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
 
@@ -222,6 +223,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       display: grid;
       gap: 10px;
       flex: 1;
+      min-width: 220px;
       max-width: 420px;
     }
 
@@ -230,6 +232,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       grid-template-rows: repeat(4, 1fr);
       gap: 10px;
       width: 84px;
+      flex-shrink: 0;
     }
 
     .accessory {
@@ -375,7 +378,10 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
 
     .scroll {
       overflow-x: auto;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
       flex: 1;
+      min-width: 0;
     }
 
     .lanes-steps {
@@ -691,6 +697,14 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
     :host {
       display: block;
       max-width: 960px;
+      width: 100%;
+      /* body centers app-root with display:flex — without this, a flex item
+         defaults to a min-width equal to its content's min-content size, so
+         any oversized descendant (long device names, fixed-width pads, etc.)
+         forces the whole app wider than the viewport instead of shrinking
+         to fit it. */
+      min-width: 0;
+      box-sizing: border-box;
       margin: 0 auto;
       padding: 32px 20px;
       font: 16px/1.5 system-ui, sans-serif;
@@ -789,15 +803,22 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
 
     .workspace {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 28px;
       align-items: start;
     }
 
     @media (max-width: 720px) {
       .workspace {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
+
+    /* Grid items default to a min-width equal to their content's min-content
+       size — without this, long unbroken content (a device name, the pad
+       unit) stops the column shrinking to fit a narrow viewport at all. */
+    .col {
+      min-width: 0;
     }
 
     .col-title {
@@ -836,6 +857,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
 
     .hardware-head {
       display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
@@ -856,6 +878,8 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       border: 1px solid #2e2e36;
       background: #16161a;
       font: 700 9px/1.3 ui-monospace, monospace;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .device-status-label {
@@ -867,6 +891,9 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
     .device-status strong {
       color: var(--accent);
       font-size: 10px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -877,6 +904,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
 
     .record-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 20px;
       position: relative;
@@ -955,6 +983,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
       flex-direction: column;
       gap: 10px;
       flex: 1;
+      min-width: 160px;
     }
 
     select {

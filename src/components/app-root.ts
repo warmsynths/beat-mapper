@@ -420,6 +420,14 @@ export class AppRoot extends LitElement {
     :host {
       display: block;
       max-width: 960px;
+      width: 100%;
+      /* body centers app-root with display:flex — without this, a flex item
+         defaults to a min-width equal to its content's min-content size, so
+         any oversized descendant (long device names, fixed-width pads, etc.)
+         forces the whole app wider than the viewport instead of shrinking
+         to fit it. */
+      min-width: 0;
+      box-sizing: border-box;
       margin: 0 auto;
       padding: 32px 20px;
       font: 16px/1.5 system-ui, sans-serif;
@@ -518,15 +526,22 @@ export class AppRoot extends LitElement {
 
     .workspace {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 28px;
       align-items: start;
     }
 
     @media (max-width: 720px) {
       .workspace {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
+
+    /* Grid items default to a min-width equal to their content's min-content
+       size — without this, long unbroken content (a device name, the pad
+       unit) stops the column shrinking to fit a narrow viewport at all. */
+    .col {
+      min-width: 0;
     }
 
     .col-title {
@@ -565,6 +580,7 @@ export class AppRoot extends LitElement {
 
     .hardware-head {
       display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
@@ -585,6 +601,8 @@ export class AppRoot extends LitElement {
       border: 1px solid #2e2e36;
       background: #16161a;
       font: 700 9px/1.3 ui-monospace, monospace;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .device-status-label {
@@ -596,6 +614,9 @@ export class AppRoot extends LitElement {
     .device-status strong {
       color: var(--accent);
       font-size: 10px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -606,6 +627,7 @@ export class AppRoot extends LitElement {
 
     .record-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 20px;
       position: relative;
@@ -684,6 +706,7 @@ export class AppRoot extends LitElement {
       flex-direction: column;
       gap: 10px;
       flex: 1;
+      min-width: 160px;
     }
 
     select {
