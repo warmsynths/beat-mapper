@@ -16,3 +16,7 @@ export const CLASS_COLORS: Record<DrumClass, ClassStyle> = {
 };
 
 export const ACCENT = '#ffb020';
+
+/** Shared top-to-bottom lane order for anywhere hits are shown by class
+ * (beat timeline, pattern grid) — keeps the visual layout consistent. */
+export const DRUM_CLASS_LANES: DrumClass[] = ['hat', 'snare', 'kick'];

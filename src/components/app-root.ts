@@ -9,14 +9,23 @@ import {
   type ClassifierThresholds,
   type DrumClass,
 } from '../audio/classifier.ts';
-import type { DeviceConfig } from '../devices/device-config.ts';
+import {
+  estimateBpm,
+  quantizeHits,
+  MIN_BPM,
+  MAX_BPM,
+  type RecordedHit,
+  type QuantizedPattern,
+} from '../audio/quantize.ts';
+import { getControl, type DeviceConfig } from '../devices/device-config.ts';
 import { sp404mkiiConfig } from '../devices/sp404mkii.ts';
 import { po33Config } from '../devices/po33.ts';
 import { BeatBus } from '../state/beat-bus.ts';
 import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
-import { CLASS_COLORS } from '../ui/theme.ts';
+import { CLASS_COLORS, DRUM_CLASS_LANES } from '../ui/theme.ts';
 import './pad-grid.ts';
 import './beat-timeline.ts';
+import './pattern-grid.ts';
 import './bank-selector.ts';
 import './knob-control.ts';
 import './level-meter.ts';
@@ -31,6 +40,8 @@ const SENS_MAX = 0.2;
 // classifier can be biased for a lower or higher-pitched voice.
 const TONE_MIN = 0.5;
 const TONE_MAX = 2.0;
+
+type SessionPhase = 'idle' | 'recording' | 'reviewing';
 
 @customElement('app-root')
 export class AppRoot extends LitElement {
@@ -50,6 +61,9 @@ export class AppRoot extends LitElement {
   private errorMessage: string | null = null;
 
   @state()
+  private infoMessage: string | null = null;
+
+  @state()
   private activeBank = this.deviceConfig.banks?.[0] ?? '';
 
   @state()
@@ -64,7 +78,23 @@ export class AppRoot extends LitElement {
   @state()
   private tone = 1.0;
 
+  @state()
+  private sessionPhase: SessionPhase = 'idle';
+
+  @state()
+  private recordedHits: RecordedHit[] = [];
+
+  @state()
+  private hitCounts: Record<string, number> = {};
+
+  @state()
+  private bpm = 100;
+
+  @state()
+  private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
+
   private thresholds: ClassifierThresholds = { ...DEFAULT_CLASSIFIER_THRESHOLDS };
+  private recordingStartedAt = 0;
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -90,6 +120,7 @@ export class AppRoot extends LitElement {
 
   private onEngineError = (event: CustomEvent<Error>): void => {
     this.errorMessage = event.detail.message;
+    this.sessionPhase = 'idle';
   };
 
   private onLevel = (event: CustomEvent<number>): void => {
@@ -98,37 +129,80 @@ export class AppRoot extends LitElement {
 
   private onTransient = (event: CustomEvent<TransientFrame[]>): void => {
     const sampleRate = this.engine.getSampleRate();
-    if (!sampleRate) return;
+    if (!sampleRate || this.sessionPhase !== 'recording') return;
 
     const result = classifyTransient(event.detail, sampleRate, this.engine.getFftSize(), this.thresholds);
-    const controlId = this.deviceConfig.classMapping[result.class];
+    const control = getControl(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
+    if (!control) return;
 
     this.lastResult = { class: result.class, confidence: result.confidence };
 
+    const hit: RecordedHit = {
+      class: result.class,
+      controlId: control.id,
+      controlLabel: control.label,
+      confidence: result.confidence,
+      timeMs: performance.now() - this.recordingStartedAt,
+    };
+    this.recordedHits = [...this.recordedHits, hit];
+    this.hitCounts = { ...this.hitCounts, [control.id]: (this.hitCounts[control.id] ?? 0) + 1 };
+
+    // Live flash + rolling timeline, purely as "it's hearing you" feedback
+    // during recording — the persistent record is recordedHits above.
     this.bus.emit({
       class: result.class,
       confidence: result.confidence,
-      controlId,
+      controlId: control.id,
       timestamp: performance.now(),
     });
   };
 
-  private async toggleListening(): Promise<void> {
+  private async handleRecordButton(): Promise<void> {
     this.errorMessage = null;
-    if (this.engineState === EngineState.IDLE) {
-      await this.engine.start();
-    } else {
+    this.infoMessage = null;
+
+    if (this.sessionPhase === 'recording') {
       this.engine.stop();
+      this.finishRecording();
+      return;
     }
+
+    // Starting fresh, whether from idle or "record again" out of reviewing.
+    this.recordedHits = [];
+    this.hitCounts = {};
+    this.pattern = { steps: [], totalSteps: 16 };
+    this.lastResult = null;
+    this.sessionPhase = 'recording';
+    this.recordingStartedAt = performance.now();
+    await this.engine.start();
+  }
+
+  private finishRecording(): void {
+    if (this.recordedHits.length === 0) {
+      this.sessionPhase = 'idle';
+      this.infoMessage = 'No hits detected — try lowering SENS (or beatboxing louder/closer to the mic) and record again.';
+      return;
+    }
+    this.bpm = estimateBpm(this.recordedHits);
+    this.pattern = quantizeHits(this.recordedHits, this.bpm);
+    this.sessionPhase = 'reviewing';
+  }
+
+  private adjustBpm(delta: number): void {
+    this.bpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.bpm + delta));
+    this.pattern = quantizeHits(this.recordedHits, this.bpm);
   }
 
   private onDeviceChange = (event: Event): void => {
     const id = (event.target as HTMLSelectElement).value;
     const next = DEVICES.find((d) => d.id === id);
-    if (next) {
-      this.deviceConfig = next;
-      this.activeBank = next.banks?.[0] ?? '';
-    }
+    if (!next) return;
+    this.deviceConfig = next;
+    this.activeBank = next.banks?.[0] ?? '';
+    if (this.sessionPhase === 'recording') this.engine.stop();
+    this.sessionPhase = 'idle';
+    this.recordedHits = [];
+    this.hitCounts = {};
   };
 
   private onBankChange = (event: CustomEvent<string>): void => {
@@ -150,8 +224,19 @@ export class AppRoot extends LitElement {
   };
 
   render() {
-    const isListening = this.engineState !== EngineState.IDLE;
+    const isRecording = this.sessionPhase === 'recording';
     const readoutColor = this.lastResult ? CLASS_COLORS[this.lastResult.class].fg : 'var(--accent)';
+
+    const readoutState =
+      this.sessionPhase === 'recording' ? 'recording' : this.sessionPhase === 'reviewing' ? 'complete' : this.engineState.replace('_', ' ');
+
+    const recordLabel = this.sessionPhase === 'recording' ? 'STOP' : this.sessionPhase === 'reviewing' ? 'RECORD AGAIN' : 'RECORD';
+
+    const padLabels: Partial<Record<DrumClass, string>> = {};
+    for (const lane of DRUM_CLASS_LANES) {
+      const control = getControl(this.deviceConfig, this.deviceConfig.classMapping[lane]);
+      if (control) padLabels[lane] = control.label;
+    }
 
     return html`
       <div class="panel">
@@ -163,7 +248,7 @@ export class AppRoot extends LitElement {
         <header>
           <div class="wordmark">
             <h1>BEAT // MAPPER</h1>
-            <p class="subtitle">voice-to-pad transcription</p>
+            <p class="subtitle">voice-to-pattern transcription</p>
           </div>
 
           <div class="knobs">
@@ -186,22 +271,22 @@ export class AppRoot extends LitElement {
 
         <div class="display-row">
           <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}">
-            <div class="readout-ring"></div>
+            <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
             <div class="readout-inner">
-              <span class="readout-state" ?data-active=${isListening}>${this.engineState.replace('_', ' ')}</span>
+              <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
               <span class="readout-class">${this.lastResult ? CLASS_COLORS[this.lastResult.class].label : '--'}</span>
             </div>
           </div>
 
           <div class="transport">
-            <select @change=${this.onDeviceChange}>
+            <select @change=${this.onDeviceChange} ?disabled=${isRecording}>
               ${DEVICES.map((d) => html`<option value=${d.id}>${d.name}</option>`)}
             </select>
-            <button type="button" class="rec-button" ?data-active=${isListening} @click=${this.toggleListening}>
+            <button type="button" class="rec-button" ?data-active=${isRecording} @click=${() => this.handleRecordButton()}>
               <span class="dot"></span>
-              ${isListening ? 'STOP' : 'LISTEN'}
+              ${recordLabel}
             </button>
-            ${isListening
+            ${isRecording
               ? html`
                   <div class="level-row">
                     <span class="level-label">MIC</span>
@@ -210,6 +295,7 @@ export class AppRoot extends LitElement {
                 `
               : ''}
             ${this.errorMessage ? html`<p class="error">${this.errorMessage}</p>` : ''}
+            ${this.infoMessage ? html`<p class="info">${this.infoMessage}</p>` : ''}
           </div>
         </div>
 
@@ -227,11 +313,27 @@ export class AppRoot extends LitElement {
           : ''}
 
         <main>
-          <pad-grid></pad-grid>
+          <pad-grid .hitCounts=${this.hitCounts}></pad-grid>
         </main>
 
         <footer>
-          <beat-timeline></beat-timeline>
+          ${this.sessionPhase === 'reviewing'
+            ? html`
+                <div class="pattern-header">
+                  <div class="pattern-meta">
+                    <span>${this.recordedHits.length} hits</span>
+                    <span class="dim">·</span>
+                    <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
+                  </div>
+                  <div class="bpm-control">
+                    <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
+                    <span class="bpm-value">${this.bpm} BPM</span>
+                    <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
+                  </div>
+                </div>
+                <pattern-grid .pattern=${this.pattern} .padLabels=${padLabels}></pattern-grid>
+              `
+            : html`<beat-timeline></beat-timeline>`}
         </footer>
       </div>
     `;
@@ -369,6 +471,20 @@ export class AppRoot extends LitElement {
       transition: opacity 60ms linear;
     }
 
+    .readout-ring[data-phase-recording] {
+      animation: rec-pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes rec-pulse {
+      0%,
+      100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.9;
+      }
+    }
+
     .readout-inner {
       display: flex;
       flex-direction: column;
@@ -384,8 +500,12 @@ export class AppRoot extends LitElement {
       transition: color 120ms;
     }
 
-    .readout-state[data-active] {
-      color: var(--accent);
+    .readout-state[data-phase='recording'] {
+      color: #ff4444;
+    }
+
+    .readout-state[data-phase='reviewing'] {
+      color: #4ade80;
     }
 
     .readout-class {
@@ -409,6 +529,10 @@ export class AppRoot extends LitElement {
       border: 1px solid #3a3a44;
       background: #1c1c22;
       color: #d1d5db;
+    }
+
+    select:disabled {
+      opacity: 0.5;
     }
 
     .rec-button {
@@ -464,6 +588,12 @@ export class AppRoot extends LitElement {
       margin: 0;
     }
 
+    .info {
+      color: var(--accent);
+      font-size: 12px;
+      margin: 0;
+    }
+
     .level-row {
       display: flex;
       align-items: center;
@@ -501,6 +631,48 @@ export class AppRoot extends LitElement {
 
     footer {
       display: block;
+    }
+
+    .pattern-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .pattern-meta {
+      font: 600 11px/1 ui-monospace, monospace;
+      color: #9ca3af;
+      display: flex;
+      gap: 6px;
+    }
+
+    .pattern-meta .dim {
+      color: #4b4b54;
+    }
+
+    .bpm-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bpm-control button {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      border: 1px solid #3a3a44;
+      background: #1c1c22;
+      color: #d1d5db;
+      font: 700 13px/1 ui-monospace, monospace;
+      cursor: pointer;
+    }
+
+    .bpm-value {
+      font: 700 11px/1 ui-monospace, monospace;
+      color: var(--accent);
+      min-width: 56px;
+      text-align: center;
     }
   `;
 }

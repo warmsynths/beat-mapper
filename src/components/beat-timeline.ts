@@ -3,11 +3,10 @@ import { customElement } from 'lit/decorators.js';
 import { consume } from '@lit/context';
 import { beatBusContext } from '../state/contexts.ts';
 import type { BeatBus, ClassifiedBeatEvent } from '../state/beat-bus.ts';
-import { CLASS_COLORS } from '../ui/theme.ts';
-import type { DrumClass } from '../audio/classifier.ts';
+import { CLASS_COLORS, DRUM_CLASS_LANES } from '../ui/theme.ts';
 
 const WINDOW_MS = 6000;
-const LANES: DrumClass[] = ['hat', 'snare', 'kick'];
+const LANES = DRUM_CLASS_LANES;
 const PLAYHEAD_RATIO = 0.88;
 
 /**

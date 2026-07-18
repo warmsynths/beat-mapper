@@ -13,8 +13,18 @@ export class PadControl extends LitElement {
   @property({ attribute: false })
   assignedClass: DrumClass | null = null;
 
+  /** Momentary flash — this pad was *just* triggered. */
   @property({ type: Boolean, reflect: true })
   active = false;
+
+  /**
+   * How many times this pad has been triggered during the current
+   * recording session. Persists after the momentary flash fades, so a hit
+   * is never only visible for the instant it happens — you can look at the
+   * grid after the fact and see exactly which pads got hit and how often.
+   */
+  @property({ type: Number })
+  hitCount = 0;
 
   render() {
     const style = this.assignedClass ? CLASS_COLORS[this.assignedClass] : null;
@@ -24,9 +34,11 @@ export class PadControl extends LitElement {
         type="button"
         class="pad"
         part="pad"
+        ?data-hit=${this.hitCount > 0}
         style=${style ? `--class-fg: ${style.fg}; --class-glow: ${style.glow};` : ''}
       >
         ${style ? html`<span class="led"></span>` : nothing}
+        ${this.hitCount > 0 ? html`<span class="count">×${this.hitCount}</span>` : nothing}
         <span class="label">${this.control.label}</span>
         <span class="sub">${style?.label ?? ''}</span>
       </button>
@@ -63,6 +75,14 @@ export class PadControl extends LitElement {
         box-shadow 80ms ease-out;
     }
 
+    /* Persists for the rest of the session once a pad has been hit at
+       least once — the "was this kick actually detected" answer, without
+       needing to catch the instant it happened. */
+    .pad[data-hit] {
+      border-color: var(--class-fg, var(--accent, #ffb020));
+      box-shadow: 0 0 10px var(--class-glow, rgba(255, 176, 32, 0.35));
+    }
+
     .led {
       position: absolute;
       top: 7px;
@@ -73,6 +93,19 @@ export class PadControl extends LitElement {
       background: var(--class-fg);
       opacity: 0.55;
       box-shadow: 0 0 4px var(--class-fg);
+    }
+
+    .pad[data-hit] .led {
+      opacity: 1;
+    }
+
+    .count {
+      position: absolute;
+      bottom: 5px;
+      right: 6px;
+      font: 700 8px/1 ui-monospace, monospace;
+      color: var(--class-fg, #ffb020);
+      opacity: 0.9;
     }
 
     .label {

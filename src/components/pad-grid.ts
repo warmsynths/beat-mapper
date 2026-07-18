@@ -1,5 +1,5 @@
 import { LitElement, css, html, nothing } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { consume } from '@lit/context';
 import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
 import type { BeatBus, ClassifiedBeatEvent } from '../state/beat-bus.ts';
@@ -7,7 +7,7 @@ import type { DeviceConfig } from '../devices/device-config.ts';
 import type { DrumClass } from '../audio/classifier.ts';
 import './pad-control.ts';
 
-const FLASH_DURATION_MS = 120;
+const FLASH_DURATION_MS = 220;
 
 @customElement('pad-grid')
 export class PadGrid extends LitElement {
@@ -16,6 +16,10 @@ export class PadGrid extends LitElement {
 
   @consume({ context: deviceConfigContext, subscribe: true })
   private deviceConfig!: DeviceConfig;
+
+  /** Cumulative hit counts per control id for the current recording session, owned by app-root. */
+  @property({ attribute: false })
+  hitCounts: Record<string, number> = {};
 
   @state()
   private activeControlId: string | null = null;
@@ -62,6 +66,7 @@ export class PadGrid extends LitElement {
                 .control=${control}
                 .assignedClass=${controlIdToClass.get(control.id) ?? null}
                 ?active=${this.activeControlId === control.id}
+                .hitCount=${this.hitCounts[control.id] ?? 0}
                 style=${gridDimensions
                   ? `grid-row: ${control.position.row + 1}; grid-column: ${control.position.col + 1};`
                   : ''}
