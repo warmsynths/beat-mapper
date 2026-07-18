@@ -81,12 +81,6 @@ export class PadGrid extends LitElement {
     return html`
       <div class="unit">
         <div class="unit-head">
-          <div class="unit-knobs">
-            <span class="unit-knob"></span>
-            <span class="unit-knob"></span>
-            <span class="unit-knob"></span>
-            <span class="unit-knob"></span>
-          </div>
           <div class="unit-screen">${this.deviceConfig.name}</div>
         </div>
         <div class="layout">
@@ -141,21 +135,6 @@ export class PadGrid extends LitElement {
       align-items: center;
       gap: var(--space-4);
       margin-bottom: var(--space-4);
-    }
-
-    .unit-knobs {
-      display: flex;
-      gap: var(--space-2);
-      flex-shrink: 0;
-    }
-
-    .unit-knob {
-      width: 20px;
-      height: 20px;
-      border-radius: var(--radius-full);
-      background: radial-gradient(circle at 35% 30%, var(--color-border-strong), var(--color-surface-1) 75%);
-      border: 1px solid var(--color-border);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     .unit-screen {

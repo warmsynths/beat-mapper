@@ -37,7 +37,6 @@
   --color-border: #3a3a44;
   --color-border-strong: #55555f;
   --color-border-panel: #34343c;
-  --color-metal: #6a6a72;
 
   --color-text-faint: #4b4b54;
   --color-text-dim: #6b6b78;
@@ -66,9 +65,10 @@
   --color-error: #f87171;
 
   /* Type. One monospace stack (instrument readouts, labels, data) —
-     everything in the UI currently reads off this one scale. */
-  --font-mono: ui-monospace, monospace;
-  --font-sans: system-ui, sans-serif;
+     everything in the UI currently reads off this one scale. Self-hosted
+     via @fontsource (see main.ts) rather than a runtime webfont request. */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
 
   --text-2xs: 8px;
   --text-xs: 9px;

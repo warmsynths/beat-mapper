@@ -1,5 +1,5 @@
-import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { LitElement, css, html, type PropertyValues } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { EngineState } from '../audio/types.ts';
 import type { DrumClass } from '../audio/classifier.ts';
 import type { QuantizedPattern, RecordedHit } from '../audio/quantize.ts';
@@ -9,6 +9,8 @@ import './pattern-grid.ts';
 import './level-meter.ts';
 
 type SessionPhase = 'idle' | 'recording' | 'reviewing';
+
+const HIT_FLASH_MS = 220;
 
 /**
  * Left column: the live LCD readout + transport, the scrolling input
@@ -31,6 +33,27 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) padLabels: Partial<Record<DrumClass, string[]>> = {};
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
 
+  /** Brief pulse on the readout the instant a hit is classified — reinforces
+   * that a color/label change just happened rather than relying on the
+   * static readout-class swap alone to read as "it heard that". */
+  @state() private hitFlash = false;
+  private flashTimer: ReturnType<typeof setTimeout> | null = null;
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    if (this.flashTimer) clearTimeout(this.flashTimer);
+  }
+
+  updated(changed: PropertyValues<this>): void {
+    if (changed.has('lastResult') && this.lastResult) {
+      this.hitFlash = true;
+      if (this.flashTimer) clearTimeout(this.flashTimer);
+      this.flashTimer = setTimeout(() => {
+        this.hitFlash = false;
+      }, HIT_FLASH_MS);
+    }
+  }
+
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
   };
@@ -51,7 +74,7 @@ export class RecordingPanel extends LitElement {
         <h2 class="col-title">Analysis &amp; Recording</h2>
 
         <div class="record-row">
-          <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}">
+          <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}" ?data-hit-flash=${this.hitFlash}>
             <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
             <div class="readout-inner">
               <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
@@ -86,19 +109,21 @@ export class RecordingPanel extends LitElement {
           <h3 class="block-label">Detected Sequence</h3>
           ${this.sessionPhase === 'reviewing'
             ? html`
-                <div class="pattern-header">
-                  <div class="pattern-meta">
-                    <span>${this.recordedHits.length} hits</span>
-                    <span class="dim">·</span>
-                    <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
+                <div class="sequence-content">
+                  <div class="pattern-header">
+                    <div class="pattern-meta">
+                      <span>${this.recordedHits.length} hits</span>
+                      <span class="dim">·</span>
+                      <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
+                    </div>
+                    <div class="bpm-control">
+                      <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
+                      <span class="bpm-value">${this.bpm} BPM</span>
+                      <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
+                    </div>
                   </div>
-                  <div class="bpm-control">
-                    <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
-                    <span class="bpm-value">${this.bpm} BPM</span>
-                    <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
-                  </div>
+                  <pattern-grid .pattern=${this.pattern} .padLabels=${this.padLabels} .selectedClass=${this.selectedClass}></pattern-grid>
                 </div>
-                <pattern-grid .pattern=${this.pattern} .padLabels=${this.padLabels} .selectedClass=${this.selectedClass}></pattern-grid>
               `
             : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
         </div>
@@ -136,6 +161,21 @@ export class RecordingPanel extends LitElement {
       margin-top: var(--space-7);
     }
 
+    .sequence-content {
+      animation: content-enter 320ms var(--ease-standard) both;
+    }
+
+    @keyframes content-enter {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .placeholder {
       margin: 0;
       padding: var(--space-4);
@@ -166,6 +206,22 @@ export class RecordingPanel extends LitElement {
       display: grid;
       place-items: center;
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .readout[data-hit-flash] {
+      animation: hit-pop var(--duration-moderate) var(--ease-standard);
+    }
+
+    @keyframes hit-pop {
+      0% {
+        transform: scale(1);
+      }
+      35% {
+        transform: scale(1.06);
+      }
+      100% {
+        transform: scale(1);
+      }
     }
 
     .readout-ring {
@@ -245,7 +301,21 @@ export class RecordingPanel extends LitElement {
       cursor: pointer;
       transition:
         background-color var(--duration-base),
-        border-color var(--duration-base);
+        border-color var(--duration-base),
+        transform var(--duration-fast) var(--ease-standard);
+    }
+
+    .rec-button:hover {
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .rec-button:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .rec-button[data-active]:hover {
+      border-color: var(--color-record);
     }
 
     .rec-button .dot {
@@ -339,6 +409,12 @@ export class RecordingPanel extends LitElement {
       color: var(--color-text);
       font: var(--weight-bold) var(--text-lg) / 1 var(--font-mono);
       cursor: pointer;
+      transition: border-color var(--duration-base), color var(--duration-base);
+    }
+
+    .bpm-control button:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
     .bpm-value {
@@ -346,6 +422,15 @@ export class RecordingPanel extends LitElement {
       color: var(--color-accent);
       min-width: 56px;
       text-align: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .readout-ring[data-phase-recording],
+      .readout[data-hit-flash],
+      .rec-button[data-active] .dot,
+      .sequence-content {
+        animation: none;
+      }
     }
   `;
 }
