@@ -24,8 +24,8 @@ export const po33Config: DeviceConfig = {
   gridDimensions: null,
   controls: buildKeys(),
   classMapping: {
-    kick: 'key-1',
-    snare: 'key-2',
-    hat: 'key-3',
+    kick: ['key-1'],
+    snare: ['key-2'],
+    hat: ['key-3'],
   },
 };

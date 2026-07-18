@@ -17,7 +17,7 @@ import {
   type RecordedHit,
   type QuantizedPattern,
 } from '../audio/quantize.ts';
-import { getControl, type DeviceConfig } from '../devices/device-config.ts';
+import { getControls, type DeviceConfig } from '../devices/device-config.ts';
 import { sp404mkiiConfig } from '../devices/sp404mkii.ts';
 import { po33Config } from '../devices/po33.ts';
 import { BeatBus } from '../state/beat-bus.ts';
@@ -73,7 +73,10 @@ export class AppRoot extends LitElement {
   private level = 0;
 
   @state()
-  private sensitivity = DEFAULT_AUDIO_ENGINE_CONFIG.rmsThreshold;
+  private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.rmsThreshold;
+
+  @state()
+  private rmsThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.rmsThreshold;
 
   @state()
   private tone = 1.0;
@@ -92,6 +95,10 @@ export class AppRoot extends LitElement {
 
   @state()
   private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
+
+  /** Class selected in the pattern grid for viewing/editing its real-device pad mapping. */
+  @state()
+  private selectedClass: DrumClass | null = null;
 
   private thresholds: ClassifierThresholds = { ...DEFAULT_CLASSIFIER_THRESHOLDS };
   private recordingStartedAt = 0;
@@ -132,7 +139,7 @@ export class AppRoot extends LitElement {
     if (!sampleRate || this.sessionPhase !== 'recording') return;
 
     const result = classifyTransient(event.detail, sampleRate, this.engine.getFftSize(), this.thresholds);
-    const control = getControl(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
+    const [control] = getControls(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
     if (!control) return;
 
     this.lastResult = { class: result.class, confidence: result.confidence };
@@ -172,6 +179,7 @@ export class AppRoot extends LitElement {
     this.hitCounts = {};
     this.pattern = { steps: [], totalSteps: 16 };
     this.lastResult = null;
+    this.selectedClass = null;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
     await this.engine.start();
@@ -203,15 +211,44 @@ export class AppRoot extends LitElement {
     this.sessionPhase = 'idle';
     this.recordedHits = [];
     this.hitCounts = {};
+    this.selectedClass = null;
   };
 
   private onBankChange = (event: CustomEvent<string>): void => {
     this.activeBank = event.detail;
   };
 
+  private onLaneSelect = (event: CustomEvent<DrumClass>): void => {
+    this.selectedClass = this.selectedClass === event.detail ? null : event.detail;
+  };
+
+  private onPadToggle = (event: CustomEvent<string>): void => {
+    const targetClass = this.selectedClass;
+    if (!targetClass) return;
+    const controlId = event.detail;
+
+    const nextMapping: Record<DrumClass, string[]> = { kick: [], snare: [], hat: [] };
+    for (const drumClass of DRUM_CLASS_LANES) {
+      nextMapping[drumClass] = this.deviceConfig.classMapping[drumClass].filter((id) => id !== controlId);
+    }
+    // A pad already assigned to this class is being unassigned; otherwise it's
+    // being (re)assigned here, having just been removed from wherever it was.
+    const wasAssignedToTarget = this.deviceConfig.classMapping[targetClass].includes(controlId);
+    if (!wasAssignedToTarget) {
+      nextMapping[targetClass] = [...nextMapping[targetClass], controlId];
+    }
+
+    this.deviceConfig = { ...this.deviceConfig, classMapping: nextMapping };
+  };
+
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
-    this.engine.updateConfig({ rmsThreshold: this.sensitivity });
+    // The knob is labeled SENS: cranking it up should make the mic pick up
+    // quieter input, i.e. LOWER the rms gate. The knob's own value climbs
+    // from SENS_MIN to SENS_MAX as it's turned up, so invert it here rather
+    // than making "turn up SENS" require a louder voice to trigger.
+    this.rmsThreshold = SENS_MIN + SENS_MAX - this.sensitivity;
+    this.engine.updateConfig({ rmsThreshold: this.rmsThreshold });
   };
 
   private onToneChange = (event: CustomEvent<number>): void => {
@@ -232,10 +269,10 @@ export class AppRoot extends LitElement {
 
     const recordLabel = this.sessionPhase === 'recording' ? 'STOP' : this.sessionPhase === 'reviewing' ? 'RECORD AGAIN' : 'RECORD';
 
-    const padLabels: Partial<Record<DrumClass, string>> = {};
+    const padLabels: Partial<Record<DrumClass, string[]>> = {};
     for (const lane of DRUM_CLASS_LANES) {
-      const control = getControl(this.deviceConfig, this.deviceConfig.classMapping[lane]);
-      if (control) padLabels[lane] = control.label;
+      const controls = getControls(this.deviceConfig, this.deviceConfig.classMapping[lane]);
+      if (controls.length) padLabels[lane] = controls.map((c) => c.label);
     }
 
     return html`
@@ -290,7 +327,7 @@ export class AppRoot extends LitElement {
               ? html`
                   <div class="level-row">
                     <span class="level-label">MIC</span>
-                    <level-meter .level=${this.level} .threshold=${this.sensitivity}></level-meter>
+                    <level-meter .level=${this.level} .threshold=${this.rmsThreshold}></level-meter>
                   </div>
                 `
               : ''}
@@ -313,7 +350,11 @@ export class AppRoot extends LitElement {
           : ''}
 
         <main>
-          <pad-grid .hitCounts=${this.hitCounts}></pad-grid>
+          <pad-grid
+            .hitCounts=${this.hitCounts}
+            .selectedClass=${this.sessionPhase === 'reviewing' ? this.selectedClass : null}
+            @pad-toggle=${this.onPadToggle}
+          ></pad-grid>
         </main>
 
         <footer>
@@ -331,7 +372,17 @@ export class AppRoot extends LitElement {
                     <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
                   </div>
                 </div>
-                <pattern-grid .pattern=${this.pattern} .padLabels=${padLabels}></pattern-grid>
+                <pattern-grid
+                  .pattern=${this.pattern}
+                  .padLabels=${padLabels}
+                  .selectedClass=${this.selectedClass}
+                  @lane-select=${this.onLaneSelect}
+                ></pattern-grid>
+                <p class="mapping-hint">
+                  ${this.selectedClass
+                    ? `Click pads above to assign/unassign ${CLASS_COLORS[this.selectedClass].label}.`
+                    : 'Click KICK / SNARE / HAT to see and edit which pads to hit on the real device.'}
+                </p>
               `
             : html`<beat-timeline></beat-timeline>`}
         </footer>
@@ -673,6 +724,12 @@ export class AppRoot extends LitElement {
       color: var(--accent);
       min-width: 56px;
       text-align: center;
+    }
+
+    .mapping-hint {
+      margin: 10px 0 0;
+      font: 600 11px/1.4 ui-monospace, monospace;
+      color: #6b6b78;
     }
   `;
 }
