@@ -59,8 +59,11 @@ export class PadGrid extends LitElement {
 
     const highlightedControlIds = new Set(this.selectedClass ? classMapping[this.selectedClass] : []);
 
+    // minmax(0, 1fr), not bare 1fr — grid tracks otherwise refuse to shrink
+    // below their content's min-content size, which is exactly what forces
+    // the whole page wider than the viewport on narrow phones.
     const gridStyle = gridDimensions
-      ? `grid-template-columns: repeat(${gridDimensions.cols}, 1fr); grid-template-rows: repeat(${gridDimensions.rows}, 1fr);`
+      ? `grid-template-columns: repeat(${gridDimensions.cols}, minmax(0, 1fr)); grid-template-rows: repeat(${gridDimensions.rows}, 1fr);`
       : `grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); grid-auto-rows: 48px;`;
 
     return html`
@@ -158,6 +161,7 @@ export class PadGrid extends LitElement {
 
     .layout {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
     }
 
@@ -165,6 +169,7 @@ export class PadGrid extends LitElement {
       display: grid;
       gap: 10px;
       flex: 1;
+      min-width: 220px;
       max-width: 420px;
     }
 
@@ -173,6 +178,7 @@ export class PadGrid extends LitElement {
       grid-template-rows: repeat(4, 1fr);
       gap: 10px;
       width: 84px;
+      flex-shrink: 0;
     }
 
     .accessory {
