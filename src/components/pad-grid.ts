@@ -21,9 +21,18 @@ export class PadGrid extends LitElement {
   @property({ attribute: false })
   hitCounts: Record<string, number> = {};
 
-  /** Class currently selected in the pattern grid, if any — its mapped pad(s) light up and become clickable to remap. */
+  /**
+   * Step mode: non-null turns the pads into a step display — pad N stands
+   * for step N of the current bar (the way the real hardware's pattern
+   * entry works), and the set holds the step indices (0-15) where the
+   * selected sound hits. Null = normal sound-mapping view.
+   */
   @property({ attribute: false })
-  selectedClass: DrumClass | null = null;
+  stepHighlights: Set<number> | null = null;
+
+  /** Which sound the step highlights belong to — drives their color. */
+  @property({ attribute: false })
+  stepClass: DrumClass | null = null;
 
   @state()
   private activeControlId: string | null = null;
@@ -57,7 +66,10 @@ export class PadGrid extends LitElement {
       for (const controlId of controlIds) controlIdToClass.set(controlId, drumClass);
     }
 
-    const highlightedControlIds = new Set(this.selectedClass ? classMapping[this.selectedClass] : []);
+    // In step mode every trace of the sound-mapping view (LEDs, hit
+    // counts, live flash) is suppressed: the pads mean "steps of the bar"
+    // now, and stale sound markers on them read as wrong hits.
+    const stepMode = this.stepHighlights !== null;
 
     // minmax(0, 1fr), not bare 1fr — grid tracks otherwise refuse to shrink
     // below their content's min-content size, which is exactly what forces
@@ -80,14 +92,18 @@ export class PadGrid extends LitElement {
         <div class="layout">
           <div class="grid" style=${gridStyle}>
             ${controls.map(
-              (control) => html`
+              (control, index) => html`
                 <pad-control
                   .control=${control}
-                  .assignedClass=${controlIdToClass.get(control.id) ?? null}
-                  ?active=${this.activeControlId === control.id}
-                  .hitCount=${this.hitCounts[control.id] ?? 0}
-                  .selected=${highlightedControlIds.has(control.id)}
-                  .editable=${this.selectedClass !== null}
+                  .assignedClass=${stepMode
+                    ? this.stepHighlights!.has(index)
+                      ? this.stepClass
+                      : null
+                    : controlIdToClass.get(control.id) ?? null}
+                  ?active=${!stepMode && this.activeControlId === control.id}
+                  .hitCount=${stepMode ? 0 : this.hitCounts[control.id] ?? 0}
+                  .selected=${stepMode && this.stepHighlights!.has(index)}
+                  .editable=${stepMode}
                   style=${gridDimensions
                     ? `grid-row: ${control.position.row + 1}; grid-column: ${control.position.col + 1};`
                     : ''}
