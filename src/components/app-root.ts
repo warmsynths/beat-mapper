@@ -14,6 +14,7 @@ import {
   quantizeHits,
   MIN_BPM,
   MAX_BPM,
+  STEPS_PER_BAR,
   type RecordedHit,
   type QuantizedPattern,
 } from '../audio/quantize.ts';
@@ -99,9 +100,13 @@ export class AppRoot extends LitElement {
   @state()
   private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
 
-  /** Class selected in the pattern grid for viewing/editing its real-device pad mapping. */
+  /** Sound selected for step display: its hits light up the pads as steps of the bar. */
   @state()
   private selectedClass: DrumClass | null = null;
+
+  /** Which 16-step bar of the pattern the pads currently display (0-based). */
+  @state()
+  private viewBar = 0;
 
   private thresholds: ClassifierThresholds = { ...DEFAULT_CLASSIFIER_THRESHOLDS };
   private recordingStartedAt = 0;
@@ -184,6 +189,7 @@ export class AppRoot extends LitElement {
     this.pattern = { steps: [], totalSteps: 16 };
     this.lastResult = null;
     this.selectedClass = null;
+    this.viewBar = 0;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
     await this.engine.start();
@@ -192,17 +198,19 @@ export class AppRoot extends LitElement {
   private finishRecording(): void {
     if (this.recordedHits.length === 0) {
       this.sessionPhase = 'idle';
-      this.infoMessage = 'No hits detected — try lowering SENS (or beatboxing louder/closer to the mic) and record again.';
+      this.infoMessage = 'No hits detected — try raising SENS (or beatboxing louder/closer to the mic) and record again.';
       return;
     }
     this.bpm = estimateBpm(this.recordedHits);
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
+    this.viewBar = 0;
     this.sessionPhase = 'reviewing';
   }
 
   private adjustBpm(delta: number): void {
     this.bpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.bpm + delta));
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
+    this.setViewBar(this.viewBar);
   }
 
   private onDeviceChange = (event: Event): void => {
@@ -216,6 +224,7 @@ export class AppRoot extends LitElement {
     this.recordedHits = [];
     this.hitCounts = {};
     this.selectedClass = null;
+    this.viewBar = 0;
   };
 
   private onBankChange = (event: CustomEvent<string>): void => {
@@ -230,24 +239,32 @@ export class AppRoot extends LitElement {
     this.toggleSelectedClass(event.detail);
   };
 
-  private onPadToggle = (event: CustomEvent<string>): void => {
-    const targetClass = this.selectedClass;
-    if (!targetClass) return;
-    const controlId = event.detail;
+  /**
+   * Step mode: tapping pad N toggles a hit for the selected sound on step N
+   * of the currently viewed bar — the same gesture as entering the pattern
+   * on the real hardware, and doubles as a way to correct misdetected hits.
+   */
+  private onPadStepToggle = (event: CustomEvent<string>): void => {
+    const cls = this.selectedClass;
+    if (!cls || this.sessionPhase !== 'reviewing') return;
 
-    const nextMapping: Record<DrumClass, string[]> = { kick: [], snare: [], hat: [] };
-    for (const drumClass of DRUM_CLASS_LANES) {
-      nextMapping[drumClass] = this.deviceConfig.classMapping[drumClass].filter((id) => id !== controlId);
-    }
-    // A pad already assigned to this class is being unassigned; otherwise it's
-    // being (re)assigned here, having just been removed from wherever it was.
-    const wasAssignedToTarget = this.deviceConfig.classMapping[targetClass].includes(controlId);
-    if (!wasAssignedToTarget) {
-      nextMapping[targetClass] = [...nextMapping[targetClass], controlId];
-    }
+    const padIndex = this.deviceConfig.controls.findIndex((c) => c.id === event.detail);
+    if (padIndex < 0 || padIndex >= STEPS_PER_BAR) return;
+    const globalStep = this.viewBar * STEPS_PER_BAR + padIndex;
+    if (globalStep >= this.pattern.totalSteps) return;
 
-    this.deviceConfig = { ...this.deviceConfig, classMapping: nextMapping };
+    const exists = this.pattern.steps.some((s) => s.class === cls && s.step === globalStep);
+    const controlLabel = getControls(this.deviceConfig, this.deviceConfig.classMapping[cls])[0]?.label ?? '';
+    const steps = exists
+      ? this.pattern.steps.filter((s) => !(s.class === cls && s.step === globalStep))
+      : [...this.pattern.steps, { step: globalStep, class: cls, controlLabel }];
+    this.pattern = { ...this.pattern, steps };
   };
+
+  private setViewBar(bar: number): void {
+    const barCount = Math.max(1, Math.ceil(this.pattern.totalSteps / STEPS_PER_BAR));
+    this.viewBar = Math.min(barCount - 1, Math.max(0, bar));
+  }
 
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
@@ -283,6 +300,18 @@ export class AppRoot extends LitElement {
       const controls = getControls(this.deviceConfig, this.deviceConfig.classMapping[lane]);
       if (controls.length) padLabels[lane] = controls.map((c) => c.label);
     }
+
+    const stepMode = this.sessionPhase === 'reviewing' && this.selectedClass !== null;
+    const barCount = Math.max(1, Math.ceil(this.pattern.totalSteps / STEPS_PER_BAR));
+    const stepHighlights = stepMode
+      ? new Set(
+          this.pattern.steps
+            .filter((s) => s.class === this.selectedClass && Math.floor(s.step / STEPS_PER_BAR) === this.viewBar)
+            .map((s) => s.step % STEPS_PER_BAR)
+        )
+      : null;
+
+    const hitCountFor = (lane: DrumClass): number => this.pattern.steps.filter((s) => s.class === lane).length;
 
     return html`
       <div class="panel">
@@ -412,25 +441,35 @@ export class AppRoot extends LitElement {
                           @click=${() => this.toggleSelectedClass(lane)}
                         >
                           <span class="class-select-name">${CLASS_COLORS[lane].label}</span>
-                          <span class="class-select-pads">
-                            ${padLabels[lane]?.length ? padLabels[lane]!.map((l) => `P${l}`).join(' ') : 'no pad'}
-                          </span>
+                          <span class="class-select-pads">${hitCountFor(lane)} steps</span>
                         </button>
                       `
                     )}
                   </div>
-                  <p class="mapping-hint">
-                    ${this.selectedClass
-                      ? `Showing ${CLASS_COLORS[this.selectedClass].label} pads — tap pads below to assign/unassign.`
-                      : 'Tap a sound to light up its pads on the device below.'}
-                  </p>
+                  <div class="hint-row">
+                    <p class="mapping-hint">
+                      ${stepMode
+                        ? `Pads = steps ${this.viewBar * STEPS_PER_BAR + 1}–${(this.viewBar + 1) * STEPS_PER_BAR}. Lit pads are ${CLASS_COLORS[this.selectedClass!].label} hits — press these on the device. Tap to fix.`
+                        : 'Tap a sound to light up the steps to press on the device.'}
+                    </p>
+                    ${stepMode && barCount > 1
+                      ? html`
+                          <div class="bar-pager">
+                            <button type="button" ?disabled=${this.viewBar === 0} @click=${() => this.setViewBar(this.viewBar - 1)}>‹</button>
+                            <span>BAR ${this.viewBar + 1}/${barCount}</span>
+                            <button type="button" ?disabled=${this.viewBar === barCount - 1} @click=${() => this.setViewBar(this.viewBar + 1)}>›</button>
+                          </div>
+                        `
+                      : ''}
+                  </div>
                 `
               : ''}
 
             <pad-grid
               .hitCounts=${this.hitCounts}
-              .selectedClass=${this.sessionPhase === 'reviewing' ? this.selectedClass : null}
-              @pad-toggle=${this.onPadToggle}
+              .stepHighlights=${stepHighlights}
+              .stepClass=${this.selectedClass}
+              @pad-toggle=${this.onPadStepToggle}
             ></pad-grid>
 
             <select class="device-select" @change=${this.onDeviceChange} ?disabled=${isRecording}>
@@ -931,10 +970,46 @@ export class AppRoot extends LitElement {
       color: var(--class-fg);
     }
 
-    .mapping-hint {
+    .hint-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       margin: 6px 0 14px;
+    }
+
+    .mapping-hint {
+      margin: 0;
+      flex: 1;
+      min-width: 180px;
       font: 600 11px/1.4 ui-monospace, monospace;
       color: #6b6b78;
+    }
+
+    .bar-pager {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font: 700 10px/1 ui-monospace, monospace;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .bar-pager button {
+      width: 24px;
+      height: 24px;
+      border-radius: 5px;
+      border: 1px solid #3a3a44;
+      background: #1c1c22;
+      color: #d1d5db;
+      font: 700 13px/1 ui-monospace, monospace;
+      cursor: pointer;
+    }
+
+    .bar-pager button:disabled {
+      opacity: 0.35;
+      cursor: default;
     }
   `;
 }

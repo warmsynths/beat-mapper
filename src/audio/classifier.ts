@@ -28,7 +28,10 @@ export interface ClassifierThresholds {
 }
 
 export const DEFAULT_CLASSIFIER_THRESHOLDS: ClassifierThresholds = {
-  centroidKickMax: 400,
+  // Generous by studio standards: phone/laptop mics attenuate the lows,
+  // which drags a real kick's measured centroid well above where a
+  // full-range recording would put it.
+  centroidKickMax: 600,
   centroidHatMin: 4000,
   flatnessNoiseMin: 0.35,
   lowBandHz: 200,
@@ -97,10 +100,11 @@ export function classifyTransient(
 
   const features = { centroid, flatness, lowBandEnergy, midBandEnergy, highBandEnergy };
 
-  const isNoisy = flatness >= thresholds.flatnessNoiseMin;
-
-  // Kick: low centroid, tonal (not noisy), energy concentrated in the low band.
-  if (centroid <= thresholds.centroidKickMax && !isNoisy && lowBandEnergy >= midBandEnergy) {
+  // Kick: energy concentrated at the bottom. No flatness requirement —
+  // a beatboxed kick's attack is often noisy, and phone mics roll off the
+  // low end enough that demanding a clean tonal read misroutes real kicks
+  // to the snare bucket.
+  if (centroid <= thresholds.centroidKickMax && lowBandEnergy >= midBandEnergy) {
     const confidence = clamp01(1 - centroid / thresholds.centroidKickMax);
     return { class: 'kick', confidence, features };
   }
