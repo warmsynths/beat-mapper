@@ -74,30 +74,30 @@ export class PadControl extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: var(--space-0-5);
       position: relative;
-      border-radius: 9px;
-      border: 1px solid var(--pad-border, #34343c);
-      background: linear-gradient(180deg, #232329 0%, #17171b 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--pad-border, var(--color-border-panel));
+      background: linear-gradient(180deg, var(--color-surface-3) 0%, var(--color-surface-1) 100%);
       color: var(--pad-fg, #8b8f9a);
-      font: 600 15px/1 ui-monospace, monospace;
+      font: var(--weight-semibold) var(--text-xl) / 1 var(--font-mono);
       cursor: default;
       box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.04),
         0 1px 2px rgba(0, 0, 0, 0.4);
       transition:
-        background-color 80ms ease-out,
-        border-color 80ms ease-out,
-        transform 80ms ease-out,
-        box-shadow 80ms ease-out;
+        background-color var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        transform var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard);
     }
 
     /* Persists for the rest of the session once a pad has been hit at
        least once — the "was this kick actually detected" answer, without
        needing to catch the instant it happened. */
     .pad[data-hit] {
-      border-color: var(--class-fg, var(--accent, #ffb020));
-      box-shadow: 0 0 10px var(--class-glow, rgba(255, 176, 32, 0.35));
+      border-color: var(--class-fg, var(--color-accent));
+      box-shadow: 0 0 10px var(--class-glow, var(--color-accent-glow));
     }
 
     .led {
@@ -106,7 +106,7 @@ export class PadControl extends LitElement {
       right: 7px;
       width: 6px;
       height: 6px;
-      border-radius: 50%;
+      border-radius: var(--radius-full);
       background: var(--class-fg);
       opacity: 0.55;
       box-shadow: 0 0 4px var(--class-fg);
@@ -120,29 +120,29 @@ export class PadControl extends LitElement {
       position: absolute;
       bottom: 5px;
       right: 6px;
-      font: 700 8px/1 ui-monospace, monospace;
-      color: var(--class-fg, #ffb020);
+      font: var(--weight-bold) var(--text-2xs) / 1 var(--font-mono);
+      color: var(--class-fg, var(--color-accent));
       opacity: 0.9;
     }
 
     .label {
-      font-size: 16px;
+      font-size: var(--text-2xl);
     }
 
     .sub {
-      font-size: 8px;
-      letter-spacing: 0.08em;
+      font-size: var(--text-2xs);
+      letter-spacing: var(--tracking-wider);
       color: var(--class-fg, transparent);
       opacity: 0.75;
       min-height: 8px;
     }
 
     :host([active]) .pad {
-      background: color-mix(in srgb, var(--class-fg, #ffb020) 22%, #1c1c22);
-      border-color: var(--class-fg, #ffb020);
+      background: color-mix(in srgb, var(--class-fg, var(--color-accent)) 22%, var(--color-surface-2));
+      border-color: var(--class-fg, var(--color-accent));
       box-shadow:
-        0 0 16px var(--class-glow, rgba(255, 176, 32, 0.6)),
-        inset 0 0 12px var(--class-glow, rgba(255, 176, 32, 0.4));
+        0 0 16px var(--class-glow, var(--color-accent-glow)),
+        inset 0 0 12px var(--class-glow, var(--color-accent-glow));
       transform: scale(0.96);
       color: #fff;
     }
@@ -156,25 +156,36 @@ export class PadControl extends LitElement {
     }
 
     .pad[data-editable]:hover {
-      border-color: #55555f;
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .pad[data-editable]:active {
+      transform: scale(0.97);
     }
 
     /* Currently assigned to the class selected in the pattern grid — the
        "hit exactly this pad on the real device" signal, distinct from the
        momentary [active] flash and the persistent [data-hit] count marker. */
     :host([selected]) .pad {
-      border-color: var(--class-fg, #ffb020);
-      box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 14px var(--class-glow, rgba(255, 176, 32, 0.6));
-      animation: select-pulse 1.1s ease-in-out infinite;
+      border-color: var(--class-fg, var(--color-accent));
+      box-shadow: 0 0 0 2px var(--class-fg, var(--color-accent)), 0 0 14px var(--class-glow, var(--color-accent-glow));
+      animation: select-pulse var(--duration-slow) var(--ease-in-out) infinite;
     }
 
     @keyframes select-pulse {
       0%,
       100% {
-        box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 10px var(--class-glow, rgba(255, 176, 32, 0.5));
+        box-shadow: 0 0 0 2px var(--class-fg, var(--color-accent)), 0 0 10px var(--class-glow, var(--color-accent-glow));
       }
       50% {
-        box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 18px var(--class-glow, rgba(255, 176, 32, 0.8));
+        box-shadow: 0 0 0 2px var(--class-fg, var(--color-accent)), 0 0 18px var(--class-glow, var(--color-accent-glow));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :host([selected]) .pad {
+        animation: none;
       }
     }
   `;

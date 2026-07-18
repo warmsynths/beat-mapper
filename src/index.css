@@ -1,6 +1,139 @@
 :root {
   color-scheme: light dark;
   background-color: #ffffff;
+
+  /* ---------------------------------------------------------------------
+   * Design tokens
+   *
+   * Custom properties inherit through Shadow DOM boundaries, so defining
+   * them here on :root makes them available to every Lit component's
+   * shadow tree without any explicit passing. This is the single source
+   * of truth for color, type, spacing, radius and motion across the app —
+   * components should reference these instead of hardcoding values.
+   * ------------------------------------------------------------------- */
+
+  /* Neutral surface scale, darkest to lightest. Named by role (canvas is
+     the outermost background, surface-0..5 step up in elevation) rather
+     than by number, since that's how they're actually used everywhere.
+     A handful of near-identical one-off darks that had independently
+     drifted apart by a single hex digit per component (e.g. #1a1a1f vs
+     #1a1a1e vs #1c1c21) are consolidated into surface-1 here — visually
+     indistinguishable, but now one value instead of five. */
+  --color-canvas: #0a0a0d;
+  --color-well: #08080b;
+  --color-well-soft: #101014;
+  --color-lcd: #0a0f0a;
+  --color-lcd-border: #1e2a1e;
+  --color-lcd-fg: #7fffb0;
+  --color-lcd-glow: rgba(127, 255, 176, 0.5);
+  --color-surface-0: #16161a;
+  --color-surface-1: #1a1a1f;
+  --color-surface-2: #1c1c22;
+  --color-surface-3: #232329;
+  --color-surface-4: #26262c;
+  --color-surface-5: #2a2a30;
+
+  --color-border-subtle: #2e2e36;
+  --color-border: #3a3a44;
+  --color-border-strong: #55555f;
+  --color-border-panel: #34343c;
+
+  --color-text-faint: #4b4b54;
+  --color-text-dim: #6b6b78;
+  --color-text-muted: #9ca3af;
+  --color-text: #d1d5db;
+  --color-text-bright: #f4f4f6;
+
+  /* Semantic accents. kick/snare/hat are the three classifier lanes;
+     accent is the app's neutral highlight; record/success/error are
+     transport/status states. Each has a matching -glow for box/text-shadow. */
+  --color-accent: #ffb020;
+  --color-accent-glow: rgba(255, 176, 32, 0.4);
+
+  --color-kick: #ff5a3c;
+  --color-kick-glow: rgba(255, 90, 60, 0.6);
+  --color-snare: #38e1ff;
+  --color-snare-glow: rgba(56, 225, 255, 0.6);
+  --color-hat: #ffd23a;
+  --color-hat-glow: rgba(255, 210, 58, 0.6);
+
+  --color-record: #ff4444;
+  --color-record-dim: #6b2c2c;
+  --color-record-bg: #2a1414;
+  --color-record-fg: #ffb4b4;
+  --color-success: #4ade80;
+  --color-error: #f87171;
+
+  /* Type. One monospace stack (instrument readouts, labels, data) —
+     everything in the UI currently reads off this one scale. Self-hosted
+     via @fontsource (see main.ts) rather than a runtime webfont request. */
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --text-2xs: 8px;
+  --text-xs: 9px;
+  --text-sm: 10px;
+  --text-base: 11px;
+  --text-md: 12px;
+  --text-lg: 13px;
+  --text-xl: 15px;
+  --text-2xl: 16px;
+  --text-3xl: 18px;
+
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  --tracking-snug: 0.03em;
+  --tracking-normal: 0.05em;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.08em;
+  --tracking-widest: 0.1em;
+
+  /* Spacing, 2px-rounded steps matching the values already in use. */
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-2-5: 9px;
+  --space-3: 10px;
+  --space-3-5: 12px;
+  --space-4: 14px;
+  --space-5: 16px;
+  --space-6: 18px;
+  --space-7: 20px;
+  --space-8: 24px;
+  --space-9: 28px;
+  --space-10: 32px;
+
+  --radius-2xs: 3px;
+  --radius-xs: 4px;
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 9px;
+  --radius-2xl: 14px;
+  --radius-pill: 20px;
+  --radius-panel: 22px;
+  --radius-full: 50%;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Motion. duration-instant/fast/base track the existing hover/press
+     transitions; slow tracks the ~1.1-1.4s ambient pulse animations. */
+  --duration-instant: 60ms;
+  --duration-fast: 80ms;
+  --duration-base: 120ms;
+  --duration-moderate: 220ms;
+  --duration-slow: 1100ms;
+  --duration-slower: 1400ms;
+
+  --ease-standard: ease-out;
+  --ease-in-out: ease-in-out;
+  --ease-linear: linear;
 }
 
 @media (prefers-color-scheme: dark) {

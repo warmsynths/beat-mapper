@@ -3,7 +3,8 @@ import { customElement } from 'lit/decorators.js';
 import { consume } from '@lit/context';
 import { beatBusContext } from '../state/contexts.ts';
 import type { BeatBus, ClassifiedBeatEvent } from '../state/beat-bus.ts';
-import { CLASS_COLORS, DRUM_CLASS_LANES } from '../ui/theme.ts';
+import { CLASS_COLORS, DRUM_CLASS_LANES, resolveThemeColor } from '../ui/theme.ts';
+import type { DrumClass } from '../audio/classifier.ts';
 
 const WINDOW_MS = 6000;
 const LANES = DRUM_CLASS_LANES;
@@ -26,6 +27,10 @@ export class BeatTimeline extends LitElement {
   private dpr = Math.min(window.devicePixelRatio || 1, 2);
   private resizeObserver: ResizeObserver | null = null;
 
+  /** CLASS_COLORS holds CSS var() references for use in styled markup;
+   * canvas needs concrete colors, so resolve them once against this host. */
+  private resolvedLaneColors = new Map<DrumClass, string>();
+
   connectedCallback(): void {
     super.connectedCallback();
     this.bus.addEventListener('beat', this.onBeat as EventListener);
@@ -44,6 +49,9 @@ export class BeatTimeline extends LitElement {
     this.resizeObserver = new ResizeObserver(() => this.resize());
     if (this.canvas) this.resizeObserver.observe(this.canvas);
     this.resize();
+    for (const lane of LANES) {
+      this.resolvedLaneColors.set(lane, resolveThemeColor(this, CLASS_COLORS[lane].fg));
+    }
     this.rafId = requestAnimationFrame(this.draw);
   }
 
@@ -100,14 +108,14 @@ export class BeatTimeline extends LitElement {
       const laneIndex = LANES.indexOf(ev.class);
       if (laneIndex === -1) continue;
       const y = laneIndex * laneHeight + laneHeight / 2;
-      const style = CLASS_COLORS[ev.class];
+      const color = this.resolvedLaneColors.get(ev.class) ?? CLASS_COLORS[ev.class].fg;
       const radius = (4 + ev.confidence * 6) * this.dpr;
 
       ctx.save();
       ctx.globalAlpha = Math.max(0, 1 - progress);
-      ctx.shadowColor = style.fg;
+      ctx.shadowColor = color;
       ctx.shadowBlur = 14 * this.dpr;
-      ctx.fillStyle = style.fg;
+      ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
@@ -139,21 +147,21 @@ export class BeatTimeline extends LitElement {
       width: 100%;
       height: 120px;
       display: block;
-      border-radius: 8px;
-      background: #08080b;
-      border: 1px solid var(--border, #2e303a);
+      border-radius: var(--radius-lg);
+      background: var(--color-well);
+      border: 1px solid var(--border, var(--color-border-subtle));
     }
 
     .lane-labels {
       position: absolute;
-      left: 10px;
+      left: var(--space-3);
       top: 0;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      font: 700 9px/1 ui-monospace, monospace;
-      letter-spacing: 0.08em;
+      font: var(--weight-bold) var(--text-xs) / 1 var(--font-mono);
+      letter-spacing: var(--tracking-wider);
       pointer-events: none;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }

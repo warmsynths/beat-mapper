@@ -24,13 +24,10 @@ import { po33Config } from '../devices/po33.ts';
 import { po32Config } from '../devices/po32.ts';
 import { BeatBus } from '../state/beat-bus.ts';
 import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
-import { CLASS_COLORS, DRUM_CLASS_LANES } from '../ui/theme.ts';
-import './pad-grid.ts';
-import './beat-timeline.ts';
-import './pattern-grid.ts';
-import './bank-selector.ts';
-import './knob-control.ts';
-import './level-meter.ts';
+import { DRUM_CLASS_LANES } from '../ui/theme.ts';
+import './app-header.ts';
+import './recording-panel.ts';
+import './hardware-panel.ts';
 
 const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 
@@ -213,8 +210,7 @@ export class AppRoot extends LitElement {
     this.setViewBar(this.viewBar);
   }
 
-  private onDeviceChange = (event: Event): void => {
-    const id = (event.target as HTMLSelectElement).value;
+  private onDeviceChange = (id: string): void => {
     const next = DEVICES.find((d) => d.id === id);
     if (!next) return;
     this.deviceConfig = next;
@@ -288,12 +284,6 @@ export class AppRoot extends LitElement {
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
-    const readoutColor = this.lastResult ? CLASS_COLORS[this.lastResult.class].fg : 'var(--accent)';
-
-    const readoutState =
-      this.sessionPhase === 'recording' ? 'recording' : this.sessionPhase === 'reviewing' ? 'complete' : this.engineState.replace('_', ' ');
-
-    const recordLabel = this.sessionPhase === 'recording' ? 'STOP' : this.sessionPhase === 'reviewing' ? 'RECORD AGAIN' : 'RECORD';
 
     const padLabels: Partial<Record<DrumClass, string[]>> = {};
     for (const lane of DRUM_CLASS_LANES) {
@@ -301,181 +291,54 @@ export class AppRoot extends LitElement {
       if (controls.length) padLabels[lane] = controls.map((c) => c.label);
     }
 
-    const stepMode = this.sessionPhase === 'reviewing' && this.selectedClass !== null;
-    const barCount = Math.max(1, Math.ceil(this.pattern.totalSteps / STEPS_PER_BAR));
-    const stepHighlights = stepMode
-      ? new Set(
-          this.pattern.steps
-            .filter((s) => s.class === this.selectedClass && Math.floor(s.step / STEPS_PER_BAR) === this.viewBar)
-            .map((s) => s.step % STEPS_PER_BAR)
-        )
-      : null;
-
-    const hitCountFor = (lane: DrumClass): number => this.pattern.steps.filter((s) => s.class === lane).length;
-
     return html`
       <div class="panel">
-        <span class="screw tl"></span>
-        <span class="screw tr"></span>
-        <span class="screw bl"></span>
-        <span class="screw br"></span>
-
-        <header>
-          <div class="wordmark">
-            <h1>BEAT // MAPPER</h1>
-            <p class="subtitle">voice-to-pattern transcription</p>
-          </div>
-
-          <div class="knobs">
-            <knob-control
-              label="SENS"
-              .min=${SENS_MIN}
-              .max=${SENS_MAX}
-              .value=${this.sensitivity}
-              @value-change=${this.onSensitivityChange}
-            ></knob-control>
-            <knob-control
-              label="TONE"
-              .min=${TONE_MIN}
-              .max=${TONE_MAX}
-              .value=${this.tone}
-              @value-change=${this.onToneChange}
-            ></knob-control>
-          </div>
-        </header>
+        <app-header
+          .sensMin=${SENS_MIN}
+          .sensMax=${SENS_MAX}
+          .sensitivity=${this.sensitivity}
+          .toneMin=${TONE_MIN}
+          .toneMax=${TONE_MAX}
+          .tone=${this.tone}
+          @sensitivity-change=${this.onSensitivityChange}
+          @tone-change=${this.onToneChange}
+        ></app-header>
 
         <div class="workspace">
-          <section class="col col-analysis">
-            <h2 class="col-title">Analysis &amp; Recording</h2>
+          <recording-panel
+            .sessionPhase=${this.sessionPhase}
+            .engineState=${this.engineState}
+            .lastResult=${this.lastResult}
+            .level=${this.level}
+            .levelThreshold=${this.levelThreshold}
+            .errorMessage=${this.errorMessage}
+            .infoMessage=${this.infoMessage}
+            .recordedHits=${this.recordedHits}
+            .bpm=${this.bpm}
+            .pattern=${this.pattern}
+            .padLabels=${padLabels}
+            .selectedClass=${this.selectedClass}
+            @record-toggle=${() => this.handleRecordButton()}
+            @bpm-adjust=${(event: CustomEvent<number>) => this.adjustBpm(event.detail)}
+            @lane-select=${this.onLaneSelect}
+          ></recording-panel>
 
-            <div class="record-row">
-              <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}">
-                <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
-                <div class="readout-inner">
-                  <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
-                  <span class="readout-class">${this.lastResult ? CLASS_COLORS[this.lastResult.class].label : '--'}</span>
-                </div>
-              </div>
-
-              <div class="transport">
-                <button type="button" class="rec-button" ?data-active=${isRecording} @click=${() => this.handleRecordButton()}>
-                  <span class="dot"></span>
-                  ${recordLabel}
-                </button>
-                ${isRecording
-                  ? html`
-                      <div class="level-row">
-                        <span class="level-label">MIC</span>
-                        <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
-                      </div>
-                    `
-                  : ''}
-                ${this.errorMessage ? html`<p class="error">${this.errorMessage}</p>` : ''}
-                ${this.infoMessage ? html`<p class="info">${this.infoMessage}</p>` : ''}
-              </div>
-            </div>
-
-            <div class="stream-block">
-              <h3 class="block-label">Input Stream</h3>
-              <beat-timeline></beat-timeline>
-            </div>
-
-            <div class="sequence-block">
-              <h3 class="block-label">Detected Sequence</h3>
-              ${this.sessionPhase === 'reviewing'
-                ? html`
-                    <div class="pattern-header">
-                      <div class="pattern-meta">
-                        <span>${this.recordedHits.length} hits</span>
-                        <span class="dim">·</span>
-                        <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
-                      </div>
-                      <div class="bpm-control">
-                        <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
-                        <span class="bpm-value">${this.bpm} BPM</span>
-                        <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
-                      </div>
-                    </div>
-                    <pattern-grid
-                      .pattern=${this.pattern}
-                      .padLabels=${padLabels}
-                      .selectedClass=${this.selectedClass}
-                      @lane-select=${this.onLaneSelect}
-                    ></pattern-grid>
-                  `
-                : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
-            </div>
-          </section>
-
-          <section class="col col-hardware">
-            <div class="hardware-head">
-              <h2 class="col-title">Hardware Mapping</h2>
-              <div class="device-status">
-                <span class="device-status-label">Mapping target</span>
-                <strong>${this.deviceConfig.name}</strong>
-              </div>
-            </div>
-
-            ${this.deviceConfig.banks
-              ? html`
-                  <div class="bank-row">
-                    <span class="bank-label">SET</span>
-                    <bank-selector
-                      .banks=${this.deviceConfig.banks}
-                      .active=${this.activeBank}
-                      @bank-change=${this.onBankChange}
-                    ></bank-selector>
-                  </div>
-                `
-              : ''}
-            ${this.sessionPhase === 'reviewing'
-              ? html`
-                  <div class="class-select-row">
-                    ${(['kick', 'snare', 'hat'] as DrumClass[]).map(
-                      (lane) => html`
-                        <button
-                          type="button"
-                          class="class-select"
-                          ?data-selected=${this.selectedClass === lane}
-                          style="--class-fg: ${CLASS_COLORS[lane].fg}; --class-glow: ${CLASS_COLORS[lane].glow}"
-                          @click=${() => this.toggleSelectedClass(lane)}
-                        >
-                          <span class="class-select-name">${CLASS_COLORS[lane].label}</span>
-                          <span class="class-select-pads">${hitCountFor(lane)} steps</span>
-                        </button>
-                      `
-                    )}
-                  </div>
-                  <div class="hint-row">
-                    <p class="mapping-hint">
-                      ${stepMode
-                        ? `Pads = steps ${this.viewBar * STEPS_PER_BAR + 1}–${(this.viewBar + 1) * STEPS_PER_BAR}. Lit pads are ${CLASS_COLORS[this.selectedClass!].label} hits — press these on the device. Tap to fix.`
-                        : 'Tap a sound to light up the steps to press on the device.'}
-                    </p>
-                    ${stepMode && barCount > 1
-                      ? html`
-                          <div class="bar-pager">
-                            <button type="button" ?disabled=${this.viewBar === 0} @click=${() => this.setViewBar(this.viewBar - 1)}>‹</button>
-                            <span>BAR ${this.viewBar + 1}/${barCount}</span>
-                            <button type="button" ?disabled=${this.viewBar === barCount - 1} @click=${() => this.setViewBar(this.viewBar + 1)}>›</button>
-                          </div>
-                        `
-                      : ''}
-                  </div>
-                `
-              : ''}
-
-            <pad-grid
-              .hitCounts=${this.hitCounts}
-              .stepHighlights=${stepHighlights}
-              .stepClass=${this.selectedClass}
-              @pad-toggle=${this.onPadStepToggle}
-            ></pad-grid>
-
-            <select class="device-select" @change=${this.onDeviceChange} ?disabled=${isRecording}>
-              ${DEVICES.map((d) => html`<option value=${d.id}>${d.name}</option>`)}
-            </select>
-          </section>
+          <hardware-panel
+            .deviceConfig=${this.deviceConfig}
+            .devices=${DEVICES}
+            .activeBank=${this.activeBank}
+            .sessionPhase=${this.sessionPhase}
+            .selectedClass=${this.selectedClass}
+            .viewBar=${this.viewBar}
+            .pattern=${this.pattern}
+            .hitCounts=${this.hitCounts}
+            .isRecording=${isRecording}
+            @bank-change=${this.onBankChange}
+            @class-toggle=${(event: CustomEvent<DrumClass>) => this.toggleSelectedClass(event.detail)}
+            @bar-change=${(event: CustomEvent<number>) => this.setViewBar(event.detail)}
+            @pad-toggle=${this.onPadStepToggle}
+            @device-change=${(event: CustomEvent<string>) => this.onDeviceChange(event.detail)}
+          ></hardware-panel>
         </div>
       </div>
     `;
@@ -494,24 +357,40 @@ export class AppRoot extends LitElement {
       min-width: 0;
       box-sizing: border-box;
       margin: 0 auto;
-      padding: 32px 20px;
-      font: 16px/1.5 system-ui, sans-serif;
-      color: var(--text, #e5e7eb);
-      --accent: #ffb020;
+      padding: var(--space-10) var(--space-7);
+      font: var(--text-2xl) / 1.5 var(--font-sans);
+      color: var(--color-text-bright);
     }
 
     .panel {
       position: relative;
-      padding: 28px 28px 24px;
-      border-radius: 22px;
+      padding: var(--space-9) var(--space-9) var(--space-8);
+      border-radius: var(--radius-panel);
       background:
         radial-gradient(circle at 15% -10%, rgba(255, 255, 255, 0.05), transparent 40%),
-        linear-gradient(180deg, #26262c 0%, #1a1a1f 100%);
-      border: 1px solid #34343c;
-      box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        linear-gradient(180deg, var(--color-surface-4) 0%, var(--color-surface-1) 100%);
+      border: 1px solid var(--color-border-panel);
+      box-shadow: var(--shadow-lg), var(--shadow-inset-highlight);
       overflow: hidden;
+      animation: panel-enter 560ms var(--ease-standard) both;
+    }
+
+    @keyframes panel-enter {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .panel,
+      .panel::before {
+        animation: none;
+      }
     }
 
     .panel::before {
@@ -536,63 +415,15 @@ export class AppRoot extends LitElement {
       }
     }
 
-    .screw {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #6a6a72, #1a1a1e 70%);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
-    }
-
-    .screw.tl {
-      top: 12px;
-      left: 12px;
-    }
-    .screw.tr {
-      top: 12px;
-      right: 12px;
-    }
-    .screw.bl {
-      bottom: 12px;
-      left: 12px;
-    }
-    .screw.br {
-      bottom: 12px;
-      right: 12px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .wordmark h1 {
-      font: 800 18px/1 ui-monospace, monospace;
-      letter-spacing: 0.06em;
-      margin: 0;
-      color: #f4f4f6;
-    }
-
-    .subtitle {
-      margin: 4px 0 0;
-      font-size: 11px;
-      color: #6b6b78;
-      letter-spacing: 0.03em;
-    }
-
-    .knobs {
-      display: flex;
-      gap: 18px;
+    app-header {
+      display: block;
+      margin-bottom: var(--space-7);
     }
 
     .workspace {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 28px;
+      gap: var(--space-9);
       align-items: start;
     }
 
@@ -600,416 +431,6 @@ export class AppRoot extends LitElement {
       .workspace {
         grid-template-columns: minmax(0, 1fr);
       }
-    }
-
-    /* Grid items default to a min-width equal to their content's min-content
-       size — without this, long unbroken content (a device name, the pad
-       unit) stops the column shrinking to fit a narrow viewport at all. */
-    .col {
-      min-width: 0;
-    }
-
-    .col-title {
-      margin: 0 0 16px;
-      font: 700 11px/1 ui-monospace, monospace;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #9ca3af;
-    }
-
-    .block-label {
-      margin: 0 0 8px;
-      font: 700 9px/1 ui-monospace, monospace;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #6b6b78;
-    }
-
-    .stream-block {
-      margin-top: 20px;
-    }
-
-    .sequence-block {
-      margin-top: 20px;
-    }
-
-    .placeholder {
-      margin: 0;
-      padding: 14px;
-      border-radius: 8px;
-      border: 1px dashed #34343c;
-      color: #55555f;
-      font: 600 11px/1.4 ui-monospace, monospace;
-      text-align: center;
-    }
-
-    .hardware-head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .hardware-head .col-title {
-      margin-bottom: 0;
-    }
-
-    .device-status {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #2e2e36;
-      background: #16161a;
-      font: 700 9px/1.3 ui-monospace, monospace;
-      max-width: 100%;
-      min-width: 0;
-    }
-
-    .device-status-label {
-      color: #6b6b78;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .device-status strong {
-      color: var(--accent);
-      font-size: 10px;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .device-select {
-      margin-top: 14px;
-      width: 100%;
-    }
-
-    .record-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 20px;
-      position: relative;
-    }
-
-    .readout {
-      --level: 0;
-      width: 96px;
-      height: 96px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 30%, #1c1c22, #0a0a0d 75%);
-      border: 3px solid #303038;
-      position: relative;
-      display: grid;
-      place-items: center;
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
-    }
-
-    .readout-ring {
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      border: 2px solid var(--readout-color, var(--accent));
-      opacity: calc(0.25 + var(--level) * 0.6);
-      box-shadow: 0 0 calc(6px + var(--level) * 18px) var(--readout-color, var(--accent));
-      transition: opacity 60ms linear;
-    }
-
-    .readout-ring[data-phase-recording] {
-      animation: rec-pulse 1.4s ease-in-out infinite;
-    }
-
-    @keyframes rec-pulse {
-      0%,
-      100% {
-        opacity: 0.4;
-      }
-      50% {
-        opacity: 0.9;
-      }
-    }
-
-    .readout-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .readout-state {
-      font: 700 8px/1 ui-monospace, monospace;
-      letter-spacing: 0.08em;
-      color: #6b6b78;
-      text-transform: uppercase;
-      transition: color 120ms;
-    }
-
-    .readout-state[data-phase='recording'] {
-      color: #ff4444;
-    }
-
-    .readout-state[data-phase='reviewing'] {
-      color: #4ade80;
-    }
-
-    .readout-class {
-      font: 800 15px/1 ui-monospace, monospace;
-      letter-spacing: 0.05em;
-      color: var(--readout-color, var(--accent));
-      text-shadow: 0 0 10px var(--readout-color, var(--accent));
-    }
-
-    .transport {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-      min-width: 160px;
-    }
-
-    select {
-      font: 600 13px ui-monospace, monospace;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid #3a3a44;
-      background: #1c1c22;
-      color: #d1d5db;
-    }
-
-    select:disabled {
-      opacity: 0.5;
-    }
-
-    .rec-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      width: fit-content;
-      font: 700 12px/1 ui-monospace, monospace;
-      letter-spacing: 0.08em;
-      padding: 9px 16px;
-      border-radius: 20px;
-      border: 1px solid #3a3a44;
-      background: #1c1c22;
-      color: #d1d5db;
-      cursor: pointer;
-      transition:
-        background-color 120ms,
-        border-color 120ms;
-    }
-
-    .rec-button .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #6b2c2c;
-    }
-
-    .rec-button[data-active] {
-      background: #2a1414;
-      border-color: #ff4444;
-      color: #ffb4b4;
-    }
-
-    .rec-button[data-active] .dot {
-      background: #ff3b3b;
-      box-shadow: 0 0 8px #ff3b3b;
-      animation: pulse 1.1s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.35;
-      }
-    }
-
-    .error {
-      color: #f87171;
-      font-size: 12px;
-      margin: 0;
-    }
-
-    .info {
-      color: var(--accent);
-      font-size: 12px;
-      margin: 0;
-    }
-
-    .level-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .level-label {
-      font: 700 9px/1 ui-monospace, monospace;
-      letter-spacing: 0.08em;
-      color: #6b6b78;
-      flex-shrink: 0;
-    }
-
-    .level-row level-meter {
-      flex: 1;
-    }
-
-    .bank-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .bank-label {
-      font: 700 10px/1 ui-monospace, monospace;
-      letter-spacing: 0.1em;
-      color: #6b6b78;
-      flex-shrink: 0;
-    }
-
-    .pattern-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .pattern-meta {
-      font: 600 11px/1 ui-monospace, monospace;
-      color: #9ca3af;
-      display: flex;
-      gap: 6px;
-    }
-
-    .pattern-meta .dim {
-      color: #4b4b54;
-    }
-
-    .bpm-control {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .bpm-control button {
-      width: 22px;
-      height: 22px;
-      border-radius: 5px;
-      border: 1px solid #3a3a44;
-      background: #1c1c22;
-      color: #d1d5db;
-      font: 700 13px/1 ui-monospace, monospace;
-      cursor: pointer;
-    }
-
-    .bpm-value {
-      font: 700 11px/1 ui-monospace, monospace;
-      color: var(--accent);
-      min-width: 56px;
-      text-align: center;
-    }
-
-    .class-select-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-
-    .class-select {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      padding: 10px 6px;
-      border-radius: 8px;
-      border: 1px solid #3a3a44;
-      background: linear-gradient(#232329, #16161a);
-      cursor: pointer;
-      transition:
-        border-color 100ms,
-        box-shadow 100ms,
-        background-color 100ms;
-    }
-
-    .class-select-name {
-      font: 800 12px/1 ui-monospace, monospace;
-      letter-spacing: 0.06em;
-      color: var(--class-fg);
-    }
-
-    .class-select-pads {
-      font: 700 9px/1 ui-monospace, monospace;
-      letter-spacing: 0.04em;
-      color: #6b6b78;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-
-    .class-select[data-selected] {
-      border-color: var(--class-fg);
-      box-shadow:
-        0 0 12px var(--class-glow),
-        inset 0 0 10px color-mix(in srgb, var(--class-fg) 12%, transparent);
-    }
-
-    .class-select[data-selected] .class-select-pads {
-      color: var(--class-fg);
-    }
-
-    .hint-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin: 6px 0 14px;
-    }
-
-    .mapping-hint {
-      margin: 0;
-      flex: 1;
-      min-width: 180px;
-      font: 600 11px/1.4 ui-monospace, monospace;
-      color: #6b6b78;
-    }
-
-    .bar-pager {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font: 700 10px/1 ui-monospace, monospace;
-      color: var(--accent);
-      white-space: nowrap;
-    }
-
-    .bar-pager button {
-      width: 24px;
-      height: 24px;
-      border-radius: 5px;
-      border: 1px solid #3a3a44;
-      background: #1c1c22;
-      color: #d1d5db;
-      font: 700 13px/1 ui-monospace, monospace;
-      cursor: pointer;
-    }
-
-    .bar-pager button:disabled {
-      opacity: 0.35;
-      cursor: default;
     }
   `;
 }

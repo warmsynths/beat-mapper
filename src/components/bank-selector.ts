@@ -39,29 +39,34 @@ export class BankSelector extends LitElement {
 
     .row {
       display: flex;
-      gap: 6px;
+      gap: var(--space-1-5);
     }
 
     button {
       flex: 1;
-      padding: 7px 4px;
-      font: 700 12px/1 ui-monospace, monospace;
-      letter-spacing: 0.05em;
-      border-radius: 5px;
-      border: 1px solid #3a3a44;
-      background: linear-gradient(#232329, #16161a);
-      color: #9ca3af;
+      padding: 7px var(--space-1);
+      font: var(--weight-bold) var(--text-md) / 1 var(--font-mono);
+      letter-spacing: var(--tracking-normal);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+      background: linear-gradient(var(--color-surface-3), var(--color-surface-0));
+      color: var(--color-text-muted);
       cursor: pointer;
       transition:
-        border-color 100ms,
-        color 100ms,
-        box-shadow 100ms;
+        border-color var(--duration-base),
+        color var(--duration-base),
+        box-shadow var(--duration-base);
+    }
+
+    button:hover:not(.active) {
+      border-color: var(--color-border-strong);
+      color: var(--color-text);
     }
 
     button.active {
-      border-color: var(--accent, #ffb020);
-      color: var(--accent, #ffb020);
-      box-shadow: 0 0 8px rgba(255, 176, 32, 0.4);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      box-shadow: 0 0 8px var(--color-accent-glow);
     }
   `;
 }
