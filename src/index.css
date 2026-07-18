@@ -1,6 +1,10 @@
 :root {
-  color-scheme: light dark;
-  background-color: #ffffff;
+  /* This is a dark instrument panel, full stop — there is no light theme to
+     fall back to. Forcing color-scheme here (rather than branching on
+     prefers-color-scheme) stops a light-mode OS/browser from rendering a
+     stark white page around the dark panel. */
+  color-scheme: dark;
+  background-color: #0c0c0e;
 
   /* ---------------------------------------------------------------------
    * Design tokens
@@ -79,6 +83,9 @@
   --text-xl: 15px;
   --text-2xl: 16px;
   --text-3xl: 18px;
+  --text-4xl: 26px;
+  --text-5xl: 36px;
+  --text-hero: 52px;
 
   --weight-semibold: 600;
   --weight-bold: 700;
@@ -136,12 +143,6 @@
   --ease-linear: linear;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: #16171d;
-  }
-}
-
 body {
   margin: 0;
   display: flex;
@@ -154,4 +155,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background:
+    radial-gradient(ellipse 900px 500px at 50% 0%, rgba(255, 176, 32, 0.07), transparent 60%),
+    var(--color-canvas);
 }
