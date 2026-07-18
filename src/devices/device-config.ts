@@ -29,8 +29,13 @@ export interface DeviceConfig {
   /** Named banks, e.g. SP-404's A/B/C/D. Omit for single-bank devices. */
   banks?: string[];
   controls: DeviceControl[];
-  /** Default routing from a classifier result to a control id. User-remappable. */
-  classMapping: Record<DrumClass, string>;
+  /**
+   * Default routing from a classifier result to the real-device pad(s) that
+   * sound belongs on. A class can point at more than one pad (e.g. the same
+   * kick sample loaded onto two pads) — the array is user-remappable via the
+   * pattern grid's class selector.
+   */
+  classMapping: Record<DrumClass, string[]>;
   /**
    * Non-interactive accessory controls rendered alongside the main grid for
    * hardware fidelity (e.g. the SP-404's BUS FX/HOLD/EXT SOURCE/SUB PAD
@@ -41,4 +46,10 @@ export interface DeviceConfig {
 
 export function getControl(config: DeviceConfig, controlId: string): DeviceControl | undefined {
   return config.controls.find((c) => c.id === controlId);
+}
+
+export function getControls(config: DeviceConfig, controlIds: string[]): DeviceControl[] {
+  return controlIds
+    .map((id) => getControl(config, id))
+    .filter((c): c is DeviceControl => c !== undefined);
 }

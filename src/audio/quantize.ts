@@ -60,12 +60,17 @@ export function quantizeHits(hits: RecordedHit[], bpm: number): QuantizedPattern
   }
 
   const stepDurationMs = 60000 / bpm / 4;
-  const maxTimeMs = Math.max(...hits.map((h) => h.timeMs));
+  // Anchor the grid to the first detected hit, not to the moment the record
+  // button was pressed — otherwise lead-in silence before the first
+  // beatboxed hit pushes everything off step 0.
+  const startMs = Math.min(...hits.map((h) => h.timeMs));
+  const relativeTimesMs = hits.map((h) => h.timeMs - startMs);
+  const maxTimeMs = Math.max(...relativeTimesMs);
   const rawTotalSteps = Math.round(maxTimeMs / stepDurationMs) + 1;
   const totalSteps = Math.max(STEPS_PER_BAR, Math.ceil(rawTotalSteps / STEPS_PER_BAR) * STEPS_PER_BAR);
 
   const steps: QuantizedHit[] = hits.map((h) => ({
-    step: Math.min(totalSteps - 1, Math.round(h.timeMs / stepDurationMs)),
+    step: Math.min(totalSteps - 1, Math.round((h.timeMs - startMs) / stepDurationMs)),
     class: h.class,
     controlLabel: h.controlLabel,
   }));

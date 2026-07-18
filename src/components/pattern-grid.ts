@@ -18,9 +18,17 @@ export class PatternGrid extends LitElement {
   @property({ attribute: false })
   pattern: QuantizedPattern = { steps: [], totalSteps: STEPS_PER_BAR };
 
-  /** Pad label to show next to each lane, e.g. { kick: '1', snare: '2', hat: '3' }. */
+  /** Pad label(s) to show next to each lane, e.g. { kick: ['1'], snare: ['2', '9'], hat: ['3'] }. */
   @property({ attribute: false })
-  padLabels: Partial<Record<DrumClass, string>> = {};
+  padLabels: Partial<Record<DrumClass, string[]>> = {};
+
+  /** Class selected for pad-mapping — lights it up here and its pad(s) in the pad grid above. */
+  @property({ attribute: false })
+  selectedClass: DrumClass | null = null;
+
+  private onLaneClick(lane: DrumClass): void {
+    this.dispatchEvent(new CustomEvent<DrumClass>('lane-select', { detail: lane, bubbles: true, composed: true }));
+  }
 
   render() {
     const hitsByLane = new Map<DrumClass, Set<number>>();
@@ -36,10 +44,18 @@ export class PatternGrid extends LitElement {
         <div class="lane-labels">
           ${DRUM_CLASS_LANES.map(
             (lane) => html`
-              <div class="lane-label" style="color: ${CLASS_COLORS[lane].fg}">
+              <button
+                type="button"
+                class="lane-label"
+                ?data-selected=${this.selectedClass === lane}
+                style="color: ${CLASS_COLORS[lane].fg}"
+                @click=${() => this.onLaneClick(lane)}
+              >
                 <span>${CLASS_COLORS[lane].label}</span>
-                ${this.padLabels[lane] ? html`<b>P${this.padLabels[lane]}</b>` : ''}
-              </div>
+                ${this.padLabels[lane]?.length
+                  ? html`<b>${this.padLabels[lane]!.map((label) => `P${label}`).join(' ')}</b>`
+                  : ''}
+              </button>
             `
           )}
         </div>
@@ -98,6 +114,20 @@ export class PatternGrid extends LitElement {
       font: 700 10px/1 ui-monospace, monospace;
       letter-spacing: 0.06em;
       white-space: nowrap;
+      background: none;
+      border: none;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .lane-label:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .lane-label[data-selected] {
+      background: rgba(255, 255, 255, 0.06);
+      border-left-color: currentColor;
     }
 
     .lane-label b {

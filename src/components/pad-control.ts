@@ -26,6 +26,21 @@ export class PadControl extends LitElement {
   @property({ type: Number })
   hitCount = 0;
 
+  /** This pad is currently assigned to the class selected in the pattern grid. */
+  @property({ type: Boolean, reflect: true })
+  selected = false;
+
+  /** A class is selected for mapping — clicking this pad toggles its assignment to it. */
+  @property({ type: Boolean })
+  editable = false;
+
+  private onClick = (): void => {
+    if (!this.editable) return;
+    this.dispatchEvent(
+      new CustomEvent<string>('pad-toggle', { detail: this.control.id, bubbles: true, composed: true })
+    );
+  };
+
   render() {
     const style = this.assignedClass ? CLASS_COLORS[this.assignedClass] : null;
 
@@ -35,7 +50,9 @@ export class PadControl extends LitElement {
         class="pad"
         part="pad"
         ?data-hit=${this.hitCount > 0}
+        ?data-editable=${this.editable}
         style=${style ? `--class-fg: ${style.fg}; --class-glow: ${style.glow};` : ''}
+        @click=${this.onClick}
       >
         ${style ? html`<span class="led"></span>` : nothing}
         ${this.hitCount > 0 ? html`<span class="count">×${this.hitCount}</span>` : nothing}
@@ -132,6 +149,33 @@ export class PadControl extends LitElement {
 
     :host([active]) .led {
       opacity: 1;
+    }
+
+    .pad[data-editable] {
+      cursor: pointer;
+    }
+
+    .pad[data-editable]:hover {
+      border-color: #55555f;
+    }
+
+    /* Currently assigned to the class selected in the pattern grid — the
+       "hit exactly this pad on the real device" signal, distinct from the
+       momentary [active] flash and the persistent [data-hit] count marker. */
+    :host([selected]) .pad {
+      border-color: var(--class-fg, #ffb020);
+      box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 14px var(--class-glow, rgba(255, 176, 32, 0.6));
+      animation: select-pulse 1.1s ease-in-out infinite;
+    }
+
+    @keyframes select-pulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 10px var(--class-glow, rgba(255, 176, 32, 0.5));
+      }
+      50% {
+        box-shadow: 0 0 0 2px var(--class-fg, #ffb020), 0 0 18px var(--class-glow, rgba(255, 176, 32, 0.8));
+      }
     }
   `;
 }
