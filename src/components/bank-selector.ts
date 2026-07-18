@@ -58,6 +58,11 @@ export class BankSelector extends LitElement {
         box-shadow var(--duration-base);
     }
 
+    button:hover:not(.active) {
+      border-color: var(--color-border-strong);
+      color: var(--color-text);
+    }
+
     button.active {
       border-color: var(--color-accent);
       color: var(--color-accent);

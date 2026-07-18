@@ -157,6 +157,11 @@ export class PadControl extends LitElement {
 
     .pad[data-editable]:hover {
       border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .pad[data-editable]:active {
+      transform: scale(0.97);
     }
 
     /* Currently assigned to the class selected in the pattern grid — the
@@ -175,6 +180,12 @@ export class PadControl extends LitElement {
       }
       50% {
         box-shadow: 0 0 0 2px var(--class-fg, var(--color-accent)), 0 0 18px var(--class-glow, var(--color-accent-glow));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      :host([selected]) .pad {
+        animation: none;
       }
     }
   `;

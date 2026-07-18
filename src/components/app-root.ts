@@ -293,11 +293,6 @@ export class AppRoot extends LitElement {
 
     return html`
       <div class="panel">
-        <span class="screw tl"></span>
-        <span class="screw tr"></span>
-        <span class="screw bl"></span>
-        <span class="screw br"></span>
-
         <app-header
           .sensMin=${SENS_MIN}
           .sensMax=${SENS_MAX}
@@ -377,6 +372,25 @@ export class AppRoot extends LitElement {
       border: 1px solid var(--color-border-panel);
       box-shadow: var(--shadow-lg), var(--shadow-inset-highlight);
       overflow: hidden;
+      animation: panel-enter 560ms var(--ease-standard) both;
+    }
+
+    @keyframes panel-enter {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .panel,
+      .panel::before {
+        animation: none;
+      }
     }
 
     .panel::before {
@@ -399,32 +413,6 @@ export class AppRoot extends LitElement {
       100% {
         background-position: 120% 0%;
       }
-    }
-
-    .screw {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      border-radius: var(--radius-full);
-      background: radial-gradient(circle at 35% 30%, var(--color-metal), var(--color-surface-1) 70%);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
-    }
-
-    .screw.tl {
-      top: 12px;
-      left: 12px;
-    }
-    .screw.tr {
-      top: 12px;
-      right: 12px;
-    }
-    .screw.bl {
-      bottom: 12px;
-      left: 12px;
-    }
-    .screw.br {
-      bottom: 12px;
-      right: 12px;
     }
 
     app-header {

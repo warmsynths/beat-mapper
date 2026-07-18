@@ -74,37 +74,39 @@ export class HardwarePanel extends LitElement {
           : ''}
         ${this.sessionPhase === 'reviewing'
           ? html`
-              <div class="class-select-row">
-                ${CLASSES.map(
-                  (lane) => html`
-                    <button
-                      type="button"
-                      class="class-select"
-                      ?data-selected=${this.selectedClass === lane}
-                      style="--class-fg: ${CLASS_COLORS[lane].fg}; --class-glow: ${CLASS_COLORS[lane].glow}"
-                      @click=${() => this.toggleClass(lane)}
-                    >
-                      <span class="class-select-name">${CLASS_COLORS[lane].label}</span>
-                      <span class="class-select-pads">${hitCountFor(lane)} steps</span>
-                    </button>
-                  `
-                )}
-              </div>
-              <div class="hint-row">
-                <p class="mapping-hint">
-                  ${stepMode
-                    ? `Pads = steps ${this.viewBar * STEPS_PER_BAR + 1}–${(this.viewBar + 1) * STEPS_PER_BAR}. Lit pads are ${CLASS_COLORS[this.selectedClass!].label} hits — press these on the device. Tap to fix.`
-                    : 'Tap a sound to light up the steps to press on the device.'}
-                </p>
-                ${stepMode && barCount > 1
-                  ? html`
-                      <div class="bar-pager">
-                        <button type="button" ?disabled=${this.viewBar === 0} @click=${() => this.goToBar(this.viewBar - 1)}>‹</button>
-                        <span>BAR ${this.viewBar + 1}/${barCount}</span>
-                        <button type="button" ?disabled=${this.viewBar === barCount - 1} @click=${() => this.goToBar(this.viewBar + 1)}>›</button>
-                      </div>
+              <div class="mapping-content">
+                <div class="class-select-row">
+                  ${CLASSES.map(
+                    (lane) => html`
+                      <button
+                        type="button"
+                        class="class-select"
+                        ?data-selected=${this.selectedClass === lane}
+                        style="--class-fg: ${CLASS_COLORS[lane].fg}; --class-glow: ${CLASS_COLORS[lane].glow}"
+                        @click=${() => this.toggleClass(lane)}
+                      >
+                        <span class="class-select-name">${CLASS_COLORS[lane].label}</span>
+                        <span class="class-select-pads">${hitCountFor(lane)} steps</span>
+                      </button>
                     `
-                  : ''}
+                  )}
+                </div>
+                <div class="hint-row">
+                  <p class="mapping-hint">
+                    ${stepMode
+                      ? `Pads = steps ${this.viewBar * STEPS_PER_BAR + 1}–${(this.viewBar + 1) * STEPS_PER_BAR}. Lit pads are ${CLASS_COLORS[this.selectedClass!].label} hits — press these on the device. Tap to fix.`
+                      : 'Tap a sound to light up the steps to press on the device.'}
+                  </p>
+                  ${stepMode && barCount > 1
+                    ? html`
+                        <div class="bar-pager">
+                          <button type="button" ?disabled=${this.viewBar === 0} @click=${() => this.goToBar(this.viewBar - 1)}>‹</button>
+                          <span>BAR ${this.viewBar + 1}/${barCount}</span>
+                          <button type="button" ?disabled=${this.viewBar === barCount - 1} @click=${() => this.goToBar(this.viewBar + 1)}>›</button>
+                        </div>
+                      `
+                    : ''}
+                </div>
               </div>
             `
           : ''}
@@ -178,15 +180,32 @@ export class HardwarePanel extends LitElement {
       margin-top: var(--space-4);
       width: 100%;
       font: var(--weight-semibold) var(--text-lg) var(--font-mono);
-      padding: var(--space-2) var(--space-3);
+      padding: var(--space-2) var(--space-8) var(--space-2) var(--space-3);
       border-radius: var(--radius-md);
       border: 1px solid var(--color-border);
-      background: var(--color-surface-2);
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239ca3af' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+          no-repeat right var(--space-3) center,
+        var(--color-surface-2);
       color: var(--color-text);
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      transition: border-color var(--duration-base);
+    }
+
+    .device-select:hover:not(:disabled) {
+      border-color: var(--color-border-strong);
+    }
+
+    .device-select:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 1px;
     }
 
     .device-select:disabled {
       opacity: 0.5;
+      cursor: default;
     }
 
     .bank-row {
@@ -201,6 +220,21 @@ export class HardwarePanel extends LitElement {
       letter-spacing: var(--tracking-widest);
       color: var(--color-text-dim);
       flex-shrink: 0;
+    }
+
+    .mapping-content {
+      animation: content-enter 320ms var(--ease-standard) both;
+    }
+
+    @keyframes content-enter {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .class-select-row {
@@ -224,7 +258,13 @@ export class HardwarePanel extends LitElement {
       transition:
         border-color var(--duration-instant),
         box-shadow var(--duration-instant),
-        background-color var(--duration-instant);
+        background-color var(--duration-instant),
+        transform var(--duration-fast) var(--ease-standard);
+    }
+
+    .class-select:hover:not([data-selected]) {
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
     }
 
     .class-select-name {
@@ -289,11 +329,23 @@ export class HardwarePanel extends LitElement {
       color: var(--color-text);
       font: var(--weight-bold) var(--text-lg) / 1 var(--font-mono);
       cursor: pointer;
+      transition: border-color var(--duration-base), color var(--duration-base);
+    }
+
+    .bar-pager button:hover:not(:disabled) {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
     .bar-pager button:disabled {
       opacity: 0.35;
       cursor: default;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mapping-content {
+        animation: none;
+      }
     }
   `;
 }
