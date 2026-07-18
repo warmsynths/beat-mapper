@@ -33,9 +33,9 @@ export const sp404mkiiConfig: DeviceConfig = {
   banks: ['A', 'B', 'C', 'D'],
   controls: buildPads(),
   classMapping: {
-    kick: 'pad-1',
-    snare: 'pad-2',
-    hat: 'pad-3',
+    kick: ['pad-1'],
+    snare: ['pad-2'],
+    hat: ['pad-3'],
   },
   decorative: ['BUS FX', 'HOLD', 'EXT SOURCE', 'SUB PAD'],
 };
