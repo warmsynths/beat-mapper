@@ -222,8 +222,12 @@ export class AppRoot extends LitElement {
     this.activeBank = event.detail;
   };
 
+  private toggleSelectedClass(lane: DrumClass): void {
+    this.selectedClass = this.selectedClass === lane ? null : lane;
+  }
+
   private onLaneSelect = (event: CustomEvent<DrumClass>): void => {
-    this.selectedClass = this.selectedClass === event.detail ? null : event.detail;
+    this.toggleSelectedClass(event.detail);
   };
 
   private onPadToggle = (event: CustomEvent<string>): void => {
@@ -369,11 +373,6 @@ export class AppRoot extends LitElement {
                       .selectedClass=${this.selectedClass}
                       @lane-select=${this.onLaneSelect}
                     ></pattern-grid>
-                    <p class="mapping-hint">
-                      ${this.selectedClass
-                        ? `Click pads to assign/unassign ${CLASS_COLORS[this.selectedClass].label}.`
-                        : 'Click KICK / SNARE / HAT to see and edit which pads to hit on the real device.'}
-                    </p>
                   `
                 : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
             </div>
@@ -400,6 +399,33 @@ export class AppRoot extends LitElement {
                   </div>
                 `
               : ''}
+            ${this.sessionPhase === 'reviewing'
+              ? html`
+                  <div class="class-select-row">
+                    ${(['kick', 'snare', 'hat'] as DrumClass[]).map(
+                      (lane) => html`
+                        <button
+                          type="button"
+                          class="class-select"
+                          ?data-selected=${this.selectedClass === lane}
+                          style="--class-fg: ${CLASS_COLORS[lane].fg}; --class-glow: ${CLASS_COLORS[lane].glow}"
+                          @click=${() => this.toggleSelectedClass(lane)}
+                        >
+                          <span class="class-select-name">${CLASS_COLORS[lane].label}</span>
+                          <span class="class-select-pads">
+                            ${padLabels[lane]?.length ? padLabels[lane]!.map((l) => `P${l}`).join(' ') : 'no pad'}
+                          </span>
+                        </button>
+                      `
+                    )}
+                  </div>
+                  <p class="mapping-hint">
+                    ${this.selectedClass
+                      ? `Showing ${CLASS_COLORS[this.selectedClass].label} pads — tap pads below to assign/unassign.`
+                      : 'Tap a sound to light up its pads on the device below.'}
+                  </p>
+                `
+              : ''}
 
             <pad-grid
               .hitCounts=${this.hitCounts}
@@ -420,6 +446,14 @@ export class AppRoot extends LitElement {
     :host {
       display: block;
       max-width: 960px;
+      width: 100%;
+      /* body centers app-root with display:flex — without this, a flex item
+         defaults to a min-width equal to its content's min-content size, so
+         any oversized descendant (long device names, fixed-width pads, etc.)
+         forces the whole app wider than the viewport instead of shrinking
+         to fit it. */
+      min-width: 0;
+      box-sizing: border-box;
       margin: 0 auto;
       padding: 32px 20px;
       font: 16px/1.5 system-ui, sans-serif;
@@ -518,15 +552,22 @@ export class AppRoot extends LitElement {
 
     .workspace {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 28px;
       align-items: start;
     }
 
     @media (max-width: 720px) {
       .workspace {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
+    }
+
+    /* Grid items default to a min-width equal to their content's min-content
+       size — without this, long unbroken content (a device name, the pad
+       unit) stops the column shrinking to fit a narrow viewport at all. */
+    .col {
+      min-width: 0;
     }
 
     .col-title {
@@ -565,6 +606,7 @@ export class AppRoot extends LitElement {
 
     .hardware-head {
       display: flex;
+      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
@@ -585,6 +627,8 @@ export class AppRoot extends LitElement {
       border: 1px solid #2e2e36;
       background: #16161a;
       font: 700 9px/1.3 ui-monospace, monospace;
+      max-width: 100%;
+      min-width: 0;
     }
 
     .device-status-label {
@@ -596,6 +640,9 @@ export class AppRoot extends LitElement {
     .device-status strong {
       color: var(--accent);
       font-size: 10px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -606,6 +653,7 @@ export class AppRoot extends LitElement {
 
     .record-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 20px;
       position: relative;
@@ -684,6 +732,7 @@ export class AppRoot extends LitElement {
       flex-direction: column;
       gap: 10px;
       flex: 1;
+      min-width: 160px;
     }
 
     select {
@@ -831,8 +880,59 @@ export class AppRoot extends LitElement {
       text-align: center;
     }
 
+    .class-select-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .class-select {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 10px 6px;
+      border-radius: 8px;
+      border: 1px solid #3a3a44;
+      background: linear-gradient(#232329, #16161a);
+      cursor: pointer;
+      transition:
+        border-color 100ms,
+        box-shadow 100ms,
+        background-color 100ms;
+    }
+
+    .class-select-name {
+      font: 800 12px/1 ui-monospace, monospace;
+      letter-spacing: 0.06em;
+      color: var(--class-fg);
+    }
+
+    .class-select-pads {
+      font: 700 9px/1 ui-monospace, monospace;
+      letter-spacing: 0.04em;
+      color: #6b6b78;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .class-select[data-selected] {
+      border-color: var(--class-fg);
+      box-shadow:
+        0 0 12px var(--class-glow),
+        inset 0 0 10px color-mix(in srgb, var(--class-fg) 12%, transparent);
+    }
+
+    .class-select[data-selected] .class-select-pads {
+      color: var(--class-fg);
+    }
+
     .mapping-hint {
-      margin: 10px 0 0;
+      margin: 6px 0 14px;
       font: 600 11px/1.4 ui-monospace, monospace;
       color: #6b6b78;
     }
