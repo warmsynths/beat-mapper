@@ -23,28 +23,43 @@ import { sp404mkiiConfig } from '../devices/sp404mkii.ts';
 import { po33Config } from '../devices/po33.ts';
 import { po32Config } from '../devices/po32.ts';
 import { BeatBus } from '../state/beat-bus.ts';
-import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
-import { DRUM_CLASS_LANES } from '../ui/theme.ts';
+import { audioEngineContext, beatBusContext, deviceConfigContext } from '../state/contexts.ts';
 import './app-header.ts';
 import './recording-panel.ts';
 import './hardware-panel.ts';
 
 const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 
-// SENS knob: raises/lowers how far above the ambient noise floor a sound has
-// to rise to register as a hit — quieter beatboxing needs a smaller margin.
 const SENS_MIN = 0.005;
 const SENS_MAX = 0.05;
-
-// TONE knob: scales the kick/hat centroid split thresholds together so the
-// classifier can be biased for a lower or higher-pitched voice.
 const TONE_MIN = 0.5;
 const TONE_MAX = 2.0;
 
 type SessionPhase = 'idle' | 'recording' | 'reviewing';
 
+/** Everything about one bank's transcribed take — persisted per SET so
+ * switching banks recalls that bank's work (per-bank memory). */
+interface BankSlice {
+  recordedHits: RecordedHit[];
+  bpm: number;
+  pattern: QuantizedPattern;
+  selectedClass: DrumClass | null;
+  viewBar: number;
+  sessionPhase: SessionPhase;
+}
+
+const emptySlice = (): BankSlice => ({
+  recordedHits: [],
+  bpm: 100,
+  pattern: { steps: [], totalSteps: 16 },
+  selectedClass: null,
+  viewBar: 0,
+  sessionPhase: 'idle',
+});
+
 @customElement('app-root')
 export class AppRoot extends LitElement {
+  @provide({ context: audioEngineContext })
   private engine = new AudioEngine();
 
   @provide({ context: beatBusContext })
@@ -54,56 +69,25 @@ export class AppRoot extends LitElement {
   @state()
   private deviceConfig: DeviceConfig = DEVICES[0];
 
-  @state()
-  private engineState: EngineState = EngineState.IDLE;
+  @state() private errorMessage: string | null = null;
+  @state() private infoMessage: string | null = null;
+  @state() private activeBank = this.deviceConfig.banks?.[0] ?? '';
+  @state() private level = 0;
+  @state() private levelThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
+  @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
+  @state() private tone = 1.0;
 
-  @state()
-  private errorMessage: string | null = null;
+  // Working take for the active bank.
+  @state() private sessionPhase: SessionPhase = 'idle';
+  @state() private recordedHits: RecordedHit[] = [];
+  @state() private bpm = 100;
+  @state() private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
+  @state() private selectedClass: DrumClass | null = null;
+  @state() private viewBar = 0;
 
-  @state()
-  private infoMessage: string | null = null;
-
-  @state()
-  private activeBank = this.deviceConfig.banks?.[0] ?? '';
-
-  @state()
-  private lastResult: { class: DrumClass; confidence: number } | null = null;
-
-  @state()
-  private level = 0;
-
-  /** Current absolute onset gate (ambient floor + margin), as reported live by the engine. */
-  @state()
-  private levelThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
-
-  @state()
-  private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
-
-  @state()
-  private tone = 1.0;
-
-  @state()
-  private sessionPhase: SessionPhase = 'idle';
-
-  @state()
-  private recordedHits: RecordedHit[] = [];
-
-  @state()
-  private hitCounts: Record<string, number> = {};
-
-  @state()
-  private bpm = 100;
-
-  @state()
-  private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
-
-  /** Sound selected for step display: its hits light up the pads as steps of the bar. */
-  @state()
-  private selectedClass: DrumClass | null = null;
-
-  /** Which 16-step bar of the pattern the pads currently display (0-based). */
-  @state()
-  private viewBar = 0;
+  /** Per-bank saved takes (per-bank memory). The active bank lives in the
+   * working @state above; other banks are parked here until re-selected. */
+  @state() private bankStore: Record<string, BankSlice> = {};
 
   private thresholds: ClassifierThresholds = { ...DEFAULT_CLASSIFIER_THRESHOLDS };
   private recordingStartedAt = 0;
@@ -126,15 +110,12 @@ export class AppRoot extends LitElement {
   }
 
   private onEngineStateChange = (event: CustomEvent<EngineState>): void => {
-    this.engineState = event.detail;
     if (event.detail === EngineState.IDLE) this.level = 0;
   };
-
   private onEngineError = (event: CustomEvent<Error>): void => {
     this.errorMessage = event.detail.message;
     this.sessionPhase = 'idle';
   };
-
   private onLevel = (event: CustomEvent<LevelDetail>): void => {
     this.level = event.detail.level;
     this.levelThreshold = event.detail.threshold;
@@ -148,26 +129,17 @@ export class AppRoot extends LitElement {
     const [control] = getControls(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
     if (!control) return;
 
-    this.lastResult = { class: result.class, confidence: result.confidence };
-
-    const hit: RecordedHit = {
-      class: result.class,
-      controlId: control.id,
-      controlLabel: control.label,
-      confidence: result.confidence,
-      timeMs: performance.now() - this.recordingStartedAt,
-    };
-    this.recordedHits = [...this.recordedHits, hit];
-    this.hitCounts = { ...this.hitCounts, [control.id]: (this.hitCounts[control.id] ?? 0) + 1 };
-
-    // Live flash + rolling timeline, purely as "it's hearing you" feedback
-    // during recording — the persistent record is recordedHits above.
-    this.bus.emit({
-      class: result.class,
-      confidence: result.confidence,
-      controlId: control.id,
-      timestamp: performance.now(),
-    });
+    this.recordedHits = [
+      ...this.recordedHits,
+      {
+        class: result.class,
+        controlId: control.id,
+        controlLabel: control.label,
+        confidence: result.confidence,
+        timeMs: performance.now() - this.recordingStartedAt,
+      },
+    ];
+    this.bus.emit({ class: result.class, confidence: result.confidence, controlId: control.id, timestamp: performance.now() });
   };
 
   private async handleRecordButton(): Promise<void> {
@@ -180,11 +152,8 @@ export class AppRoot extends LitElement {
       return;
     }
 
-    // Starting fresh, whether from idle or "record again" out of reviewing.
     this.recordedHits = [];
-    this.hitCounts = {};
     this.pattern = { steps: [], totalSteps: 16 };
-    this.lastResult = null;
     this.selectedClass = null;
     this.viewBar = 0;
     this.sessionPhase = 'recording';
@@ -195,7 +164,7 @@ export class AppRoot extends LitElement {
   private finishRecording(): void {
     if (this.recordedHits.length === 0) {
       this.sessionPhase = 'idle';
-      this.infoMessage = 'No hits detected — try raising SENS (or beatboxing louder/closer to the mic) and record again.';
+      this.infoMessage = 'No hits detected — raise SENS (or beatbox louder/closer to the mic) and record again.';
       return;
     }
     this.bpm = estimateBpm(this.recordedHits);
@@ -210,40 +179,76 @@ export class AppRoot extends LitElement {
     this.setViewBar(this.viewBar);
   }
 
+  // --- per-bank memory ---------------------------------------------------
+
+  private saveActiveBank(): void {
+    if (!this.activeBank) return;
+    this.bankStore = {
+      ...this.bankStore,
+      [this.activeBank]: {
+        recordedHits: this.recordedHits,
+        bpm: this.bpm,
+        pattern: this.pattern,
+        selectedClass: this.selectedClass,
+        viewBar: this.viewBar,
+        sessionPhase: this.sessionPhase === 'recording' ? 'reviewing' : this.sessionPhase,
+      },
+    };
+  }
+
+  private loadBank(bank: string): void {
+    const s = this.bankStore[bank] ?? emptySlice();
+    this.recordedHits = s.recordedHits;
+    this.bpm = s.bpm;
+    this.pattern = s.pattern;
+    this.selectedClass = s.selectedClass;
+    this.viewBar = s.viewBar;
+    this.sessionPhase = s.sessionPhase;
+    this.errorMessage = null;
+    this.infoMessage = null;
+  }
+
+  private get usedBanks(): string[] {
+    const used = Object.entries(this.bankStore)
+      .filter(([, s]) => s.recordedHits.length > 0)
+      .map(([b]) => b);
+    if (this.recordedHits.length > 0 && !used.includes(this.activeBank)) used.push(this.activeBank);
+    return used;
+  }
+
+  private onBankChange = (event: CustomEvent<string>): void => {
+    const next = event.detail;
+    if (next === this.activeBank) return;
+    if (this.sessionPhase === 'recording') {
+      this.engine.stop();
+      this.finishRecording();
+    }
+    this.saveActiveBank();
+    this.activeBank = next;
+    this.loadBank(next);
+  };
+
   private onDeviceChange = (id: string): void => {
     const next = DEVICES.find((d) => d.id === id);
     if (!next) return;
-    this.deviceConfig = next;
-    this.activeBank = next.banks?.[0] ?? '';
     if (this.sessionPhase === 'recording') this.engine.stop();
-    this.sessionPhase = 'idle';
+    this.deviceConfig = next;
+    this.bankStore = {};
+    this.activeBank = next.banks?.[0] ?? '';
     this.recordedHits = [];
-    this.hitCounts = {};
+    this.pattern = { steps: [], totalSteps: 16 };
     this.selectedClass = null;
     this.viewBar = 0;
-  };
-
-  private onBankChange = (event: CustomEvent<string>): void => {
-    this.activeBank = event.detail;
+    this.sessionPhase = 'idle';
   };
 
   private toggleSelectedClass(lane: DrumClass): void {
     this.selectedClass = this.selectedClass === lane ? null : lane;
   }
 
-  private onLaneSelect = (event: CustomEvent<DrumClass>): void => {
-    this.toggleSelectedClass(event.detail);
-  };
-
-  /**
-   * Step mode: tapping pad N toggles a hit for the selected sound on step N
-   * of the currently viewed bar — the same gesture as entering the pattern
-   * on the real hardware, and doubles as a way to correct misdetected hits.
-   */
   private onPadStepToggle = (event: CustomEvent<string>): void => {
     const cls = this.selectedClass;
     if (!cls || this.sessionPhase !== 'reviewing') return;
-
     const padIndex = this.deviceConfig.controls.findIndex((c) => c.id === event.detail);
     if (padIndex < 0 || padIndex >= STEPS_PER_BAR) return;
     const globalStep = this.viewBar * STEPS_PER_BAR + padIndex;
@@ -264,15 +269,8 @@ export class AppRoot extends LitElement {
 
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
-    // The knob is labeled SENS: cranking it up should make the mic pick up
-    // quieter input, i.e. a SMALLER margin above the ambient floor. The
-    // knob's own value climbs from SENS_MIN to SENS_MAX as it's turned up,
-    // so invert it here rather than making "turn up SENS" require a louder
-    // voice to trigger.
-    const onsetMargin = SENS_MIN + SENS_MAX - this.sensitivity;
-    this.engine.updateConfig({ onsetMargin });
+    this.engine.updateConfig({ onsetMargin: SENS_MIN + SENS_MAX - this.sensitivity });
   };
-
   private onToneChange = (event: CustomEvent<number>): void => {
     this.tone = event.detail;
     this.thresholds = {
@@ -284,61 +282,59 @@ export class AppRoot extends LitElement {
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
-
-    const padLabels: Partial<Record<DrumClass, string[]>> = {};
-    for (const lane of DRUM_CLASS_LANES) {
-      const controls = getControls(this.deviceConfig, this.deviceConfig.classMapping[lane]);
-      if (controls.length) padLabels[lane] = controls.map((c) => c.label);
-    }
+    const status = isRecording ? 'recording' : this.sessionPhase === 'reviewing' ? 'review' : 'standby';
 
     return html`
-      <div class="panel">
-        <app-header
-          .sensMin=${SENS_MIN}
-          .sensMax=${SENS_MAX}
-          .sensitivity=${this.sensitivity}
-          .toneMin=${TONE_MIN}
-          .toneMax=${TONE_MAX}
-          .tone=${this.tone}
-          @sensitivity-change=${this.onSensitivityChange}
-          @tone-change=${this.onToneChange}
-        ></app-header>
+      <div class="sheet">
+        <span class="crop tl"></span><span class="crop tr"></span>
+        <span class="crop bl"></span><span class="crop br"></span>
 
-        <div class="workspace">
-          <recording-panel
-            .sessionPhase=${this.sessionPhase}
-            .engineState=${this.engineState}
-            .lastResult=${this.lastResult}
-            .level=${this.level}
-            .levelThreshold=${this.levelThreshold}
-            .errorMessage=${this.errorMessage}
-            .infoMessage=${this.infoMessage}
-            .recordedHits=${this.recordedHits}
-            .bpm=${this.bpm}
-            .pattern=${this.pattern}
-            .padLabels=${padLabels}
-            .selectedClass=${this.selectedClass}
-            @record-toggle=${() => this.handleRecordButton()}
-            @bpm-adjust=${(event: CustomEvent<number>) => this.adjustBpm(event.detail)}
-            @lane-select=${this.onLaneSelect}
-          ></recording-panel>
+        <app-header .status=${status}></app-header>
 
-          <hardware-panel
-            .deviceConfig=${this.deviceConfig}
-            .devices=${DEVICES}
-            .activeBank=${this.activeBank}
-            .sessionPhase=${this.sessionPhase}
-            .selectedClass=${this.selectedClass}
-            .viewBar=${this.viewBar}
-            .pattern=${this.pattern}
-            .hitCounts=${this.hitCounts}
-            .isRecording=${isRecording}
-            @bank-change=${this.onBankChange}
-            @class-toggle=${(event: CustomEvent<DrumClass>) => this.toggleSelectedClass(event.detail)}
-            @bar-change=${(event: CustomEvent<number>) => this.setViewBar(event.detail)}
-            @pad-toggle=${this.onPadStepToggle}
-            @device-change=${(event: CustomEvent<string>) => this.onDeviceChange(event.detail)}
-          ></hardware-panel>
+        <div class="spread">
+          <div class="leaf leaf-left">
+            <recording-panel
+              .sessionPhase=${this.sessionPhase}
+              .level=${this.level}
+              .levelThreshold=${this.levelThreshold}
+              .errorMessage=${this.errorMessage}
+              .infoMessage=${this.infoMessage}
+              .recordedHits=${this.recordedHits}
+              .bpm=${this.bpm}
+              .pattern=${this.pattern}
+              .selectedClass=${this.selectedClass}
+              @record-toggle=${() => this.handleRecordButton()}
+              @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
+              @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
+            ></recording-panel>
+          </div>
+
+          <div class="leaf leaf-right">
+            <hardware-panel
+              .deviceConfig=${this.deviceConfig}
+              .devices=${DEVICES}
+              .activeBank=${this.activeBank}
+              .usedBanks=${this.usedBanks}
+              .sessionPhase=${this.sessionPhase}
+              .selectedClass=${this.selectedClass}
+              .viewBar=${this.viewBar}
+              .pattern=${this.pattern}
+              .isRecording=${isRecording}
+              .sensMin=${SENS_MIN}
+              .sensMax=${SENS_MAX}
+              .sensitivity=${this.sensitivity}
+              .toneMin=${TONE_MIN}
+              .toneMax=${TONE_MAX}
+              .tone=${this.tone}
+              @bank-change=${this.onBankChange}
+              @class-toggle=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
+              @bar-change=${(e: CustomEvent<number>) => this.setViewBar(e.detail)}
+              @pad-toggle=${this.onPadStepToggle}
+              @device-change=${(e: CustomEvent<string>) => this.onDeviceChange(e.detail)}
+              @sensitivity-change=${this.onSensitivityChange}
+              @tone-change=${this.onToneChange}
+            ></hardware-panel>
+          </div>
         </div>
       </div>
     `;
@@ -347,89 +343,125 @@ export class AppRoot extends LitElement {
   static styles = css`
     :host {
       display: block;
-      max-width: 960px;
-      width: 100%;
-      /* body centers app-root with display:flex — without this, a flex item
-         defaults to a min-width equal to its content's min-content size, so
-         any oversized descendant (long device names, fixed-width pads, etc.)
-         forces the whole app wider than the viewport instead of shrinking
-         to fit it. */
-      min-width: 0;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: var(--space-10) var(--space-7);
-      font: var(--text-2xl) / 1.5 var(--font-sans);
-      color: var(--color-text-bright);
+      padding: var(--space-8) 0;
     }
 
-    .panel {
+    .sheet {
       position: relative;
-      padding: var(--space-9) var(--space-9) var(--space-8);
-      border-radius: var(--radius-panel);
-      background:
-        radial-gradient(circle at 15% -10%, rgba(255, 255, 255, 0.05), transparent 40%),
-        linear-gradient(180deg, var(--color-surface-4) 0%, var(--color-surface-1) 100%);
-      border: 1px solid var(--color-border-panel);
-      box-shadow: var(--shadow-lg), var(--shadow-inset-highlight);
-      overflow: hidden;
-      animation: panel-enter 560ms var(--ease-standard) both;
+      max-width: 1080px;
+      margin: 0 auto;
+      background: var(--paper);
+      padding: var(--space-9) var(--space-10) var(--space-10);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06), 0 30px 70px -30px rgba(0, 0, 0, 0.35);
     }
-
-    @keyframes panel-enter {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.99);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .panel,
-      .panel::before {
-        animation: none;
-      }
-    }
-
-    .panel::before {
+    /* paper grain */
+    .sheet::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.035) 50%, transparent 60%);
-      background-size: 220% 220%;
-      animation: sweep 9s ease-in-out infinite;
       pointer-events: none;
+      opacity: 0.32;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
     }
 
-    @keyframes sweep {
-      0% {
-        background-position: 120% 0%;
-      }
-      50% {
-        background-position: -20% 100%;
-      }
-      100% {
-        background-position: 120% 0%;
-      }
+    .crop {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      z-index: 1;
+    }
+    .crop::before,
+    .crop::after {
+      content: '';
+      position: absolute;
+      background: var(--ink);
+    }
+    .crop::before {
+      width: 15px;
+      height: 1px;
+    }
+    .crop::after {
+      width: 1px;
+      height: 15px;
+    }
+    .crop.tl {
+      top: 18px;
+      left: 22px;
+    }
+    .crop.tr {
+      top: 18px;
+      right: 22px;
+    }
+    .crop.tr::before,
+    .crop.tr::after {
+      right: 0;
+    }
+    .crop.bl {
+      bottom: 18px;
+      left: 22px;
+    }
+    .crop.bl::before,
+    .crop.bl::after {
+      bottom: 0;
+    }
+    .crop.br {
+      bottom: 18px;
+      right: 22px;
+    }
+    .crop.br::before,
+    .crop.br::after {
+      bottom: 0;
+      right: 0;
     }
 
-    app-header {
-      display: block;
-      margin-bottom: var(--space-7);
-    }
-
-    .workspace {
+    .spread {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: var(--space-9);
-      align-items: start;
+      grid-template-columns: 1fr 1fr;
+      margin-top: var(--space-7);
+    }
+    .leaf {
+      min-width: 0;
+      padding: var(--space-7) 0;
+    }
+    .leaf-left {
+      padding-right: var(--space-8);
+      border-right: 1px solid var(--hair);
+    }
+    .leaf-right {
+      padding-left: var(--space-8);
     }
 
-    @media (max-width: 720px) {
-      .workspace {
-        grid-template-columns: minmax(0, 1fr);
+    /* tablet + mobile: manual collapses to a single column */
+    @media (max-width: 820px) {
+      .sheet {
+        padding: var(--space-8) var(--space-7) var(--space-8);
+      }
+      .spread {
+        grid-template-columns: 1fr;
+      }
+      .leaf-left {
+        padding-right: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--hair);
+      }
+      .leaf-right {
+        padding-left: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      :host {
+        padding: 0;
+      }
+      .sheet {
+        max-width: none;
+        min-height: 100svh;
+        padding: var(--space-7) var(--space-5) var(--space-8);
+        box-shadow: none;
+      }
+      .crop {
+        display: none;
       }
     }
   `;

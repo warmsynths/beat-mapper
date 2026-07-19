@@ -62,6 +62,9 @@ export class AudioEngine extends EventTarget {
   private analyzer: ReturnType<typeof Meyda.createMeydaAnalyzer> | null = null;
   private stream: MediaStream | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
+  /** Time-domain analyser purely for the live seismograph — separate from
+   * Meyda's feature extraction, which drives onset detection/classification. */
+  private waveNode: AnalyserNode | null = null;
 
   private state: EngineState = EngineState.IDLE;
   private holdBuffer: TransientFrame[] = [];
@@ -89,6 +92,23 @@ export class AudioEngine extends EventTarget {
     return this.config.fftSize;
   }
 
+  /**
+   * Fills `out` with the current time-domain waveform (samples in [-1, 1])
+   * for the live seismograph, and returns true if real audio was written.
+   * Returns false when not running, so the UI can hold a flat baseline.
+   */
+  getWaveform(out: Float32Array): boolean {
+    if (!this.waveNode) return false;
+    // lib.dom types the buffer as Float32Array<ArrayBuffer>; our plain
+    // Float32Array is structurally identical for this write-into use.
+    this.waveNode.getFloatTimeDomainData(out as unknown as Float32Array<ArrayBuffer>);
+    return true;
+  }
+
+  getWaveformSize(): number {
+    return this.waveNode?.fftSize ?? 2048;
+  }
+
   updateConfig(patch: Partial<AudioEngineConfig>): void {
     this.config = { ...this.config, ...patch };
   }
@@ -112,6 +132,10 @@ export class AudioEngine extends EventTarget {
       });
       this.ctx = new AudioContext();
       this.source = this.ctx.createMediaStreamSource(this.stream);
+
+      this.waveNode = this.ctx.createAnalyser();
+      this.waveNode.fftSize = 2048;
+      this.source.connect(this.waveNode);
 
       this.analyzer = Meyda.createMeydaAnalyzer({
         audioContext: this.ctx,
@@ -137,6 +161,8 @@ export class AudioEngine extends EventTarget {
   private teardown(): void {
     this.analyzer?.stop();
     this.analyzer = null;
+    this.waveNode?.disconnect();
+    this.waveNode = null;
     this.source?.disconnect();
     this.source = null;
     this.stream?.getTracks().forEach((track) => track.stop());

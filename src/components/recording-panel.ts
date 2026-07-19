@@ -1,28 +1,23 @@
-import { LitElement, css, html, type PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { EngineState } from '../audio/types.ts';
+import { LitElement, css, html, nothing } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import type { DrumClass } from '../audio/classifier.ts';
 import type { QuantizedPattern, RecordedHit } from '../audio/quantize.ts';
-import { ACCENT, CLASS_COLORS } from '../ui/theme.ts';
+import { CLASS_COLORS, DRUM_CLASS_LANES, classShapeSvg } from '../ui/theme.ts';
 import './beat-timeline.ts';
 import './pattern-grid.ts';
 import './level-meter.ts';
 
 type SessionPhase = 'idle' | 'recording' | 'reviewing';
 
-const HIT_FLASH_MS = 220;
-
 /**
- * Left column: the live LCD readout + transport, the scrolling input
- * stream, and the reviewed take's step sequence once one exists. Pure
- * presentation over app-root's session state — record/bpm intents go back
- * up as events rather than being handled here.
+ * The left leaf of the manual: Fig. 01 (voice input — seismograph, transport,
+ * legend) and Fig. 02 (the transcribed sequence). Presentation over
+ * app-root's session state; record/bpm/lane intents bubble up as events.
  */
 @customElement('recording-panel')
 export class RecordingPanel extends LitElement {
   @property({ attribute: false }) sessionPhase: SessionPhase = 'idle';
-  @property({ attribute: false }) engineState: EngineState = EngineState.IDLE;
-  @property({ attribute: false }) lastResult: { class: DrumClass; confidence: number } | null = null;
   @property({ type: Number }) level = 0;
   @property({ type: Number }) levelThreshold = 0;
   @property({ attribute: false }) errorMessage: string | null = null;
@@ -30,103 +25,71 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) recordedHits: RecordedHit[] = [];
   @property({ type: Number }) bpm = 100;
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
-  @property({ attribute: false }) padLabels: Partial<Record<DrumClass, string[]>> = {};
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
-
-  /** Brief pulse on the readout the instant a hit is classified — reinforces
-   * that a color/label change just happened rather than relying on the
-   * static readout-class swap alone to read as "it heard that". */
-  @state() private hitFlash = false;
-  private flashTimer: ReturnType<typeof setTimeout> | null = null;
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    if (this.flashTimer) clearTimeout(this.flashTimer);
-  }
-
-  updated(changed: PropertyValues<this>): void {
-    if (changed.has('lastResult') && this.lastResult) {
-      this.hitFlash = true;
-      if (this.flashTimer) clearTimeout(this.flashTimer);
-      this.flashTimer = setTimeout(() => {
-        this.hitFlash = false;
-      }, HIT_FLASH_MS);
-    }
-  }
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
   };
-
   private adjustBpm(delta: number): void {
     this.dispatchEvent(new CustomEvent<number>('bpm-adjust', { detail: delta, bubbles: true, composed: true }));
   }
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
-    const readoutColor = this.lastResult ? CLASS_COLORS[this.lastResult.class].fg : ACCENT;
-    const readoutState =
-      this.sessionPhase === 'recording' ? 'recording' : this.sessionPhase === 'reviewing' ? 'complete' : this.engineState.replace('_', ' ');
-    const recordLabel = this.sessionPhase === 'recording' ? 'STOP' : this.sessionPhase === 'reviewing' ? 'RECORD AGAIN' : 'RECORD';
+    const reviewing = this.sessionPhase === 'reviewing';
+    const recordLabel = isRecording ? 'Stop' : reviewing ? 'Record again' : 'Record';
+    const scopeLabel = isRecording ? 'RECORDING' : reviewing ? `${this.bpm} BPM` : 'STANDBY';
+    const durationS = (Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1);
 
     return html`
-      <section class="col col-analysis">
-        <h2 class="col-title">Analysis &amp; Recording</h2>
+      <section>
+        <div class="fig">Fig. 01 — Voice Input<span class="line"></span></div>
 
-        <div class="record-row">
-          <div class="readout" style="--readout-color: ${readoutColor}; --level: ${Math.min(1, this.level * 6)}" ?data-hit-flash=${this.hitFlash}>
-            <div class="readout-ring" ?data-phase-recording=${isRecording}></div>
-            <div class="readout-inner">
-              <span class="readout-state" data-phase=${this.sessionPhase}>${readoutState}</span>
-              <span class="readout-class">${this.lastResult ? CLASS_COLORS[this.lastResult.class].label : '--'}</span>
-            </div>
-          </div>
+        <div class="scope">
+          <span class="scope-tag">${scopeLabel}</span>
+          <beat-timeline .recording=${isRecording}></beat-timeline>
+        </div>
+        <p class="caption">Raw transient signal captured from the microphone.</p>
 
-          <div class="transport">
-            <button type="button" class="rec-button" ?data-active=${isRecording} @click=${this.onRecordClick}>
-              <span class="dot"></span>
-              ${recordLabel}
-            </button>
-            ${isRecording
-              ? html`
-                  <div class="level-row">
-                    <span class="level-label">MIC</span>
-                    <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
-                  </div>
-                `
-              : ''}
-            ${this.errorMessage ? html`<p class="error">${this.errorMessage}</p>` : ''}
-            ${this.infoMessage ? html`<p class="info">${this.infoMessage}</p>` : ''}
+        <div class="transport">
+          <button type="button" class="rec" ?data-on=${isRecording} @click=${this.onRecordClick}>
+            <span class="dot"></span>${recordLabel}
+          </button>
+          <div class="meter">
+            <div class="meter-scale"><span>MIC</span><span>0dB</span></div>
+            <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
           </div>
         </div>
 
-        <div class="stream-block">
-          <h3 class="block-label">Input Stream</h3>
-          <beat-timeline></beat-timeline>
+        ${this.errorMessage ? html`<p class="msg err">${this.errorMessage}</p>` : nothing}
+        ${this.infoMessage ? html`<p class="msg info">${this.infoMessage}</p>` : nothing}
+
+        <div class="legend">
+          ${DRUM_CLASS_LANES.slice().reverse().map((lane) => {
+            const s = CLASS_COLORS[lane];
+            return html`
+              <div class="key">
+                <span class="sym">${unsafeHTML(classShapeSvg(s.shape, s.fg))}</span>
+                <span class="ktext"><b>${s.label.charAt(0) + s.label.slice(1).toLowerCase()}</b><em>${s.gloss}</em></span>
+              </div>
+            `;
+          })}
         </div>
 
-        <div class="sequence-block">
-          <h3 class="block-label">Detected Sequence</h3>
-          ${this.sessionPhase === 'reviewing'
-            ? html`
-                <div class="sequence-content">
-                  <div class="pattern-header">
-                    <div class="pattern-meta">
-                      <span>${this.recordedHits.length} hits</span>
-                      <span class="dim">·</span>
-                      <span>${(Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1)}s</span>
-                    </div>
-                    <div class="bpm-control">
-                      <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
-                      <span class="bpm-value">${this.bpm} BPM</span>
-                      <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
-                    </div>
-                  </div>
-                  <pattern-grid .pattern=${this.pattern} .padLabels=${this.padLabels} .selectedClass=${this.selectedClass}></pattern-grid>
-                </div>
-              `
-            : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
-        </div>
+        <div class="fig fig2">Fig. 02 — Transcribed Sequence<span class="line"></span></div>
+        ${reviewing
+          ? html`
+              <div class="seq-head">
+                <span class="meta">${this.recordedHits.length} hits · ${durationS}s</span>
+                <span class="bpm">
+                  <button type="button" @click=${() => this.adjustBpm(-1)}>−</button>
+                  <b>${this.bpm} BPM</b>
+                  <button type="button" @click=${() => this.adjustBpm(1)}>+</button>
+                </span>
+              </div>
+              <pattern-grid .pattern=${this.pattern} .selectedClass=${this.selectedClass}></pattern-grid>
+            `
+          : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
       </section>
     `;
   }
@@ -137,300 +100,205 @@ export class RecordingPanel extends LitElement {
       min-width: 0;
     }
 
-    .col-title {
-      margin: 0 0 var(--space-5);
-      font: var(--weight-bold) var(--text-base) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-widest);
-      text-transform: uppercase;
-      color: var(--color-text-muted);
-    }
-
-    .block-label {
-      margin: 0 0 var(--space-2);
-      font: var(--weight-bold) var(--text-xs) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-widest);
-      text-transform: uppercase;
-      color: var(--color-text-dim);
-    }
-
-    .stream-block {
-      margin-top: var(--space-7);
-    }
-
-    .sequence-block {
-      margin-top: var(--space-7);
-    }
-
-    .sequence-content {
-      animation: content-enter 320ms var(--ease-standard) both;
-    }
-
-    @keyframes content-enter {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .placeholder {
-      margin: 0;
-      padding: var(--space-4);
-      border-radius: var(--radius-lg);
-      border: 1px dashed var(--color-border-panel);
-      color: var(--color-border-strong);
-      font: var(--weight-semibold) var(--text-base) / 1.4 var(--font-mono);
-      text-align: center;
-    }
-
-    .record-row {
+    .fig {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      gap: var(--space-7);
+      gap: var(--space-3);
+      font-family: var(--grot);
+      font-weight: var(--w-bold);
+      font-size: var(--text-fig);
+      letter-spacing: var(--track-wider);
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: var(--space-5);
+    }
+    .fig.fig2 {
+      margin-top: var(--space-8);
+    }
+    .fig .line {
+      flex: 1;
+      height: 1px;
+      background: var(--hair);
+    }
+
+    .scope {
       position: relative;
+      border: 1px solid var(--ink);
+      padding: var(--space-3) var(--space-4);
     }
-
-    .readout {
-      --level: 0;
-      width: 96px;
-      height: 96px;
-      flex-shrink: 0;
-      border-radius: var(--radius-full);
-      background: radial-gradient(circle at 40% 30%, var(--color-surface-2), var(--color-canvas) 75%);
-      border: 3px solid var(--color-border);
-      position: relative;
-      display: grid;
-      place-items: center;
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
-    }
-
-    .readout[data-hit-flash] {
-      animation: hit-pop var(--duration-moderate) var(--ease-standard);
-    }
-
-    @keyframes hit-pop {
-      0% {
-        transform: scale(1);
-      }
-      35% {
-        transform: scale(1.06);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-
-    .readout-ring {
+    .scope-tag {
       position: absolute;
-      inset: -3px;
-      border-radius: var(--radius-full);
-      border: 2px solid var(--readout-color, var(--color-accent));
-      opacity: calc(0.25 + var(--level) * 0.6);
-      box-shadow: 0 0 calc(6px + var(--level) * 18px) var(--readout-color, var(--color-accent));
-      transition: opacity var(--duration-instant) var(--ease-linear);
+      top: var(--space-2);
+      right: var(--space-3);
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      color: var(--ink-soft);
     }
-
-    .readout-ring[data-phase-recording] {
-      animation: rec-pulse var(--duration-slower) var(--ease-in-out) infinite;
-    }
-
-    @keyframes rec-pulse {
-      0%,
-      100% {
-        opacity: 0.4;
-      }
-      50% {
-        opacity: 0.9;
-      }
-    }
-
-    .readout-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-0-5);
-    }
-
-    .readout-state {
-      font: var(--weight-bold) var(--text-2xs) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-wider);
-      color: var(--color-text-dim);
-      text-transform: uppercase;
-      transition: color var(--duration-base);
-    }
-
-    .readout-state[data-phase='recording'] {
-      color: var(--color-record);
-    }
-
-    .readout-state[data-phase='reviewing'] {
-      color: var(--color-success);
-    }
-
-    .readout-class {
-      font: var(--weight-extrabold) var(--text-xl) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-normal);
-      color: var(--readout-color, var(--color-accent));
-      text-shadow: 0 0 10px var(--readout-color, var(--color-accent));
+    .caption {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-lg);
+      color: var(--ink-soft);
+      margin: var(--space-3) 0 0;
     }
 
     .transport {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-      flex: 1;
-      min-width: 160px;
+      align-items: center;
+      gap: var(--space-4);
+      margin-top: var(--space-5);
     }
-
-    .rec-button {
+    .rec {
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
-      width: fit-content;
-      font: var(--weight-bold) var(--text-md) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-wider);
-      padding: var(--space-2-5) var(--space-5);
-      border-radius: var(--radius-pill);
-      border: 1px solid var(--color-border);
-      background: var(--color-surface-2);
-      color: var(--color-text);
+      font-family: var(--grot);
+      font-weight: var(--w-bold);
+      font-size: var(--text-md);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--paper);
+      border: 1px solid var(--ink);
+      padding: var(--space-3) var(--space-5);
       cursor: pointer;
-      transition:
-        background-color var(--duration-base),
-        border-color var(--duration-base),
-        transform var(--duration-fast) var(--ease-standard);
+      min-height: 44px;
+      transition: background-color var(--dur-fast) var(--ease);
     }
-
-    .rec-button:hover {
-      border-color: var(--color-border-strong);
-      transform: translateY(-1px);
+    .rec:hover {
+      background: var(--hair-soft);
     }
-
-    .rec-button:active {
-      transform: translateY(0) scale(0.98);
+    .rec .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--rec);
     }
-
-    .rec-button[data-active]:hover {
-      border-color: var(--color-record);
+    .rec[data-on] {
+      background: var(--ink);
+      color: var(--paper);
     }
-
-    .rec-button .dot {
-      width: var(--space-2-5);
-      height: var(--space-2-5);
-      border-radius: var(--radius-full);
-      background: var(--color-record-dim);
+    .rec[data-on] .dot {
+      background: var(--paper);
+      animation: blink var(--dur-slow) steps(2, start) infinite;
     }
-
-    .rec-button[data-active] {
-      background: var(--color-record-bg);
-      border-color: var(--color-record);
-      color: var(--color-record-fg);
-    }
-
-    .rec-button[data-active] .dot {
-      background: var(--color-record);
-      box-shadow: 0 0 8px var(--color-record);
-      animation: pulse var(--duration-slow) var(--ease-in-out) infinite;
-    }
-
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
+    @keyframes blink {
       50% {
-        opacity: 0.35;
+        opacity: 0.25;
       }
     }
 
-    .error {
-      color: var(--color-error);
-      font-size: var(--text-md);
-      margin: 0;
-    }
-
-    .info {
-      color: var(--color-accent);
-      font-size: var(--text-md);
-      margin: 0;
-    }
-
-    .level-row {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    .level-label {
-      font: var(--weight-bold) var(--text-xs) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-wider);
-      color: var(--color-text-dim);
-      flex-shrink: 0;
-    }
-
-    .level-row level-meter {
+    .meter {
       flex: 1;
     }
-
-    .pattern-header {
+    .meter-scale {
       display: flex;
       justify-content: space-between;
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      color: var(--ink-soft);
+      margin-bottom: var(--space-1);
+    }
+
+    .msg {
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      margin: var(--space-3) 0 0;
+    }
+    .msg.err {
+      color: var(--kick);
+    }
+    .msg.info {
+      color: var(--ink-soft);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-6);
+      margin-top: var(--space-6);
+    }
+    .key {
+      display: flex;
       align-items: center;
+      gap: var(--space-3);
+    }
+    .sym {
+      width: 24px;
+      height: 24px;
+      display: block;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+    .ktext {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.3;
+    }
+    .ktext b {
+      font-family: var(--grot);
+      font-weight: var(--w-bold);
+      font-size: var(--text-base);
+      color: var(--ink);
+    }
+    .ktext em {
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .placeholder {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-lg);
+      color: var(--ink-soft);
+      border: 1px dashed var(--hair);
+      padding: var(--space-5);
+      text-align: center;
+      margin: 0;
+    }
+
+    .seq-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: var(--space-3);
     }
-
-    .pattern-meta {
-      font: var(--weight-semibold) var(--text-base) / 1 var(--font-mono);
-      color: var(--color-text-muted);
-      display: flex;
-      gap: var(--space-1-5);
+    .meta {
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      letter-spacing: var(--track-normal);
     }
-
-    .pattern-meta .dim {
-      color: var(--color-text-faint);
-    }
-
-    .bpm-control {
+    .bpm {
       display: flex;
       align-items: center;
       gap: var(--space-2);
     }
-
-    .bpm-control button {
-      width: 22px;
-      height: 22px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-      background: var(--color-surface-2);
-      color: var(--color-text);
-      font: var(--weight-bold) var(--text-lg) / 1 var(--font-mono);
-      cursor: pointer;
-      transition: border-color var(--duration-base), color var(--duration-base);
-    }
-
-    .bpm-control button:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-    }
-
-    .bpm-value {
-      font: var(--weight-bold) var(--text-base) / 1 var(--font-mono);
-      color: var(--color-accent);
-      min-width: 56px;
+    .bpm b {
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      color: var(--ink);
+      min-width: 62px;
       text-align: center;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .readout-ring[data-phase-recording],
-      .readout[data-hit-flash],
-      .rec-button[data-active] .dot,
-      .sequence-content {
-        animation: none;
-      }
+    .bpm button {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: var(--text-base);
+      cursor: pointer;
+    }
+    .bpm button:hover {
+      background: var(--hair-soft);
     }
   `;
 }
