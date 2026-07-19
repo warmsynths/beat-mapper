@@ -6,9 +6,9 @@ import { customElement, property } from 'lit/decorators.js';
 const VISUAL_MAX = 0.3;
 
 /**
- * Live mic-level bar with a threshold marker, so "is my mic even being
- * picked up" and "why isn't it triggering" are answerable at a glance
- * instead of being a black box behind the classifier.
+ * Printed MIC level meter: an ink-ruled bar that fills with tick hatching,
+ * plus a threshold caret showing the current onset gate. Reads like a gauge
+ * inked onto the page rather than a glowing VU meter.
  */
 @customElement('level-meter')
 export class LevelMeter extends LitElement {
@@ -35,29 +35,46 @@ export class LevelMeter extends LitElement {
 
     .track {
       position: relative;
-      height: 6px;
-      border-radius: var(--radius-2xs);
-      background: var(--color-well-soft);
-      border: 1px solid var(--color-border-subtle);
+      height: 12px;
+      border: 1px solid var(--ink);
+      background: var(--paper);
       overflow: hidden;
     }
 
     .fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--color-snare), var(--color-accent));
-      transition: width 40ms var(--ease-linear);
+      /* tick hatching, like a printed fill pattern */
+      background: repeating-linear-gradient(
+        90deg,
+        var(--ink) 0 1px,
+        transparent 1px 4px
+      );
+      transition: width 60ms var(--ease-linear);
     }
 
     .track[data-hot] .fill {
-      background: linear-gradient(90deg, var(--color-accent), var(--color-kick));
+      background: repeating-linear-gradient(
+        90deg,
+        var(--kick) 0 1.5px,
+        transparent 1.5px 4px
+      );
     }
 
     .marker {
       position: absolute;
       top: -2px;
       bottom: -2px;
-      width: 2px;
-      background: rgba(255, 255, 255, 0.65);
+      width: 1px;
+      background: var(--ink);
+    }
+    .marker::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -2.5px;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 4px solid var(--ink);
     }
   `;
 }

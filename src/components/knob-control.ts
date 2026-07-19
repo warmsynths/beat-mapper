@@ -3,6 +3,10 @@ import { customElement, property } from 'lit/decorators.js';
 
 const DRAG_RANGE_PX = 140; // vertical pixels to sweep min -> max, like a hardware knob
 
+/**
+ * Line-art dial (SENS / TONE). Drawn as an ink circle with a pointer tick,
+ * consistent with the device-atlas illustration. Drag vertically to adjust.
+ */
 @customElement('knob-control')
 export class KnobControl extends LitElement {
   @property({ type: Number }) min = 0;
@@ -40,18 +44,25 @@ export class KnobControl extends LitElement {
   };
 
   render() {
+    // pointer sweeps -135deg..+135deg over the value range
     const angle = -135 + this.ratio * 270;
+    const rad = (angle - 90) * (Math.PI / 180);
+    const cx = 15;
+    const cy = 15;
+    const x2 = cx + Math.cos(rad) * 10;
+    const y2 = cy + Math.sin(rad) * 10;
     return html`
       <div class="wrap">
-        <div
-          class="knob"
-          style="--angle: ${angle}deg"
+        <svg
+          viewBox="0 0 30 30"
+          class="dial"
           @pointerdown=${this.onPointerDown}
           @pointermove=${this.onPointerMove}
           @pointerup=${this.onPointerUp}
         >
-          <div class="indicator"></div>
-        </div>
+          <circle cx="15" cy="15" r="12" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2" />
+          <line x1="15" y1="15" x2=${x2.toFixed(1)} y2=${y2.toFixed(1)} stroke="var(--ink)" stroke-width="1.2" stroke-linecap="round" />
+        </svg>
         <span class="label">${this.label}</span>
       </div>
     `;
@@ -64,48 +75,26 @@ export class KnobControl extends LitElement {
 
     .wrap {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: var(--space-1-5);
+      gap: var(--space-2);
       user-select: none;
       touch-action: none;
     }
 
-    .knob {
-      width: 44px;
-      height: 44px;
-      border-radius: var(--radius-full);
-      background: radial-gradient(circle at 35% 30%, #4a4a54, var(--color-surface-1) 72%);
-      border: 1px solid var(--color-border);
-      box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.5),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      position: relative;
+    .dial {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
       cursor: ns-resize;
-    }
-
-    .knob:active {
-      cursor: grabbing;
-    }
-
-    .indicator {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 2px;
-      height: 16px;
-      background: var(--color-accent);
-      transform-origin: 50% 100%;
-      transform: translate(-50%, -100%) rotate(var(--angle));
-      border-radius: 1px;
-      box-shadow: 0 0 5px var(--color-accent);
-      pointer-events: none;
+      display: block;
     }
 
     .label {
-      font: var(--weight-bold) var(--text-xs) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-wider);
-      color: var(--color-text-dim);
+      font-family: var(--mono);
+      font-size: var(--text-xs);
+      letter-spacing: var(--track-wider);
+      text-transform: uppercase;
+      color: var(--ink-soft);
     }
   `;
 }

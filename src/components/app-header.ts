@@ -1,87 +1,90 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import './knob-control.ts';
 
 /**
- * Wordmark + the two hardware-style knobs (SENS/TONE). Purely
- * presentational — app-root owns the actual sensitivity/tone state and
- * what turning the knobs does to the audio engine's config.
+ * The manual's masthead: eyebrow, serif title, italic tagline, a rule, and
+ * a monospace meta line. Purely presentational — the live status text is
+ * passed in so it can echo the engine/session state.
  */
 @customElement('app-header')
 export class AppHeader extends LitElement {
-  @property({ type: Number }) sensMin = 0;
-  @property({ type: Number }) sensMax = 1;
-  @property({ type: Number }) sensitivity = 0;
-
-  @property({ type: Number }) toneMin = 0;
-  @property({ type: Number }) toneMax = 1;
-  @property({ type: Number }) tone = 1;
-
-  private onSensitivityChange = (event: CustomEvent<number>): void => {
-    this.dispatchEvent(new CustomEvent<number>('sensitivity-change', { detail: event.detail, bubbles: true, composed: true }));
-  };
-
-  private onToneChange = (event: CustomEvent<number>): void => {
-    this.dispatchEvent(new CustomEvent<number>('tone-change', { detail: event.detail, bubbles: true, composed: true }));
-  };
+  /** Short status word shown in the meta line, e.g. "live input", "idle". */
+  @property({ type: String }) status = 'idle';
 
   render() {
     return html`
-      <header>
-        <div class="wordmark">
-          <h1>BEAT // MAPPER</h1>
-          <p class="subtitle">voice-to-pattern transcription</p>
-        </div>
-
-        <div class="knobs">
-          <knob-control
-            label="SENS"
-            .min=${this.sensMin}
-            .max=${this.sensMax}
-            .value=${this.sensitivity}
-            @value-change=${this.onSensitivityChange}
-          ></knob-control>
-          <knob-control
-            label="TONE"
-            .min=${this.toneMin}
-            .max=${this.toneMax}
-            .value=${this.tone}
-            @value-change=${this.onToneChange}
-          ></knob-control>
-        </div>
-      </header>
+      <div class="eyebrow">Field Manual №01 · Vocal Percussion</div>
+      <h1>Beat Mapper</h1>
+      <p class="tag">Translating human beatbox to silicon memory.</p>
+      <hr class="rule" />
+      <div class="meta">
+        <span>Edition 2026</span>
+        <span class="status">${this.status}</span>
+        <span>16-Step · 4/4</span>
+      </div>
     `;
   }
 
   static styles = css`
     :host {
       display: block;
+      text-align: center;
     }
 
-    header {
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      letter-spacing: var(--track-mega);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: var(--space-4);
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: var(--w-black);
+      font-size: clamp(40px, 9vw, 68px);
+      line-height: 0.94;
+      letter-spacing: var(--track-tight);
+      text-transform: uppercase;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .tag {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: var(--w-book);
+      font-size: clamp(15px, 2.6vw, 19px);
+      color: var(--ink);
+      margin: var(--space-2) 0 0;
+    }
+
+    .rule {
+      border: 0;
+      border-top: 1px solid var(--ink);
+      margin: var(--space-6) 0 var(--space-3);
+    }
+
+    .meta {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      position: relative;
+      font-family: var(--mono);
+      font-size: var(--text-sm);
+      letter-spacing: var(--track-wider);
+      text-transform: uppercase;
+      color: var(--ink-soft);
     }
 
-    .wordmark h1 {
-      font: var(--weight-extrabold) var(--text-3xl) / 1 var(--font-mono);
-      letter-spacing: var(--tracking-wide);
-      margin: 0;
-      color: var(--color-text-bright);
+    .meta .status {
+      color: var(--ink);
     }
 
-    .subtitle {
-      margin: var(--space-1) 0 0;
-      font-size: var(--text-base);
-      color: var(--color-text-dim);
-      letter-spacing: var(--tracking-snug);
-    }
-
-    .knobs {
-      display: flex;
-      gap: var(--space-6);
+    @media (max-width: 560px) {
+      .meta {
+        font-size: var(--text-2xs);
+        letter-spacing: var(--track-wide);
+      }
     }
   `;
 }
