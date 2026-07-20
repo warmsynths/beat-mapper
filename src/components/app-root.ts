@@ -278,8 +278,9 @@ export class AppRoot extends LitElement {
     this.tone = event.detail;
     this.thresholds = {
       ...this.thresholds,
-      centroidKickMax: DEFAULT_CLASSIFIER_THRESHOLDS.centroidKickMax * this.tone,
-      centroidHatMin: DEFAULT_CLASSIFIER_THRESHOLDS.centroidHatMin * this.tone,
+      kickCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.kickCentroidHz * this.tone,
+      snareCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.snareCentroidHz * this.tone,
+      hatCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.hatCentroidHz * this.tone,
     };
   };
 

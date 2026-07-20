@@ -26,7 +26,19 @@ export interface AudioEngineConfig {
    * floor itself, which an absolute margin can't track.
    */
   onsetRatio: number;
-  onsetHoldMs: number;
+  /**
+   * Fraction of the onset gate a hit's rms must decay below before it's
+   * considered over (hysteresis, so tail ringing right at the gate doesn't
+   * chatter). A hit is held — and its frames captured — for as long as its
+   * level stays above this, rather than for one fixed duration; real hits
+   * vary a lot in how long they take to decay.
+   */
+  releaseRatio: number;
+  /** Safety cap on how long a single hit can be held before it's force-ended
+   * regardless of level, so sustained non-percussive input can't hang the
+   * detector indefinitely. */
+  maxHoldMs: number;
+  /** Minimum dead time after a hit ends before a new one can begin. */
   cooldownMs: number;
 }
 

@@ -11,8 +11,9 @@ const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum'
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
   onsetRatio: 1.3,
-  onsetHoldMs: 30,
-  cooldownMs: 120,
+  releaseRatio: 0.7,
+  maxHoldMs: 400,
+  cooldownMs: 50,
 };
 
 // Exponential-moving-average smoothing for the ambient noise floor: small
@@ -75,11 +76,14 @@ export class AudioEngine extends EventTarget {
   private state: EngineState = EngineState.IDLE;
   private holdBuffer: TransientFrame[] = [];
   private cooldownTimer: ReturnType<typeof setTimeout> | null = null;
-  private holdTimer: ReturnType<typeof setTimeout> | null = null;
   private config: AudioEngineConfig;
   private lastLevelEmitAt = 0;
   /** Rolling ambient rms level, updated only while LISTENING (see NOISE_FLOOR_ALPHA). */
   private noiseFloor = 0;
+  /** rms a held hit must decay below to be considered "released" (gate × releaseRatio). */
+  private releaseGate = 0;
+  /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
+  private holdStartedAt = 0;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -176,9 +180,7 @@ export class AudioEngine extends EventTarget {
     void this.ctx?.close();
     this.ctx = null;
 
-    if (this.holdTimer) clearTimeout(this.holdTimer);
     if (this.cooldownTimer) clearTimeout(this.cooldownTimer);
-    this.holdTimer = null;
     this.cooldownTimer = null;
     this.holdBuffer = [];
     this.noiseFloor = 0;
@@ -207,12 +209,29 @@ export class AudioEngine extends EventTarget {
 
     switch (this.state) {
       case EngineState.LISTENING:
-        if (frame.rms >= gate) this.beginOnsetHold(frame);
+        if (frame.rms >= gate) this.beginOnsetHold(frame, gate);
         break;
 
-      case EngineState.ONSET_HOLD:
+      case EngineState.ONSET_HOLD: {
         this.holdBuffer.push(frame);
+        const elapsedMs = (frame.timestamp - this.holdStartedAt) * 1000;
+        // Real hits (a beatboxed "boom"'s vowel swell, a sustained "tsss"
+        // snare hiss) commonly take 150-300ms to decay below the ambient
+        // floor — far longer than a fixed short window. Riding the level
+        // down to a release threshold (rather than clipping to one fixed
+        // duration for every sound) captures each hit's actual characteristic
+        // body instead of just its attack transient, and avoids splitting one
+        // hit's decay tail into a spurious second onset. maxHoldMs is only a
+        // safety cap for sustained non-percussive input (e.g. background
+        // noise) that never drops back down on its own.
+        if (frame.rms <= this.releaseGate || elapsedMs >= this.config.maxHoldMs) {
+          const frames = this.holdBuffer;
+          this.holdBuffer = [];
+          this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          this.enterCooldown();
+        }
         break;
+      }
 
       // IDLE / COOLDOWN: ignore incoming frames entirely.
       default:
@@ -220,16 +239,11 @@ export class AudioEngine extends EventTarget {
     }
   }
 
-  private beginOnsetHold(firstFrame: TransientFrame): void {
+  private beginOnsetHold(firstFrame: TransientFrame, gate: number): void {
     this.holdBuffer = [firstFrame];
+    this.releaseGate = gate * this.config.releaseRatio;
+    this.holdStartedAt = firstFrame.timestamp;
     this.setState(EngineState.ONSET_HOLD);
-
-    this.holdTimer = setTimeout(() => {
-      const frames = this.holdBuffer;
-      this.holdBuffer = [];
-      this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
-      this.enterCooldown();
-    }, this.config.onsetHoldMs);
   }
 
   private enterCooldown(): void {
