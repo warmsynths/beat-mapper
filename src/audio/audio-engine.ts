@@ -1,4 +1,5 @@
 import Meyda, { type MeydaFeaturesObject } from 'meyda';
+import { Metronome } from './metronome.ts';
 import {
   EngineState,
   type AudioEngineConfig,
@@ -84,6 +85,7 @@ export class AudioEngine extends EventTarget {
   private releaseGate = 0;
   /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
   private holdStartedAt = 0;
+  private metronome: Metronome | null = null;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -123,7 +125,13 @@ export class AudioEngine extends EventTarget {
     this.config = { ...this.config, ...patch };
   }
 
-  async start(): Promise<void> {
+  /**
+   * @param metronomeBpm Tempo for the faint reference click that plays for
+   * the duration of the take, to help the performer stay on grid. Shares
+   * this engine's AudioContext (rather than a separate one) so it needs no
+   * extra user-gesture unlock and tears down in lockstep with the mic.
+   */
+  async start(metronomeBpm: number): Promise<void> {
     if (this.state !== EngineState.IDLE) return;
 
     try {
@@ -156,6 +164,8 @@ export class AudioEngine extends EventTarget {
       });
 
       this.analyzer.start();
+      this.metronome = new Metronome(this.ctx, metronomeBpm);
+      this.metronome.start();
       this.setState(EngineState.LISTENING);
     } catch (err) {
       this.dispatchEvent(new CustomEvent<Error>('error', { detail: new Error(describeMicError(err)) }));
@@ -169,6 +179,8 @@ export class AudioEngine extends EventTarget {
   }
 
   private teardown(): void {
+    this.metronome?.stop();
+    this.metronome = null;
     this.analyzer?.stop();
     this.analyzer = null;
     this.waveNode?.disconnect();

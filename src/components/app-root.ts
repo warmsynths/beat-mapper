@@ -10,7 +10,6 @@ import {
   type DrumClass,
 } from '../audio/classifier.ts';
 import {
-  estimateBpm,
   quantizeHits,
   MIN_BPM,
   MAX_BPM,
@@ -79,6 +78,10 @@ export class AppRoot extends LitElement {
   @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private tone = 1.0;
+  /** Metronome/take tempo, set before recording — the take is quantized to
+   * this exact value afterward rather than re-estimated from hit timing, so
+   * it holds steady even where the performer drifted slightly off the click. */
+  @state() private targetBpm = 100;
 
   // Working take for the active bank.
   @state() private sessionPhase: SessionPhase = 'idle';
@@ -161,7 +164,7 @@ export class AppRoot extends LitElement {
     this.viewBar = 0;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
-    await this.engine.start();
+    await this.engine.start(this.targetBpm);
   }
 
   private finishRecording(): void {
@@ -170,7 +173,7 @@ export class AppRoot extends LitElement {
       this.infoMessage = 'No hits detected — raise SENS (or beatbox louder/closer to the mic) and record again.';
       return;
     }
-    this.bpm = estimateBpm(this.recordedHits);
+    this.bpm = this.targetBpm;
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.viewBar = 0;
     this.sessionPhase = 'reviewing';
@@ -180,6 +183,10 @@ export class AppRoot extends LitElement {
     this.bpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.bpm + delta));
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.setViewBar(this.viewBar);
+  }
+
+  private adjustTargetBpm(delta: number): void {
+    this.targetBpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.targetBpm + delta));
   }
 
   // --- per-bank memory ---------------------------------------------------
@@ -305,10 +312,12 @@ export class AppRoot extends LitElement {
               .infoMessage=${this.infoMessage}
               .recordedHits=${this.recordedHits}
               .bpm=${this.bpm}
+              .targetBpm=${this.targetBpm}
               .pattern=${this.pattern}
               .selectedClass=${this.selectedClass}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
+              @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
             ></recording-panel>
           </div>

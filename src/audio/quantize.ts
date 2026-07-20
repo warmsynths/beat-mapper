@@ -21,37 +21,8 @@ export interface QuantizedPattern {
 }
 
 const STEPS_PER_BAR = 16; // standard 16th-note grid, matches the SP-404's own pattern sequencer
-const DEFAULT_BPM = 100;
 const MIN_BPM = 60;
 const MAX_BPM = 180;
-
-/**
- * Best-effort tempo estimate from the gaps between consecutive hits.
- * Treats the median inter-onset interval as one 16th-note step, then folds
- * the result into a sane BPM range by doubling/halving — a common trick for
- * correcting octave errors (e.g. mistaking an 8th-note gap for a 16th).
- * This is a starting point, not a guarantee — the UI lets the user nudge it.
- */
-export function estimateBpm(hits: RecordedHit[]): number {
-  if (hits.length < 2) return DEFAULT_BPM;
-
-  const times = hits.map((h) => h.timeMs).sort((a, b) => a - b);
-  const iois: number[] = [];
-  for (let i = 1; i < times.length; i++) {
-    const gap = times[i] - times[i - 1];
-    if (gap > 60) iois.push(gap); // ignore near-duplicate onsets from quantization jitter
-  }
-  if (iois.length === 0) return DEFAULT_BPM;
-
-  iois.sort((a, b) => a - b);
-  const median = iois[Math.floor(iois.length / 2)];
-
-  let bpm = 60000 / (median * 4);
-  while (bpm < MIN_BPM) bpm *= 2;
-  while (bpm > MAX_BPM) bpm /= 2;
-
-  return Math.round(bpm);
-}
 
 /** Snaps each hit onto the nearest 16th-note step at the given tempo. */
 export function quantizeHits(hits: RecordedHit[], bpm: number): QuantizedPattern {
