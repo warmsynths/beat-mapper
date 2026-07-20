@@ -119,9 +119,9 @@ export class DeviceAtlas extends LitElement {
     });
 
     return html`
-      <svg viewBox="0 0 300 384" fill="none" stroke="var(--ink)" role="img" aria-label="SP-404 device atlas">
-        <rect x="6" y="6" width="288" height="372" rx="14" stroke-width="1.4"/>
-        <rect x="20" y="20" width="260" height="344" rx="8" stroke-width="1"/>
+      <svg viewBox="0 0 300 404" fill="none" stroke="var(--ink)" role="img" aria-label="SP-404 device atlas">
+        <rect x="6" y="6" width="288" height="392" rx="14" stroke-width="1.4"/>
+        <rect x="20" y="20" width="260" height="364" rx="8" stroke-width="1"/>
         <rect x="34" y="30" width="34" height="9" rx="2" stroke-width="1"/>
         <text x="266" y="40" text-anchor="end" font-family="var(--mono)" font-size="13" font-weight="700" fill="var(--ink)" stroke="none" letter-spacing="1">${this.deviceLabel}</text>
 

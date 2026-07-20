@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { provide } from '@lit/context';
-import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG } from '../audio/audio-engine.ts';
+import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG, MIN_NOISE_FLOOR } from '../audio/audio-engine.ts';
 import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
 import {
   classifyTransient,
@@ -30,8 +30,11 @@ import './hardware-panel.ts';
 
 const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 
-const SENS_MIN = 0.005;
-const SENS_MAX = 0.05;
+// onsetRatio bounds: at SENS_MAX the knob is maximally sensitive (a hit only
+// needs to be 10% above the ambient floor); at SENS_MIN it needs to be 3x
+// the floor.
+const SENS_MIN = 1.1;
+const SENS_MAX = 3.0;
 const TONE_MIN = 0.5;
 const TONE_MAX = 2.0;
 
@@ -73,8 +76,8 @@ export class AppRoot extends LitElement {
   @state() private infoMessage: string | null = null;
   @state() private activeBank = this.deviceConfig.banks?.[0] ?? '';
   @state() private level = 0;
-  @state() private levelThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
-  @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
+  @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
+  @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private tone = 1.0;
 
   // Working take for the active bank.
@@ -269,7 +272,7 @@ export class AppRoot extends LitElement {
 
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
-    this.engine.updateConfig({ onsetMargin: SENS_MIN + SENS_MAX - this.sensitivity });
+    this.engine.updateConfig({ onsetRatio: SENS_MIN + SENS_MAX - this.sensitivity });
   };
   private onToneChange = (event: CustomEvent<number>): void => {
     this.tone = event.detail;

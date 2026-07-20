@@ -10,7 +10,7 @@ const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum'
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
-  onsetMargin: 0.025,
+  onsetRatio: 1.3,
   onsetHoldMs: 30,
   cooldownMs: 120,
 };
@@ -20,6 +20,12 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
 // crosses the gate) can't itself drag the floor up, but fast enough to track
 // a room/mic's real ambient level within a few hundred ms.
 const NOISE_FLOOR_ALPHA = 0.05;
+
+// Floor used in place of a near-zero tracked noise floor (e.g. right after
+// start(), before the EMA has caught up) so the ratio test has something
+// meaningful to multiply — otherwise "3x of ~0" is still ~0 and the gate
+// never rises above true silence.
+export const MIN_NOISE_FLOOR = 0.001;
 
 // getUserMedia's DOMException.message is technically accurate but not
 // actionable ("Requested device not found" tells you nothing about what to
@@ -196,7 +202,7 @@ export class AudioEngine extends EventTarget {
     if (this.state === EngineState.LISTENING) {
       this.noiseFloor += (frame.rms - this.noiseFloor) * NOISE_FLOOR_ALPHA;
     }
-    const gate = this.noiseFloor + this.config.onsetMargin;
+    const gate = Math.max(this.noiseFloor, MIN_NOISE_FLOOR) * this.config.onsetRatio;
     this.maybeEmitLevel(frame.rms, gate);
 
     switch (this.state) {

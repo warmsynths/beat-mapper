@@ -19,12 +19,13 @@ export interface TransientFrame {
 export interface AudioEngineConfig {
   fftSize: number;
   /**
-   * How far above the rolling ambient noise floor a frame's rms must rise to
-   * count as an onset. A margin (not an absolute rms floor) so the gate
-   * self-calibrates to however loud/quiet a given mic + room happens to be,
-   * instead of relying on one fixed number to work for everyone.
+   * How many times louder than the rolling ambient noise floor a frame's rms
+   * must be to count as an onset. A ratio (not an absolute rms delta) so the
+   * gate self-calibrates to however loud/quiet a given mic + room happens to
+   * be — including when autoGainControl has already boosted the ambient
+   * floor itself, which an absolute margin can't track.
    */
-  onsetMargin: number;
+  onsetRatio: number;
   onsetHoldMs: number;
   cooldownMs: number;
 }
@@ -38,6 +39,6 @@ export type TransientDetectedDetail = TransientFrame[];
 export interface LevelDetail {
   /** Current frame's rms. */
   level: number;
-  /** Current absolute onset gate (rolling noise floor + onsetMargin), same units as level. */
+  /** Current absolute onset gate (rolling noise floor × onsetRatio), same units as level. */
   threshold: number;
 }

@@ -70,11 +70,27 @@ function average(values: number[]): number {
   return values.reduce((sum, v) => sum + v, 0) / values.length;
 }
 
+/** Linear ramp: 0 at/before `from`, 1 at/after `to` (or the mirrored ramp if `to < from`). */
+function ramp(value: number, from: number, to: number): number {
+  if (from === to) return value >= from ? 1 : 0;
+  return clamp01((value - from) / (to - from));
+}
+
 /**
  * Rule-based classification over an aggregated onset window. Averaging
  * across the ONSET_HOLD frames (rather than classifying a single frame)
  * smooths out attack-transient noise and gives a more stable read on
  * voiced ("boo"/kick) vs noisy (hat/snare) content.
+ *
+ * Each class gets an independent 0-1 score from centroid, flatness, and
+ * band energy, and the highest score wins. A sequential AND-gated
+ * threshold chain (the previous approach) breaks whenever cues disagree —
+ * e.g. a mic's bass rolloff can push a real kick's low/mid band-energy
+ * ratio the "wrong" way even though its centroid is unambiguously low, or
+ * proximity effect can boost a snare's low end enough to fool a centroid-only
+ * gate. Scoring on all cues at once, including spectral flatness (tonal
+ * kick vs. noisy snare/hat — previously computed but never actually used),
+ * is far more resilient to exactly that kind of disagreement.
  */
 export function classifyTransient(
   frames: TransientFrame[],
@@ -100,24 +116,26 @@ export function classifyTransient(
 
   const features = { centroid, flatness, lowBandEnergy, midBandEnergy, highBandEnergy };
 
-  // Kick: energy concentrated at the bottom. No flatness requirement —
-  // a beatboxed kick's attack is often noisy, and phone mics roll off the
-  // low end enough that demanding a clean tonal read misroutes real kicks
-  // to the snare bucket.
-  if (centroid <= thresholds.centroidKickMax && lowBandEnergy >= midBandEnergy) {
-    const confidence = clamp01(1 - centroid / thresholds.centroidKickMax);
-    return { class: 'kick', confidence, features };
-  }
+  // 1 = tonal (kick-like), 0 = noisy (snare/hat-like).
+  const tonal = ramp(flatness, thresholds.flatnessNoiseMin, 0);
+  const noisy = 1 - tonal;
 
-  // Hat: high centroid, energy concentrated in the high band.
-  if (centroid >= thresholds.centroidHatMin && highBandEnergy >= midBandEnergy) {
-    const confidence = clamp01((centroid - thresholds.centroidHatMin) / thresholds.centroidHatMin);
-    return { class: 'hat', confidence, features };
-  }
+  const kickScore = average([ramp(centroid, thresholds.centroidKickMax, 0), tonal, lowBandEnergy]);
+  const hatScore = average([
+    ramp(centroid, thresholds.centroidHatMin, thresholds.centroidHatMin * 2),
+    noisy,
+    highBandEnergy,
+  ]);
 
-  // Everything else: mid-centroid, broadband/noisy content.
-  const confidence = clamp01(flatness);
-  return { class: 'snare', confidence, features };
+  // Snare sits between kick and hat: mid-range centroid, noisy, body in the mid band.
+  const midpoint = (thresholds.centroidKickMax + thresholds.centroidHatMin) / 2;
+  const centroidMidScore = clamp01(1 - Math.abs(centroid - midpoint) / midpoint);
+  const snareScore = average([centroidMidScore, noisy, midBandEnergy]);
+
+  const scores: Record<DrumClass, number> = { kick: kickScore, snare: snareScore, hat: hatScore };
+  const cls = (Object.keys(scores) as DrumClass[]).reduce((best, c) => (scores[c] > scores[best] ? c : best), 'snare' as DrumClass);
+
+  return { class: cls, confidence: clamp01(scores[cls]), features };
 }
 
 function clamp01(value: number): number {
