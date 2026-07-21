@@ -9,11 +9,14 @@ export class Metronome {
   private static readonly SCHEDULE_AHEAD_S = 0.1;
   private static readonly CLICK_GAIN = 0.05;
   private static readonly ACCENT_GAIN = 0.09;
-  private static readonly CLICK_DURATION_S = 0.03;
+  private static readonly CLICK_DURATION_S = 0.02;
 
   private readonly ctx: AudioContext;
   private bpm: number;
   private nextClickTime = 0;
+  /** ctx.currentTime of the very first scheduled click — the phase
+   * reference isJustAfterClick() measures against. */
+  private firstClickTime = 0;
   private beatIndex = 0;
   private schedulerTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -24,13 +27,28 @@ export class Metronome {
 
   start(): void {
     this.beatIndex = 0;
-    this.nextClickTime = this.ctx.currentTime + 0.05;
+    this.firstClickTime = this.ctx.currentTime + 0.05;
+    this.nextClickTime = this.firstClickTime;
     this.schedulerTimer = setInterval(() => this.scheduler(), Metronome.LOOKAHEAD_MS);
   }
 
   stop(): void {
     if (this.schedulerTimer) clearInterval(this.schedulerTimer);
     this.schedulerTimer = null;
+  }
+
+  /**
+   * True if `ctxTime` falls within `windowS` seconds after the most recent
+   * scheduled click. AudioEngine uses this to ignore the click's own
+   * acoustic bleed (speaker → mic, unavoidable without headphones) instead
+   * of misreading it as a performed hit — a short sharp click is exactly
+   * the kind of bright, broadband transient the classifier reads as a hat.
+   */
+  isJustAfterClick(ctxTime: number, windowS: number): boolean {
+    if (ctxTime < this.firstClickTime) return false;
+    const beatDurationS = 60 / this.bpm;
+    const phase = (ctxTime - this.firstClickTime) % beatDurationS;
+    return phase <= windowS;
   }
 
   private scheduler(): void {

@@ -29,6 +29,14 @@ const NOISE_FLOOR_ALPHA = 0.05;
 // never rises above true silence.
 export const MIN_NOISE_FLOOR = 0.001;
 
+// How long after each scheduled metronome click to ignore new onsets and
+// pause noise-floor tracking, covering the click's own ~20ms envelope plus
+// slack for room reverb and the mic's AGC settling. Short enough to leave
+// most of a beat free for real hits (even a fast 180bpm beat is 333ms) while
+// covering the click's acoustic bleed into the mic, which reads as a short,
+// bright transient — exactly what the classifier calls a hat.
+const METRONOME_SUPPRESS_S = 0.07;
+
 // getUserMedia's DOMException.message is technically accurate but not
 // actionable ("Requested device not found" tells you nothing about what to
 // check). Map the handful of names that actually occur in practice to
@@ -210,10 +218,14 @@ export class AudioEngine extends EventTarget {
       zcr: raw.zcr ?? 0,
     };
 
+    const suppressingClick = this.metronome?.isJustAfterClick(frame.timestamp, METRONOME_SUPPRESS_S) ?? false;
+
     // Only LISTENING updates the floor — the onset itself and its decay
     // tail (ONSET_HOLD/COOLDOWN) must never feed back into what counts as
     // "ambient", or the gate would chase the hit it's supposed to catch.
-    if (this.state === EngineState.LISTENING) {
+    // Frames right after a click are skipped too, so the click's own
+    // recurring bleed can't drag the floor up and desensitize real hits.
+    if (this.state === EngineState.LISTENING && !suppressingClick) {
       this.noiseFloor += (frame.rms - this.noiseFloor) * NOISE_FLOOR_ALPHA;
     }
     const gate = Math.max(this.noiseFloor, MIN_NOISE_FLOOR) * this.config.onsetRatio;
@@ -221,7 +233,7 @@ export class AudioEngine extends EventTarget {
 
     switch (this.state) {
       case EngineState.LISTENING:
-        if (frame.rms >= gate) this.beginOnsetHold(frame, gate);
+        if (!suppressingClick && frame.rms >= gate) this.beginOnsetHold(frame, gate);
         break;
 
       case EngineState.ONSET_HOLD: {
