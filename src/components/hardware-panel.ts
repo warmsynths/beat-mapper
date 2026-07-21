@@ -15,7 +15,7 @@ const CLASSES: DrumClass[] = ['kick', 'snare', 'hat'];
 /**
  * Fig. 03 — Device Atlas panel: the line-art device, a monospace readout of
  * the current assignment, an optional bar pager, and the controls row
- * (SET banks + SENS/TONE dials + device select). Presentation over
+ * (SET banks + SENS dial + device select). Presentation over
  * app-root's session/device state; intents bubble up as events.
  */
 @customElement('hardware-panel')
@@ -33,9 +33,6 @@ export class HardwarePanel extends LitElement {
   @property({ type: Number }) sensMin = 0;
   @property({ type: Number }) sensMax = 1;
   @property({ type: Number }) sensitivity = 0;
-  @property({ type: Number }) toneMin = 0;
-  @property({ type: Number }) toneMax = 1;
-  @property({ type: Number }) tone = 1;
 
   private goToBar(bar: number): void {
     this.dispatchEvent(new CustomEvent<number>('bar-change', { detail: bar, bubbles: true, composed: true }));
@@ -46,9 +43,6 @@ export class HardwarePanel extends LitElement {
   };
   private onSens = (e: CustomEvent<number>): void => {
     this.dispatchEvent(new CustomEvent<number>('sensitivity-change', { detail: e.detail, bubbles: true, composed: true }));
-  };
-  private onTone = (e: CustomEvent<number>): void => {
-    this.dispatchEvent(new CustomEvent<number>('tone-change', { detail: e.detail, bubbles: true, composed: true }));
   };
 
   render() {
@@ -114,7 +108,6 @@ export class HardwarePanel extends LitElement {
           : nothing}
         <div class="dials">
           <knob-control label="Sens" .min=${this.sensMin} .max=${this.sensMax} .value=${this.sensitivity} @value-change=${this.onSens}></knob-control>
-          <knob-control label="Tone" .min=${this.toneMin} .max=${this.toneMax} .value=${this.tone} @value-change=${this.onTone}></knob-control>
         </div>
       </div>
 
