@@ -74,6 +74,7 @@ export class RecordingPanel extends LitElement {
             <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
           </div>
         </div>
+        ${!reviewing ? html`<p class="metro-hint">Headphones keep the click out of the mic pickup.</p>` : nothing}
 
         ${this.errorMessage ? html`<p class="msg err">${this.errorMessage}</p>` : nothing}
         ${this.infoMessage ? html`<p class="msg info">${this.infoMessage}</p>` : nothing}
@@ -240,6 +241,15 @@ export class RecordingPanel extends LitElement {
     .metro button:disabled {
       opacity: 0.35;
       cursor: default;
+    }
+
+    .metro-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
+      margin: var(--space-2) 0 0;
     }
 
     .meter {

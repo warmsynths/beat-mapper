@@ -276,6 +276,7 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
             <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
           </div>
         </div>
+        ${t?N:A`<p class="metro-hint">Headphones keep the click out of the mic pickup.</p>`}
 
         ${this.errorMessage?A`<p class="msg err">${this.errorMessage}</p>`:N}
         ${this.infoMessage?A`<p class="msg info">${this.infoMessage}</p>`:N}
@@ -434,6 +435,15 @@ var e=Object.create,t=Object.defineProperty,n=Object.getOwnPropertyDescriptor,r=
     .metro button:disabled {
       opacity: 0.35;
       cursor: default;
+    }
+
+    .metro-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
+      margin: var(--space-2) 0 0;
     }
 
     .meter {
