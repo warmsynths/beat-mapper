@@ -237,6 +237,17 @@ export class AudioEngine extends EventTarget {
         break;
 
       case EngineState.ONSET_HOLD: {
+        // A hold can stay open for up to maxHoldMs, easily long enough to
+        // span a metronome click that lands mid-decay. Unlike LISTENING
+        // (which just needs to not trigger a *new* onset on the click),
+        // frames captured here get averaged straight into the hit's
+        // classification features — so without this same suppression, the
+        // click's bright/broadband bleed folds into a real hit's centroid
+        // and drags it toward the next class up (kick read as snare, snare
+        // read as hat). Skipping the frame entirely (not just excluding it
+        // from onset detection) keeps the hold open on real signal only.
+        if (suppressingClick) break;
+
         this.holdBuffer.push(frame);
         const elapsedMs = (frame.timestamp - this.holdStartedAt) * 1000;
         // Real hits (a beatboxed "boom"'s vowel swell, a sustained "tsss"
