@@ -4,14 +4,14 @@ import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { classShapeSvg } from '../ui/theme.ts';
 
 const GITHUB_URL = 'https://github.com/warmsynths/beat-mapper';
-const EMAIL = 'warmsynthsiloveyou@gmail.com';
 const KOFI_URL = 'https://ko-fi.com/warmsynths';
 
 /**
- * The manual's colophon: a closing privacy note plus GitHub/email/Ko-fi
- * links. Each is marked with the same kick/snare/hat notation primitives
- * used throughout the manual (legend, device atlas) rather than borrowed
- * brand icons, so the footer reads as part of the same system.
+ * The manual's colophon: a closing privacy note, a GitHub link, a "made
+ * with" credit, and a Ko-fi support link. Each is marked with the same
+ * kick/snare/hat notation primitives used throughout the manual (legend,
+ * device atlas) rather than borrowed brand icons, so the footer reads as
+ * part of the same system.
  */
 @customElement('app-footer')
 export class AppFooter extends LitElement {
@@ -23,12 +23,12 @@ export class AppFooter extends LitElement {
           <span class="mark">${unsafeHTML(classShapeSvg('circle', 'var(--kick)'))}</span>GitHub
         </a>
         <span class="sep">·</span>
-        <a class="link" style="--accent: var(--snare)" href="mailto:${EMAIL}">
-          <span class="mark">${unsafeHTML(classShapeSvg('square', 'var(--snare)'))}</span>Email
-        </a>
+        <span class="brand">
+          <span class="mark">${unsafeHTML(classShapeSvg('square', 'var(--snare)'))}</span>Made with <span class="heart">♥</span> by warmsynths
+        </span>
         <span class="sep">·</span>
         <a class="link" style="--accent: var(--hat)" href=${KOFI_URL} target="_blank" rel="noopener noreferrer">
-          <span class="mark">${unsafeHTML(classShapeSvg('triangle', 'var(--hat)'))}</span>Ko-fi
+          <span class="mark">${unsafeHTML(classShapeSvg('triangle', 'var(--hat)'))}</span>Support
         </a>
       </div>
     `;
@@ -68,16 +68,24 @@ export class AppFooter extends LitElement {
       color: var(--hair);
     }
 
-    .link {
+    .link,
+    .brand {
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
+    }
+
+    .link {
       color: var(--ink);
       text-decoration: none;
       transition: color var(--dur-fast) var(--ease);
     }
     .link:hover {
       color: var(--accent, var(--ink-soft));
+    }
+
+    .heart {
+      color: var(--kick);
     }
 
     .mark {
