@@ -79,6 +79,11 @@ export class AppRoot extends LitElement {
   @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private tone = 1.0;
+  /** Whether the metronome click plays through the speakers. Defaults off
+   * (silent/visual metronome) since that's the only safe default without
+   * knowing whether headphones are actually plugged in — the browser has no
+   * reliable cross-platform way to detect that, especially on Android. */
+  @state() private headphonesOn = false;
   /** Metronome/take tempo, set before recording — the take is quantized to
    * this exact value afterward rather than re-estimated from hit timing, so
    * it holds steady even where the performer drifted slightly off the click. */
@@ -165,7 +170,7 @@ export class AppRoot extends LitElement {
     this.viewBar = 0;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
-    await this.engine.start(this.targetBpm);
+    await this.engine.start(this.targetBpm, this.headphonesOn);
   }
 
   private finishRecording(): void {
@@ -282,6 +287,9 @@ export class AppRoot extends LitElement {
     this.sensitivity = event.detail;
     this.engine.updateConfig({ onsetRatio: SENS_MIN + SENS_MAX - this.sensitivity });
   };
+  private onHeadphonesToggle = (event: CustomEvent<boolean>): void => {
+    this.headphonesOn = event.detail;
+  };
   private onToneChange = (event: CustomEvent<number>): void => {
     this.tone = event.detail;
     this.thresholds = {
@@ -316,10 +324,12 @@ export class AppRoot extends LitElement {
               .targetBpm=${this.targetBpm}
               .pattern=${this.pattern}
               .selectedClass=${this.selectedClass}
+              .headphonesOn=${this.headphonesOn}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
               @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
+              @headphones-toggle=${this.onHeadphonesToggle}
             ></recording-panel>
           </div>
 
