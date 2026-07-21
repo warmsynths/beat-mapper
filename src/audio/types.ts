@@ -10,7 +10,6 @@ export type EngineState = (typeof EngineState)[keyof typeof EngineState];
 export interface TransientFrame {
   timestamp: number;
   rms: number;
-  spectralCentroid: number;
   spectralFlatness: number;
   powerSpectrum: Float32Array;
   zcr: number;

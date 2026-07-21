@@ -112,6 +112,26 @@ function centroidCloseness(centroidHz: number, referenceHz: number): number {
   return clamp01(1 - distanceOctaves / OCTAVE_FALLOFF);
 }
 
+// Power-weighted mean bin index of a frame's power spectrum. Used for
+// `centroid` instead of Meyda's spectralCentroid (which weights by raw
+// amplitude): amplitude weighting gives outsized pull to the many
+// small-amplitude high-frequency bins in mic self-noise/breath hiss riding on
+// top of an otherwise bass-heavy hit, so a hit whose *energy* is genuinely
+// concentrated low can still average out to a bright centroid. Power
+// weighting matches how bandEnergy already buckets this same powerSpectrum,
+// so the two features agree on what "bass-heavy" means — verified against a
+// real take where a hit with 80%+ of its energy in the low band was, under
+// amplitude weighting, coming out indistinguishable from bright hits.
+function powerWeightedCentroidBin(powerSpectrum: Float32Array): number {
+  let numerator = 0;
+  let denominator = 0;
+  for (let i = 0; i < powerSpectrum.length; i++) {
+    numerator += i * powerSpectrum[i];
+    denominator += powerSpectrum[i];
+  }
+  return denominator === 0 ? 0 : numerator / denominator;
+}
+
 /**
  * Extracts the classification-relevant features from an aggregated onset
  * window (the frames captured while AudioEngine held a hit above its onset
@@ -130,13 +150,11 @@ export function extractHitFeatures(
     return { centroid: 0, flatness: 0, lowBandEnergy: 0, midBandEnergy: 0, highBandEnergy: 0 };
   }
 
-  // Meyda's spectralCentroid is a raw FFT bin index (0..fftSize/2), not Hz —
-  // it's the amplitude-weighted mean of the bin index k, with no sampleRate
-  // scaling applied internally. Convert to Hz using the bin width so it's
-  // comparable to the Hz-based reference points below.
+  // Bin index -> Hz using the bin width, so it's comparable to the Hz-based
+  // reference points below.
   const binWidth = sampleRate / fftSize;
   const weights = frames.map((f) => f.rms);
-  const centroid = weightedAverage(frames.map((f) => f.spectralCentroid), weights) * binWidth;
+  const centroid = weightedAverage(frames.map((f) => powerWeightedCentroidBin(f.powerSpectrum)), weights) * binWidth;
   const flatness = weightedAverage(frames.map((f) => f.spectralFlatness), weights);
 
   const bandSums = frames.map((f) => bandEnergy(f.powerSpectrum, sampleRate, fftSize, thresholds));

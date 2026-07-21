@@ -7,7 +7,7 @@ import {
   type TransientFrame,
 } from './types.ts';
 
-const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
+const FEATURES = ['rms', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
@@ -224,7 +224,6 @@ export class AudioEngine extends EventTarget {
     const frame: TransientFrame = {
       timestamp: this.ctx.currentTime,
       rms: raw.rms ?? 0,
-      spectralCentroid: raw.spectralCentroid ?? 0,
       spectralFlatness: raw.spectralFlatness ?? 0,
       powerSpectrum: raw.powerSpectrum ?? new Float32Array(0),
       zcr: raw.zcr ?? 0,
