@@ -24,6 +24,7 @@ import { po32Config } from '../devices/po32.ts';
 import { BeatBus } from '../state/beat-bus.ts';
 import { audioEngineContext, beatBusContext, deviceConfigContext } from '../state/contexts.ts';
 import './app-header.ts';
+import './app-footer.ts';
 import './recording-panel.ts';
 import './hardware-panel.ts';
 
@@ -349,6 +350,8 @@ export class AppRoot extends LitElement {
             ></hardware-panel>
           </div>
         </div>
+
+        <app-footer></app-footer>
       </div>
     `;
   }
