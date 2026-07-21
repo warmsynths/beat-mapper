@@ -7,6 +7,13 @@ import { resolveThemeColor } from '../ui/theme.ts';
 
 const SCROLL_SAMPLES = 900; // width of the rolling window, in retained columns
 
+// Visual metronome: a row of 4 beat dots (a bar's worth), the current beat
+// flashing then fading out over the first BEAT_PULSE_FADE fraction of its
+// length — this is the count a performer follows when there's no audible
+// click (see Metronome.audible in audio-engine.ts).
+const BEAT_DOT_COUNT = 4;
+const BEAT_PULSE_FADE = 0.35;
+
 /**
  * Fig. 01 — the live seismograph. A single ink line traced from the mic's
  * time-domain waveform while recording, scrolling right-to-left like a
@@ -115,7 +122,35 @@ export class BeatTimeline extends LitElement {
       ctx.lineTo(x, y);
     }
     ctx.stroke();
+
+    if (this.recording) {
+      const beat = this.engine?.getBeatPhase();
+      if (beat && beat.beatIndex >= 0) this.drawBeatPulse(ctx, w, beat);
+    }
   };
+
+  /** Row of beat dots along the top edge; the current beat flashes bright
+   * on the tick and fades out, the downbeat drawn slightly larger. */
+  private drawBeatPulse(ctx: CanvasRenderingContext2D, w: number, beat: { phase: number; beatIndex: number }): void {
+    const activeDot = ((beat.beatIndex % BEAT_DOT_COUNT) + BEAT_DOT_COUNT) % BEAT_DOT_COUNT;
+    const intensity = Math.max(0, 1 - beat.phase / BEAT_PULSE_FADE);
+    const y = 8 * this.dpr;
+    const margin = w * 0.06;
+    const spacing = (w - margin * 2) / (BEAT_DOT_COUNT - 1);
+    const baseRadius = 2.2 * this.dpr;
+
+    for (let i = 0; i < BEAT_DOT_COUNT; i++) {
+      const x = margin + spacing * i;
+      const isActive = i === activeDot;
+      const radius = baseRadius * (i === 0 ? 1.4 : 1);
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = isActive ? this.inkColor : 'rgba(154, 147, 132, 0.55)';
+      ctx.globalAlpha = isActive ? 0.35 + 0.65 * intensity : 1;
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
 
   render() {
     return html`<canvas></canvas>`;

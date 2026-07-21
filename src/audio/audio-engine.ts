@@ -129,17 +129,29 @@ export class AudioEngine extends EventTarget {
     return this.waveNode?.fftSize ?? 2048;
   }
 
+  /** Current position within the beat, for a visual metronome pulse — see
+   * Metronome.getBeatPhase(). Null when not running. */
+  getBeatPhase(): { phase: number; beatIndex: number } | null {
+    if (!this.ctx || !this.metronome) return null;
+    return this.metronome.getBeatPhase(this.ctx.currentTime);
+  }
+
   updateConfig(patch: Partial<AudioEngineConfig>): void {
     this.config = { ...this.config, ...patch };
   }
 
   /**
-   * @param metronomeBpm Tempo for the faint reference click that plays for
+   * @param metronomeBpm Tempo for the reference click/pulse that runs for
    * the duration of the take, to help the performer stay on grid. Shares
    * this engine's AudioContext (rather than a separate one) so it needs no
    * extra user-gesture unlock and tears down in lockstep with the mic.
+   * @param metronomeAudible Whether the click actually plays through the
+   * speakers. Only safe with headphones — on speakers the mic picks up the
+   * bleed, which the classifier reads as a bright, broadband hit. When
+   * false, the beat is tracked silently so a visual metronome (see
+   * getBeatPhase()) can still follow it.
    */
-  async start(metronomeBpm: number): Promise<void> {
+  async start(metronomeBpm: number, metronomeAudible: boolean): Promise<void> {
     if (this.state !== EngineState.IDLE) return;
 
     try {
@@ -172,7 +184,7 @@ export class AudioEngine extends EventTarget {
       });
 
       this.analyzer.start();
-      this.metronome = new Metronome(this.ctx, metronomeBpm);
+      this.metronome = new Metronome(this.ctx, metronomeBpm, metronomeAudible);
       this.metronome.start();
       this.setState(EngineState.LISTENING);
     } catch (err) {

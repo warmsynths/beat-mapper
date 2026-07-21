@@ -27,6 +27,7 @@ export class RecordingPanel extends LitElement {
   @property({ type: Number }) targetBpm = 100;
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
+  @property({ type: Boolean }) headphonesOn = false;
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
@@ -37,6 +38,9 @@ export class RecordingPanel extends LitElement {
   private adjustTargetBpm(delta: number): void {
     this.dispatchEvent(new CustomEvent<number>('target-bpm-adjust', { detail: delta, bubbles: true, composed: true }));
   }
+  private onHeadphonesClick = (): void => {
+    this.dispatchEvent(new CustomEvent<boolean>('headphones-toggle', { detail: !this.headphonesOn, bubbles: true, composed: true }));
+  };
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
@@ -67,6 +71,16 @@ export class RecordingPanel extends LitElement {
                   <b>${this.targetBpm}</b>
                   <button type="button" ?disabled=${isRecording} @click=${() => this.adjustTargetBpm(5)}>+</button>
                 </div>
+                <button
+                  type="button"
+                  class="phones"
+                  ?data-on=${this.headphonesOn}
+                  ?disabled=${isRecording}
+                  aria-pressed=${this.headphonesOn}
+                  @click=${this.onHeadphonesClick}
+                >
+                  Headphones ${this.headphonesOn ? 'On' : 'Off'}
+                </button>
               `
             : nothing}
           <div class="meter">
@@ -74,7 +88,15 @@ export class RecordingPanel extends LitElement {
             <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
           </div>
         </div>
-        ${!reviewing ? html`<p class="metro-hint">Headphones keep the click out of the mic pickup.</p>` : nothing}
+        ${!reviewing
+          ? html`
+              <p class="metro-hint">
+                ${this.headphonesOn
+                  ? 'Click plays through your headphones, so it never reaches the mic.'
+                  : 'No click plays through the speakers — follow the pulse on the waveform above instead.'}
+              </p>
+            `
+          : nothing}
 
         ${this.errorMessage ? html`<p class="msg err">${this.errorMessage}</p>` : nothing}
         ${this.infoMessage ? html`<p class="msg info">${this.infoMessage}</p>` : nothing}
@@ -240,6 +262,33 @@ export class RecordingPanel extends LitElement {
     }
     .metro button:disabled {
       opacity: 0.35;
+      cursor: default;
+    }
+
+    .phones {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      padding: var(--space-1-5) var(--space-3);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .phones:hover:not(:disabled) {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .phones[data-on] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper);
+    }
+    .phones:disabled {
+      opacity: 0.5;
       cursor: default;
     }
 
