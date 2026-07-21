@@ -2,16 +2,18 @@ import type { TransientFrame } from './types.ts';
 
 export type DrumClass = 'kick' | 'snare' | 'hat';
 
+export interface HitFeatures {
+  centroid: number;
+  flatness: number;
+  lowBandEnergy: number;
+  midBandEnergy: number;
+  highBandEnergy: number;
+}
+
 export interface ClassificationResult {
   class: DrumClass;
   confidence: number;
-  features: {
-    centroid: number;
-    flatness: number;
-    lowBandEnergy: number;
-    midBandEnergy: number;
-    highBandEnergy: number;
-  };
+  features: HitFeatures;
 }
 
 export interface ClassifierThresholds {
@@ -21,8 +23,6 @@ export interface ClassifierThresholds {
   snareCentroidHz: number;
   /** Reference spectral centroid (Hz) for a typical hat/cymbal. */
   hatCentroidHz: number;
-  /** Above this spectral flatness (0-1), a hit is noise-like rather than tonal. */
-  flatnessNoiseMin: number;
   /** Upper bound (Hz) of the "low band" used for energy bucketing (informational only). */
   lowBandHz: number;
   /** Upper bound (Hz) of the "mid band" used for energy bucketing; above this is "high band" (informational only). */
@@ -30,14 +30,14 @@ export interface ClassifierThresholds {
 }
 
 export const DEFAULT_CLASSIFIER_THRESHOLDS: ClassifierThresholds = {
-  // These are deliberately vocal-beatbox reference points, not acoustic-kit
-  // ones: a lip-popped/hummed "kick" centers noticeably higher than a real
-  // drum's sub-bass, and a sibilant "snare" (a "ts"/"ka" burst) commonly
-  // reaches 3-4kHz, well above where a real snare's crack would sit.
+  // Used only as a coarse tie-breaker when a take doesn't give classifyTakeHits
+  // enough of its own variety to tell classes apart by relative pitch alone
+  // (see classifyTakeHits) — never as a hard per-hit boundary. Deliberately
+  // vocal-beatbox-ish reference points, since that's a reasonable "typical
+  // register" prior when there's nothing else to go on.
   kickCentroidHz: 300,
   snareCentroidHz: 2800,
   hatCentroidHz: 8000,
-  flatnessNoiseMin: 0.35,
   lowBandHz: 200,
   midBandHz: 2000,
 };
@@ -45,9 +45,8 @@ export const DEFAULT_CLASSIFIER_THRESHOLDS: ClassifierThresholds = {
 /**
  * Sums powerSpectrum energy into low/mid/high bands given the bin frequency
  * spacing implied by sampleRate and fftSize (bin width = sampleRate / fftSize).
- * Informational only (surfaced via `features`) — see classifyTransient's
- * doc comment for why band energy isn't used to drive the classification
- * itself.
+ * Informational only (surfaced via `features`) — classification is driven by
+ * centroid alone, see classifyTakeHits.
  */
 function bandEnergy(
   powerSpectrum: Float32Array,
@@ -76,9 +75,9 @@ function bandEnergy(
  * Energy-weighted average: frames are weighted by their own rms so the loud,
  * characteristic body of a hit dominates the result instead of being diluted
  * by the many quiet, spectrally-unrepresentative frames in its rising attack
- * and decaying tail (which, since onset holding now rides a hit's whole
- * envelope rather than one fixed-length window, can otherwise be half the
- * frames in the buffer).
+ * and decaying tail (which, since onset holding rides a hit's whole envelope
+ * rather than one fixed-length window, can otherwise be half the frames in
+ * the buffer).
  */
 function weightedAverage(values: number[], weights: number[]): number {
   let sum = 0;
@@ -102,9 +101,10 @@ function ramp(value: number, from: number, to: number): number {
 }
 
 // How many octaves away from a class's reference centroid before that class
-// scores zero. Centroid perception/separation is roughly logarithmic (a
-// 200Hz gap matters a lot down at kick range, is nothing up at hat range),
-// so distance is measured in log2(Hz), not raw Hz.
+// scores zero, for the small-take fallback in classifyTakeHits. Centroid
+// perception/separation is roughly logarithmic (a 200Hz gap matters a lot
+// down at kick range, is nothing up at hat range), so distance is measured
+// in log2(Hz), not raw Hz.
 const OCTAVE_FALLOFF = 4;
 
 function centroidCloseness(centroidHz: number, referenceHz: number): number {
@@ -113,34 +113,21 @@ function centroidCloseness(centroidHz: number, referenceHz: number): number {
 }
 
 /**
- * Rule-based classification over an aggregated onset window (the frames
- * captured while AudioEngine held a hit above its onset gate — see
- * audio-engine.ts). Energy-weighted averaging gives a stable read on the
- * hit's characteristic body rather than its attack transient.
- *
- * Classification is centroid-first: each class scores by how close (in
- * octaves) the hit's centroid sits to that class's reference pitch, plus a
- * tonal/noisy bonus for kick. Earlier versions gave spectral flatness and
- * per-band energy equal weight alongside centroid for all three classes —
- * that consistently misfired on real recordings because a vocalized snare's
- * high-band energy (a sibilant "ts"/"ka" burst) is often just as dominant as
- * a real hat's, and its flatness just as low (tonal, not noisy) as a kick's,
- * so those extra terms could out-vote a centroid that was already
- * unambiguous. Band energy is still computed and returned in `features` for
- * visibility, but no longer drives the decision.
+ * Extracts the classification-relevant features from an aggregated onset
+ * window (the frames captured while AudioEngine held a hit above its onset
+ * gate — see audio-engine.ts). Energy-weighted averaging gives a stable read
+ * on the hit's characteristic body rather than its attack transient. Pure
+ * feature extraction — see classifyTakeHits for how a whole take's worth of
+ * these gets turned into kick/snare/hat labels.
  */
-export function classifyTransient(
+export function extractHitFeatures(
   frames: TransientFrame[],
   sampleRate: number,
   fftSize: number,
   thresholds: ClassifierThresholds = DEFAULT_CLASSIFIER_THRESHOLDS
-): ClassificationResult {
+): HitFeatures {
   if (frames.length === 0) {
-    return {
-      class: 'snare',
-      confidence: 0,
-      features: { centroid: 0, flatness: 0, lowBandEnergy: 0, midBandEnergy: 0, highBandEnergy: 0 },
-    };
+    return { centroid: 0, flatness: 0, lowBandEnergy: 0, midBandEnergy: 0, highBandEnergy: 0 };
   }
 
   // Meyda's spectralCentroid is a raw FFT bin index (0..fftSize/2), not Hz —
@@ -157,20 +144,134 @@ export function classifyTransient(
   const midBandEnergy = weightedAverage(bandSums.map((b) => b.mid), weights);
   const highBandEnergy = weightedAverage(bandSums.map((b) => b.high), weights);
 
-  const features = { centroid, flatness, lowBandEnergy, midBandEnergy, highBandEnergy };
+  return { centroid, flatness, lowBandEnergy, midBandEnergy, highBandEnergy };
+}
 
-  // 1 = tonal (kick-like hum), 0 = noisy. Only kick's score uses this —
-  // real snare/hat vocalizations can be just as tonal as a kick (see above),
-  // so it's not a reliable snare/hat discriminator, but a low-centroid hit
-  // that's also clearly tonal is a strong extra signal for "kick".
-  const tonal = ramp(flatness, thresholds.flatnessNoiseMin, 0);
+// Two hits' centroids only count as different *classes* — not just two
+// different-sounding hits of the same class — if they're at least this many
+// octaves apart. Real kick/snare/hat registers are typically several octaves
+// apart (a kick around a few hundred Hz vs. a snare's crack in the low
+// kHz is already 2-3 octaves); hit-to-hit variation within one class from
+// velocity/mic movement is real but much smaller than that.
+const MIN_CLASS_SEPARATION_OCTAVES = 0.5;
 
-  const kickScore = 0.75 * centroidCloseness(centroid, thresholds.kickCentroidHz) + 0.25 * tonal;
-  const snareScore = centroidCloseness(centroid, thresholds.snareCentroidHz);
-  const hatScore = centroidCloseness(centroid, thresholds.hatCentroidHz);
+const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
 
-  const scores: Record<DrumClass, number> = { kick: kickScore, snare: snareScore, hat: hatScore };
-  const cls = (Object.keys(scores) as DrumClass[]).reduce((best, c) => (scores[c] > scores[best] ? c : best), 'snare' as DrumClass);
+/** Ascending-centroid groups of original indices, split at the largest gaps
+ * in log-frequency — at most 2 splits (3 groups), and only where a gap is
+ * wide enough to plausibly be a different sound rather than the same sound
+ * played a bit differently. */
+function groupByCentroid(logCentroids: number[]): number[][] {
+  const order = logCentroids.map((_, i) => i).sort((a, b) => logCentroids[a] - logCentroids[b]);
+  const gaps = order
+    .slice(0, -1)
+    .map((_, i) => ({ afterPos: i, size: logCentroids[order[i + 1]] - logCentroids[order[i]] }))
+    .filter((g) => g.size >= MIN_CLASS_SEPARATION_OCTAVES)
+    .sort((a, b) => b.size - a.size)
+    .slice(0, 2)
+    .map((g) => g.afterPos)
+    .sort((a, b) => a - b);
 
-  return { class: cls, confidence: clamp01(scores[cls]), features };
+  const groups: number[][] = [];
+  let start = 0;
+  for (const afterPos of gaps) {
+    groups.push(order.slice(start, afterPos + 1));
+    start = afterPos + 1;
+  }
+  groups.push(order.slice(start));
+  return groups;
+}
+
+/**
+ * Which class name goes with each group, low-to-high. With all 3 groups
+ * present there's only one order-preserving way to do it (kick < snare <
+ * hat). With fewer, relative pitch alone can't say e.g. whether a single,
+ * uniform take is all kicks or all hats — so as a last resort, each
+ * possible low-to-high labelling is scored against the fixed reference
+ * points (DEFAULT_CLASSIFIER_THRESHOLDS) and the closest match wins. This is
+ * the only place those fixed points still matter, and only when the take
+ * itself doesn't have enough variety to self-calibrate.
+ */
+function labelGroups(groups: number[][], logCentroids: number[], thresholds: ClassifierThresholds): DrumClass[] {
+  if (groups.length === 3) return CLASSES_LOW_TO_HIGH;
+
+  const groupMeanLog = groups.map((idxs) => idxs.reduce((sum, i) => sum + logCentroids[i], 0) / idxs.length);
+  const refLog: Record<DrumClass, number> = {
+    kick: Math.log2(thresholds.kickCentroidHz),
+    snare: Math.log2(thresholds.snareCentroidHz),
+    hat: Math.log2(thresholds.hatCentroidHz),
+  };
+  // Every increasing (low-to-high) way to pick `groups.length` names out of
+  // CLASSES_LOW_TO_HIGH — with 3 classes that's only 3 choices for 1 group,
+  // or 3 choices for 2 groups.
+  const candidates: DrumClass[][] =
+    groups.length === 1
+      ? CLASSES_LOW_TO_HIGH.map((c) => [c])
+      : [
+          ['kick', 'snare'],
+          ['kick', 'hat'],
+          ['snare', 'hat'],
+        ];
+
+  let best = candidates[0];
+  let bestCost = Infinity;
+  for (const candidate of candidates) {
+    const cost = candidate.reduce((sum, cls, i) => sum + Math.abs(groupMeanLog[i] - refLog[cls]), 0);
+    if (cost < bestCost) {
+      bestCost = cost;
+      best = candidate;
+    }
+  }
+  return best;
+}
+
+/**
+ * Classifies every hit in a take *relative to the others in that same
+ * take*, instead of against fixed absolute pitch targets: a performer's own
+ * kick, snare and hat sit wherever their voice/kit/mic put them, but within
+ * one take a kick is reliably the lowest-pitched of the three, snare in the
+ * middle, hat highest. So this sorts all the take's hits by spectral
+ * centroid and splits them at the largest gaps (see groupByCentroid) —
+ * whatever comes out low is "kick", middle is "snare", high is "hat"
+ * (labelGroups). A take with fewer than 3 real sounds naturally collapses
+ * to fewer groups rather than being forced into 3.
+ *
+ * Confidence reflects how well the take separated: for a group formed by an
+ * actual gap in the data, it's how wide that gap was relative to
+ * MIN_CLASS_SEPARATION_OCTAVES; for a group whose label came from the
+ * fixed-point fallback (too little variety to self-calibrate), it's how
+ * close that group's average centroid was to the reference pitch it matched.
+ */
+export function classifyTakeHits(
+  featuresList: HitFeatures[],
+  thresholds: ClassifierThresholds = DEFAULT_CLASSIFIER_THRESHOLDS
+): ClassificationResult[] {
+  if (featuresList.length === 0) return [];
+
+  const logCentroids = featuresList.map((f) => Math.log2(Math.max(f.centroid, 1)));
+  const groups = groupByCentroid(logCentroids);
+  const labels = labelGroups(groups, logCentroids, thresholds);
+  const refLog: Record<DrumClass, number> = {
+    kick: Math.log2(thresholds.kickCentroidHz),
+    snare: Math.log2(thresholds.snareCentroidHz),
+    hat: Math.log2(thresholds.hatCentroidHz),
+  };
+
+  const results: ClassificationResult[] = new Array(featuresList.length);
+  groups.forEach((idxs, groupIndex) => {
+    const cls = labels[groupIndex];
+    const confidence =
+      groups.length === 3
+        ? Math.min(
+            groupIndex > 0 ? ramp(logCentroids[idxs[0]] - logCentroids[groups[groupIndex - 1].at(-1)!], 0, MIN_CLASS_SEPARATION_OCTAVES * 2) : 1,
+            groupIndex < groups.length - 1 ? ramp(logCentroids[groups[groupIndex + 1][0]] - logCentroids[idxs.at(-1)!], 0, MIN_CLASS_SEPARATION_OCTAVES * 2) : 1
+          )
+        : centroidCloseness(2 ** (idxs.reduce((sum, i) => sum + logCentroids[i], 0) / idxs.length), 2 ** refLog[cls]);
+
+    for (const i of idxs) {
+      results[i] = { class: cls, confidence: clamp01(confidence), features: featuresList[i] };
+    }
+  });
+
+  return results;
 }

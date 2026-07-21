@@ -3,12 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { provide } from '@lit/context';
 import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG, MIN_NOISE_FLOOR } from '../audio/audio-engine.ts';
 import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
-import {
-  classifyTransient,
-  DEFAULT_CLASSIFIER_THRESHOLDS,
-  type ClassifierThresholds,
-  type DrumClass,
-} from '../audio/classifier.ts';
+import { extractHitFeatures, classifyTakeHits, type HitFeatures, type DrumClass } from '../audio/classifier.ts';
 import {
   quantizeHits,
   MIN_BPM,
@@ -21,8 +16,7 @@ import { getControls, type DeviceConfig } from '../devices/device-config.ts';
 import { sp404mkiiConfig } from '../devices/sp404mkii.ts';
 import { po33Config } from '../devices/po33.ts';
 import { po32Config } from '../devices/po32.ts';
-import { BeatBus } from '../state/beat-bus.ts';
-import { audioEngineContext, beatBusContext, deviceConfigContext } from '../state/contexts.ts';
+import { audioEngineContext, deviceConfigContext } from '../state/contexts.ts';
 import './app-header.ts';
 import './app-footer.ts';
 import './recording-panel.ts';
@@ -35,8 +29,6 @@ const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 // the floor.
 const SENS_MIN = 1.1;
 const SENS_MAX = 3.0;
-const TONE_MIN = 0.5;
-const TONE_MAX = 2.0;
 
 type SessionPhase = 'idle' | 'recording' | 'reviewing';
 
@@ -65,9 +57,6 @@ export class AppRoot extends LitElement {
   @provide({ context: audioEngineContext })
   private engine = new AudioEngine();
 
-  @provide({ context: beatBusContext })
-  private bus = new BeatBus();
-
   @provide({ context: deviceConfigContext })
   @state()
   private deviceConfig: DeviceConfig = DEVICES[0];
@@ -78,7 +67,6 @@ export class AppRoot extends LitElement {
   @state() private level = 0;
   @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
-  @state() private tone = 1.0;
   /** Whether the metronome click plays through the speakers. Defaults off
    * (silent/visual metronome) since that's the only safe default without
    * knowing whether headphones are actually plugged in — the browser has no
@@ -101,8 +89,10 @@ export class AppRoot extends LitElement {
    * working @state above; other banks are parked here until re-selected. */
   @state() private bankStore: Record<string, BankSlice> = {};
 
-  private thresholds: ClassifierThresholds = { ...DEFAULT_CLASSIFIER_THRESHOLDS };
   private recordingStartedAt = 0;
+  /** Raw per-hit features captured so far this take — classified all at once,
+   * relative to each other, once the take ends (see finishRecording). */
+  private pendingHits: { features: HitFeatures; timeMs: number }[] = [];
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -137,21 +127,8 @@ export class AppRoot extends LitElement {
     const sampleRate = this.engine.getSampleRate();
     if (!sampleRate || this.sessionPhase !== 'recording') return;
 
-    const result = classifyTransient(event.detail, sampleRate, this.engine.getFftSize(), this.thresholds);
-    const [control] = getControls(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
-    if (!control) return;
-
-    this.recordedHits = [
-      ...this.recordedHits,
-      {
-        class: result.class,
-        controlId: control.id,
-        controlLabel: control.label,
-        confidence: result.confidence,
-        timeMs: performance.now() - this.recordingStartedAt,
-      },
-    ];
-    this.bus.emit({ class: result.class, confidence: result.confidence, controlId: control.id, timestamp: performance.now() });
+    const features = extractHitFeatures(event.detail, sampleRate, this.engine.getFftSize());
+    this.pendingHits = [...this.pendingHits, { features, timeMs: performance.now() - this.recordingStartedAt }];
   };
 
   private async handleRecordButton(): Promise<void> {
@@ -165,6 +142,7 @@ export class AppRoot extends LitElement {
     }
 
     this.recordedHits = [];
+    this.pendingHits = [];
     this.pattern = { steps: [], totalSteps: 16 };
     this.selectedClass = null;
     this.viewBar = 0;
@@ -174,11 +152,23 @@ export class AppRoot extends LitElement {
   }
 
   private finishRecording(): void {
-    if (this.recordedHits.length === 0) {
+    if (this.pendingHits.length === 0) {
       this.sessionPhase = 'idle';
       this.infoMessage = 'No hits detected — raise SENS (or beatbox louder/closer to the mic) and record again.';
       return;
     }
+
+    // Classified together, relative to each other, rather than hit-by-hit
+    // against fixed pitch targets — see classifyTakeHits.
+    const results = classifyTakeHits(this.pendingHits.map((h) => h.features));
+    this.recordedHits = this.pendingHits.reduce<RecordedHit[]>((hits, { timeMs }, i) => {
+      const result = results[i];
+      const [control] = getControls(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
+      if (!control) return hits;
+      hits.push({ class: result.class, controlId: control.id, controlLabel: control.label, confidence: result.confidence, timeMs });
+      return hits;
+    }, []);
+
     this.bpm = this.targetBpm;
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.viewBar = 0;
@@ -290,15 +280,6 @@ export class AppRoot extends LitElement {
   private onHeadphonesToggle = (event: CustomEvent<boolean>): void => {
     this.headphonesOn = event.detail;
   };
-  private onToneChange = (event: CustomEvent<number>): void => {
-    this.tone = event.detail;
-    this.thresholds = {
-      ...this.thresholds,
-      kickCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.kickCentroidHz * this.tone,
-      snareCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.snareCentroidHz * this.tone,
-      hatCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.hatCentroidHz * this.tone,
-    };
-  };
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
@@ -347,16 +328,12 @@ export class AppRoot extends LitElement {
               .sensMin=${SENS_MIN}
               .sensMax=${SENS_MAX}
               .sensitivity=${this.sensitivity}
-              .toneMin=${TONE_MIN}
-              .toneMax=${TONE_MAX}
-              .tone=${this.tone}
               @bank-change=${this.onBankChange}
               @class-toggle=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
               @bar-change=${(e: CustomEvent<number>) => this.setViewBar(e.detail)}
               @pad-toggle=${this.onPadStepToggle}
               @device-change=${(e: CustomEvent<string>) => this.onDeviceChange(e.detail)}
               @sensitivity-change=${this.onSensitivityChange}
-              @tone-change=${this.onToneChange}
             ></hardware-panel>
           </div>
         </div>

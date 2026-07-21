@@ -1,13 +1,10 @@
 import { LitElement, css, html, svg, nothing, type TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { consume } from '@lit/context';
-import { beatBusContext, deviceConfigContext } from '../state/contexts.ts';
-import type { BeatBus, ClassifiedBeatEvent } from '../state/beat-bus.ts';
+import { deviceConfigContext } from '../state/contexts.ts';
 import type { DeviceConfig } from '../devices/device-config.ts';
 import type { DrumClass } from '../audio/classifier.ts';
 import { CLASS_COLORS } from '../ui/theme.ts';
-
-const FLASH_MS = 200;
 
 // Grid-device (SP-404-style) pad geometry, in that illustration's own
 // 300×384 coordinate space.
@@ -45,9 +42,6 @@ export class DeviceAtlas extends LitElement {
   @consume({ context: deviceConfigContext, subscribe: true })
   private deviceConfig!: DeviceConfig;
 
-  @consume({ context: beatBusContext })
-  private bus!: BeatBus;
-
   /** Which sound is selected for step editing (drives lit pads). */
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
 
@@ -57,27 +51,6 @@ export class DeviceAtlas extends LitElement {
 
   /** A transcribed take exists — enables selector + pad interaction. */
   @property({ type: Boolean }) reviewing = false;
-
-  /** Live class flash while recording. */
-  @state() private flashClass: DrumClass | null = null;
-  private flashTimer: ReturnType<typeof setTimeout> | null = null;
-
-  connectedCallback(): void {
-    super.connectedCallback();
-    this.bus?.addEventListener('beat', this.onBeat as EventListener);
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback();
-    this.bus?.removeEventListener('beat', this.onBeat as EventListener);
-    if (this.flashTimer) clearTimeout(this.flashTimer);
-  }
-
-  private onBeat = (event: CustomEvent<ClassifiedBeatEvent>): void => {
-    this.flashClass = event.detail.class;
-    if (this.flashTimer) clearTimeout(this.flashTimer);
-    this.flashTimer = setTimeout(() => (this.flashClass = null), FLASH_MS);
-  };
 
   private togglePad(index: number): void {
     if (!this.stepHighlights) return;
@@ -126,13 +99,11 @@ export class DeviceAtlas extends LitElement {
     const selectors = SELECTOR_LANES.map((lane, row) => {
       const y = ROWS[row];
       const sel = this.selectedClass === lane;
-      const flash = this.flashClass === lane;
       return svg`
         <g class=${`sel ${this.reviewing ? 'active' : ''}`} @click=${() => this.toggleClass(lane)}>
           <rect x=${FIFTH_X} y=${y} width=${PAD} height=${PAD} rx="5"
                 fill=${CLASS_COLORS[lane].fg} stroke="var(--ink)" stroke-width=${sel ? 2.6 : 1.2}/>
           ${sel ? svg`<rect x=${FIFTH_X - 3} y=${y - 3} width=${PAD + 6} height=${PAD + 6} rx="7" fill="none" stroke="var(--ink)" stroke-width="1"/>` : nothing}
-          ${flash ? svg`<rect x=${FIFTH_X - 5} y=${y - 5} width=${PAD + 10} height=${PAD + 10} rx="8" fill="none" stroke="var(--ink)" stroke-width="1.4"/>` : nothing}
         </g>`;
     });
 
