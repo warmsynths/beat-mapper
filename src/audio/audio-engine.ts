@@ -1,4 +1,5 @@
 import Meyda, { type MeydaFeaturesObject } from 'meyda';
+import { Metronome } from './metronome.ts';
 import {
   EngineState,
   type AudioEngineConfig,
@@ -10,9 +11,10 @@ const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum'
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
-  onsetMargin: 0.025,
-  onsetHoldMs: 30,
-  cooldownMs: 120,
+  onsetRatio: 1.3,
+  releaseRatio: 0.7,
+  maxHoldMs: 400,
+  cooldownMs: 50,
 };
 
 // Exponential-moving-average smoothing for the ambient noise floor: small
@@ -20,6 +22,20 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
 // crosses the gate) can't itself drag the floor up, but fast enough to track
 // a room/mic's real ambient level within a few hundred ms.
 const NOISE_FLOOR_ALPHA = 0.05;
+
+// Floor used in place of a near-zero tracked noise floor (e.g. right after
+// start(), before the EMA has caught up) so the ratio test has something
+// meaningful to multiply — otherwise "3x of ~0" is still ~0 and the gate
+// never rises above true silence.
+export const MIN_NOISE_FLOOR = 0.001;
+
+// How long after each scheduled metronome click to ignore new onsets and
+// pause noise-floor tracking, covering the click's own ~20ms envelope plus
+// slack for room reverb and the mic's AGC settling. Short enough to leave
+// most of a beat free for real hits (even a fast 180bpm beat is 333ms) while
+// covering the click's acoustic bleed into the mic, which reads as a short,
+// bright transient — exactly what the classifier calls a hat.
+const METRONOME_SUPPRESS_S = 0.07;
 
 // getUserMedia's DOMException.message is technically accurate but not
 // actionable ("Requested device not found" tells you nothing about what to
@@ -69,11 +85,15 @@ export class AudioEngine extends EventTarget {
   private state: EngineState = EngineState.IDLE;
   private holdBuffer: TransientFrame[] = [];
   private cooldownTimer: ReturnType<typeof setTimeout> | null = null;
-  private holdTimer: ReturnType<typeof setTimeout> | null = null;
   private config: AudioEngineConfig;
   private lastLevelEmitAt = 0;
   /** Rolling ambient rms level, updated only while LISTENING (see NOISE_FLOOR_ALPHA). */
   private noiseFloor = 0;
+  /** rms a held hit must decay below to be considered "released" (gate × releaseRatio). */
+  private releaseGate = 0;
+  /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
+  private holdStartedAt = 0;
+  private metronome: Metronome | null = null;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -113,7 +133,13 @@ export class AudioEngine extends EventTarget {
     this.config = { ...this.config, ...patch };
   }
 
-  async start(): Promise<void> {
+  /**
+   * @param metronomeBpm Tempo for the faint reference click that plays for
+   * the duration of the take, to help the performer stay on grid. Shares
+   * this engine's AudioContext (rather than a separate one) so it needs no
+   * extra user-gesture unlock and tears down in lockstep with the mic.
+   */
+  async start(metronomeBpm: number): Promise<void> {
     if (this.state !== EngineState.IDLE) return;
 
     try {
@@ -146,6 +172,8 @@ export class AudioEngine extends EventTarget {
       });
 
       this.analyzer.start();
+      this.metronome = new Metronome(this.ctx, metronomeBpm);
+      this.metronome.start();
       this.setState(EngineState.LISTENING);
     } catch (err) {
       this.dispatchEvent(new CustomEvent<Error>('error', { detail: new Error(describeMicError(err)) }));
@@ -159,6 +187,8 @@ export class AudioEngine extends EventTarget {
   }
 
   private teardown(): void {
+    this.metronome?.stop();
+    this.metronome = null;
     this.analyzer?.stop();
     this.analyzer = null;
     this.waveNode?.disconnect();
@@ -170,9 +200,7 @@ export class AudioEngine extends EventTarget {
     void this.ctx?.close();
     this.ctx = null;
 
-    if (this.holdTimer) clearTimeout(this.holdTimer);
     if (this.cooldownTimer) clearTimeout(this.cooldownTimer);
-    this.holdTimer = null;
     this.cooldownTimer = null;
     this.holdBuffer = [];
     this.noiseFloor = 0;
@@ -190,23 +218,44 @@ export class AudioEngine extends EventTarget {
       zcr: raw.zcr ?? 0,
     };
 
+    const suppressingClick = this.metronome?.isJustAfterClick(frame.timestamp, METRONOME_SUPPRESS_S) ?? false;
+
     // Only LISTENING updates the floor — the onset itself and its decay
     // tail (ONSET_HOLD/COOLDOWN) must never feed back into what counts as
     // "ambient", or the gate would chase the hit it's supposed to catch.
-    if (this.state === EngineState.LISTENING) {
+    // Frames right after a click are skipped too, so the click's own
+    // recurring bleed can't drag the floor up and desensitize real hits.
+    if (this.state === EngineState.LISTENING && !suppressingClick) {
       this.noiseFloor += (frame.rms - this.noiseFloor) * NOISE_FLOOR_ALPHA;
     }
-    const gate = this.noiseFloor + this.config.onsetMargin;
+    const gate = Math.max(this.noiseFloor, MIN_NOISE_FLOOR) * this.config.onsetRatio;
     this.maybeEmitLevel(frame.rms, gate);
 
     switch (this.state) {
       case EngineState.LISTENING:
-        if (frame.rms >= gate) this.beginOnsetHold(frame);
+        if (!suppressingClick && frame.rms >= gate) this.beginOnsetHold(frame, gate);
         break;
 
-      case EngineState.ONSET_HOLD:
+      case EngineState.ONSET_HOLD: {
         this.holdBuffer.push(frame);
+        const elapsedMs = (frame.timestamp - this.holdStartedAt) * 1000;
+        // Real hits (a beatboxed "boom"'s vowel swell, a sustained "tsss"
+        // snare hiss) commonly take 150-300ms to decay below the ambient
+        // floor — far longer than a fixed short window. Riding the level
+        // down to a release threshold (rather than clipping to one fixed
+        // duration for every sound) captures each hit's actual characteristic
+        // body instead of just its attack transient, and avoids splitting one
+        // hit's decay tail into a spurious second onset. maxHoldMs is only a
+        // safety cap for sustained non-percussive input (e.g. background
+        // noise) that never drops back down on its own.
+        if (frame.rms <= this.releaseGate || elapsedMs >= this.config.maxHoldMs) {
+          const frames = this.holdBuffer;
+          this.holdBuffer = [];
+          this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          this.enterCooldown();
+        }
         break;
+      }
 
       // IDLE / COOLDOWN: ignore incoming frames entirely.
       default:
@@ -214,16 +263,11 @@ export class AudioEngine extends EventTarget {
     }
   }
 
-  private beginOnsetHold(firstFrame: TransientFrame): void {
+  private beginOnsetHold(firstFrame: TransientFrame, gate: number): void {
     this.holdBuffer = [firstFrame];
+    this.releaseGate = gate * this.config.releaseRatio;
+    this.holdStartedAt = firstFrame.timestamp;
     this.setState(EngineState.ONSET_HOLD);
-
-    this.holdTimer = setTimeout(() => {
-      const frames = this.holdBuffer;
-      this.holdBuffer = [];
-      this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
-      this.enterCooldown();
-    }, this.config.onsetHoldMs);
   }
 
   private enterCooldown(): void {

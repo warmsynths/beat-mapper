@@ -9,22 +9,36 @@ import { CLASS_COLORS } from '../ui/theme.ts';
 
 const FLASH_MS = 200;
 
-// Pad geometry, in the SVG's own 300×384 coordinate space.
+// Grid-device (SP-404-style) pad geometry, in that illustration's own
+// 300×384 coordinate space.
 const COLS = [44, 87, 130, 173];
 const ROWS = [196, 239, 282, 325];
 const PAD = 36;
 const FIFTH_X = 220;
 
-// kick/snare/hat occupy the top three cells of the fifth (utilities) column.
+// Pocket-style (PO-33/PO-32) pad geometry, in that illustration's own
+// 220×390 coordinate space — 16 round pads in a plain 4×4 grid, no fifth
+// utility column. These devices have no on-device sound selector to draw;
+// the pattern grid's lane labels (Fig. 02) already select the class being
+// step-edited regardless of which device is pictured here.
+const POCKET_COLS = [20, 67, 114, 161];
+const POCKET_ROWS = [176, 223, 270, 317];
+const POCKET_PAD_R = 18;
+
+// kick/snare/hat occupy the top three cells of the fifth (utilities) column
+// on grid-style devices.
 const SELECTOR_LANES: DrumClass[] = ['kick', 'snare', 'hat'];
 
 /**
- * Fig. 03 — the Device Atlas. The whole SP-404 is drawn as a single ink
- * line-art SVG on paper: decorative chrome (knobs, jog wheel, function
- * rows), the 4×4 grid of 16 performance pads, and a fifth utilities column
- * that holds the kick/snare/hat selectors. The performance pads double as
- * the 16-step entry surface for the selected sound (tap to place/remove a
- * hit); the fifth-column selectors pick which sound you're editing.
+ * Fig. 03 — the Device Atlas. The selected hardware is drawn as a single ink
+ * line-art SVG on paper. Grid-style devices (the SP-404) get chrome (knobs,
+ * jog wheel, function rows), a 4×4 grid of 16 performance pads, and a fifth
+ * utilities column holding the kick/snare/hat selectors. Pocket-style
+ * devices (the Teenage Engineering PO line — PO-33, PO-32 — identified by
+ * having no gridDimensions, since they're a single row of keys rather than
+ * a pad grid) get their own rounded-shell illustration with a plain 4×4
+ * pad grid and no fifth column. Either way, the pads double as the 16-step
+ * entry surface for the selected sound (tap to place/remove a hit).
  */
 @customElement('device-atlas')
 export class DeviceAtlas extends LitElement {
@@ -92,6 +106,10 @@ export class DeviceAtlas extends LitElement {
   }
 
   render() {
+    return this.deviceConfig?.gridDimensions === null ? this.renderPocketDevice() : this.renderGridDevice();
+  }
+
+  private renderGridDevice() {
     const stepMode = this.stepHighlights !== null && this.selectedClass !== null;
 
     const perfPads = Array.from({ length: 16 }, (_, i) => {
@@ -119,9 +137,9 @@ export class DeviceAtlas extends LitElement {
     });
 
     return html`
-      <svg viewBox="0 0 300 384" fill="none" stroke="var(--ink)" role="img" aria-label="SP-404 device atlas">
-        <rect x="6" y="6" width="288" height="372" rx="14" stroke-width="1.4"/>
-        <rect x="20" y="20" width="260" height="344" rx="8" stroke-width="1"/>
+      <svg viewBox="0 0 300 404" fill="none" stroke="var(--ink)" role="img" aria-label=${`${this.deviceLabel} device atlas`}>
+        <rect x="6" y="6" width="288" height="392" rx="14" stroke-width="1.4"/>
+        <rect x="20" y="20" width="260" height="364" rx="8" stroke-width="1"/>
         <rect x="34" y="30" width="34" height="9" rx="2" stroke-width="1"/>
         <text x="266" y="40" text-anchor="end" font-family="var(--mono)" font-size="13" font-weight="700" fill="var(--ink)" stroke="none" letter-spacing="1">${this.deviceLabel}</text>
 
@@ -159,6 +177,48 @@ export class DeviceAtlas extends LitElement {
     `;
   }
 
+  private renderPocketDevice() {
+    const stepMode = this.stepHighlights !== null && this.selectedClass !== null;
+
+    const pads = Array.from({ length: 16 }, (_, i) => {
+      const x = POCKET_COLS[i % 4];
+      const y = POCKET_ROWS[Math.floor(i / 4)];
+      const cx = x + POCKET_PAD_R;
+      const cy = y + POCKET_PAD_R;
+      const lit = stepMode && this.stepHighlights!.has(i);
+      return svg`
+        <g class=${`pad ${stepMode ? 'live' : ''}`} @click=${() => this.togglePad(i)}>
+          <circle cx=${cx} cy=${cy} r=${POCKET_PAD_R} fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2"/>
+          ${lit ? this.mark(cx, cy, this.selectedClass!) : nothing}
+        </g>`;
+    });
+
+    return html`
+      <svg viewBox="0 0 220 390" fill="none" stroke="var(--ink)" role="img" aria-label=${`${this.deviceLabel} device atlas`}>
+        <rect x="6" y="6" width="208" height="378" rx="20" stroke-width="1.4"/>
+
+        <!-- speaker/mic notch, flush with the top edge -->
+        <path d="M55 6 L165 6 L165 30 Q165 46 149 46 L71 46 Q55 46 55 30 Z" stroke-width="1.2"/>
+        <ellipse cx="110" cy="26" rx="24" ry="8" stroke-width="1"/>
+
+        <text x="110" y="70" text-anchor="middle" font-family="var(--mono)" font-size="13" font-weight="700" fill="var(--ink)" stroke="none" letter-spacing="1">${this.deviceLabel}</text>
+
+        <!-- mini display -->
+        <rect x="30" y="82" width="160" height="36" rx="4" stroke-width="1"/>
+        <line x1="50" y1="100" x2="190" y2="100" stroke-width="1.5"/>
+
+        <!-- knobs -->
+        <g stroke-width="1.2">
+          <circle cx="33" cy="148" r="13"/>
+          <circle cx="187" cy="148" r="13"/>
+        </g>
+
+        <!-- 16 pads -->
+        ${pads}
+      </svg>
+    `;
+  }
+
   private get deviceLabel(): string {
     // short label for the panel (drop the manufacturer for the printed tag)
     const n = this.deviceConfig?.name ?? '';
@@ -182,7 +242,8 @@ export class DeviceAtlas extends LitElement {
     .pad.live {
       cursor: pointer;
     }
-    .pad.live:hover rect {
+    .pad.live:hover rect,
+    .pad.live:hover circle {
       fill: var(--hair-soft);
     }
     .sel.active {

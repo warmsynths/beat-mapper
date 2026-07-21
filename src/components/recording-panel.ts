@@ -24,6 +24,7 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) infoMessage: string | null = null;
   @property({ attribute: false }) recordedHits: RecordedHit[] = [];
   @property({ type: Number }) bpm = 100;
+  @property({ type: Number }) targetBpm = 100;
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
 
@@ -32,6 +33,9 @@ export class RecordingPanel extends LitElement {
   };
   private adjustBpm(delta: number): void {
     this.dispatchEvent(new CustomEvent<number>('bpm-adjust', { detail: delta, bubbles: true, composed: true }));
+  }
+  private adjustTargetBpm(delta: number): void {
+    this.dispatchEvent(new CustomEvent<number>('target-bpm-adjust', { detail: delta, bubbles: true, composed: true }));
   }
 
   render() {
@@ -55,11 +59,22 @@ export class RecordingPanel extends LitElement {
           <button type="button" class="rec" ?data-on=${isRecording} @click=${this.onRecordClick}>
             <span class="dot"></span>${recordLabel}
           </button>
+          ${!reviewing
+            ? html`
+                <div class="metro" aria-label="Metronome tempo">
+                  <span class="metro-lbl">BPM</span>
+                  <button type="button" ?disabled=${isRecording} @click=${() => this.adjustTargetBpm(-5)}>−</button>
+                  <b>${this.targetBpm}</b>
+                  <button type="button" ?disabled=${isRecording} @click=${() => this.adjustTargetBpm(5)}>+</button>
+                </div>
+              `
+            : nothing}
           <div class="meter">
             <div class="meter-scale"><span>MIC</span><span>0dB</span></div>
             <level-meter .level=${this.level} .threshold=${this.levelThreshold}></level-meter>
           </div>
         </div>
+        ${!reviewing ? html`<p class="metro-hint">Headphones keep the click out of the mic pickup.</p>` : nothing}
 
         ${this.errorMessage ? html`<p class="msg err">${this.errorMessage}</p>` : nothing}
         ${this.infoMessage ? html`<p class="msg info">${this.infoMessage}</p>` : nothing}
@@ -145,8 +160,9 @@ export class RecordingPanel extends LitElement {
 
     .transport {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-4) var(--space-5);
       margin-top: var(--space-5);
     }
     .rec {
@@ -187,6 +203,53 @@ export class RecordingPanel extends LitElement {
       50% {
         opacity: 0.25;
       }
+    }
+
+    .metro {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1-5);
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+    .metro b {
+      font-size: var(--text-sm);
+      color: var(--ink);
+      min-width: 26px;
+      text-align: center;
+    }
+    .metro button {
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: none;
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: var(--text-base);
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      transition: color var(--dur-fast) var(--ease);
+    }
+    .metro button:hover:not(:disabled) {
+      color: var(--ink);
+    }
+    .metro button:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .metro-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
+      margin: var(--space-2) 0 0;
     }
 
     .meter {

@@ -1,7 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { provide } from '@lit/context';
-import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG } from '../audio/audio-engine.ts';
+import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG, MIN_NOISE_FLOOR } from '../audio/audio-engine.ts';
 import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
 import {
   classifyTransient,
@@ -10,7 +10,6 @@ import {
   type DrumClass,
 } from '../audio/classifier.ts';
 import {
-  estimateBpm,
   quantizeHits,
   MIN_BPM,
   MAX_BPM,
@@ -25,13 +24,17 @@ import { po32Config } from '../devices/po32.ts';
 import { BeatBus } from '../state/beat-bus.ts';
 import { audioEngineContext, beatBusContext, deviceConfigContext } from '../state/contexts.ts';
 import './app-header.ts';
+import './app-footer.ts';
 import './recording-panel.ts';
 import './hardware-panel.ts';
 
 const DEVICES: DeviceConfig[] = [sp404mkiiConfig, po33Config, po32Config];
 
-const SENS_MIN = 0.005;
-const SENS_MAX = 0.05;
+// onsetRatio bounds: at SENS_MAX the knob is maximally sensitive (a hit only
+// needs to be 10% above the ambient floor); at SENS_MIN it needs to be 3x
+// the floor.
+const SENS_MIN = 1.1;
+const SENS_MAX = 3.0;
 const TONE_MIN = 0.5;
 const TONE_MAX = 2.0;
 
@@ -73,9 +76,13 @@ export class AppRoot extends LitElement {
   @state() private infoMessage: string | null = null;
   @state() private activeBank = this.deviceConfig.banks?.[0] ?? '';
   @state() private level = 0;
-  @state() private levelThreshold = DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
-  @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetMargin;
+  @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
+  @state() private sensitivity = SENS_MIN + SENS_MAX - DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
   @state() private tone = 1.0;
+  /** Metronome/take tempo, set before recording — the take is quantized to
+   * this exact value afterward rather than re-estimated from hit timing, so
+   * it holds steady even where the performer drifted slightly off the click. */
+  @state() private targetBpm = 100;
 
   // Working take for the active bank.
   @state() private sessionPhase: SessionPhase = 'idle';
@@ -158,7 +165,7 @@ export class AppRoot extends LitElement {
     this.viewBar = 0;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
-    await this.engine.start();
+    await this.engine.start(this.targetBpm);
   }
 
   private finishRecording(): void {
@@ -167,7 +174,7 @@ export class AppRoot extends LitElement {
       this.infoMessage = 'No hits detected — raise SENS (or beatbox louder/closer to the mic) and record again.';
       return;
     }
-    this.bpm = estimateBpm(this.recordedHits);
+    this.bpm = this.targetBpm;
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.viewBar = 0;
     this.sessionPhase = 'reviewing';
@@ -177,6 +184,10 @@ export class AppRoot extends LitElement {
     this.bpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.bpm + delta));
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.setViewBar(this.viewBar);
+  }
+
+  private adjustTargetBpm(delta: number): void {
+    this.targetBpm = Math.min(MAX_BPM, Math.max(MIN_BPM, this.targetBpm + delta));
   }
 
   // --- per-bank memory ---------------------------------------------------
@@ -269,14 +280,15 @@ export class AppRoot extends LitElement {
 
   private onSensitivityChange = (event: CustomEvent<number>): void => {
     this.sensitivity = event.detail;
-    this.engine.updateConfig({ onsetMargin: SENS_MIN + SENS_MAX - this.sensitivity });
+    this.engine.updateConfig({ onsetRatio: SENS_MIN + SENS_MAX - this.sensitivity });
   };
   private onToneChange = (event: CustomEvent<number>): void => {
     this.tone = event.detail;
     this.thresholds = {
       ...this.thresholds,
-      centroidKickMax: DEFAULT_CLASSIFIER_THRESHOLDS.centroidKickMax * this.tone,
-      centroidHatMin: DEFAULT_CLASSIFIER_THRESHOLDS.centroidHatMin * this.tone,
+      kickCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.kickCentroidHz * this.tone,
+      snareCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.snareCentroidHz * this.tone,
+      hatCentroidHz: DEFAULT_CLASSIFIER_THRESHOLDS.hatCentroidHz * this.tone,
     };
   };
 
@@ -301,10 +313,12 @@ export class AppRoot extends LitElement {
               .infoMessage=${this.infoMessage}
               .recordedHits=${this.recordedHits}
               .bpm=${this.bpm}
+              .targetBpm=${this.targetBpm}
               .pattern=${this.pattern}
               .selectedClass=${this.selectedClass}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
+              @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
             ></recording-panel>
           </div>
@@ -336,6 +350,8 @@ export class AppRoot extends LitElement {
             ></hardware-panel>
           </div>
         </div>
+
+        <app-footer></app-footer>
       </div>
     `;
   }
