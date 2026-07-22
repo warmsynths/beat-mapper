@@ -28,6 +28,7 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
   @property({ type: Boolean }) headphonesOn = false;
+  @property({ type: Boolean }) isAnalyzingFile = false;
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
@@ -41,12 +42,25 @@ export class RecordingPanel extends LitElement {
   private onHeadphonesClick = (): void => {
     this.dispatchEvent(new CustomEvent<boolean>('headphones-toggle', { detail: !this.headphonesOn, bubbles: true, composed: true }));
   };
+  private onFileInputChange = (event: Event): void => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    // Reset so choosing the same file again still fires 'change'.
+    input.value = '';
+    if (file) this.dispatchEvent(new CustomEvent<File>('file-upload', { detail: file, bubbles: true, composed: true }));
+  };
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
     const reviewing = this.sessionPhase === 'reviewing';
     const recordLabel = isRecording ? 'Stop' : reviewing ? 'Record again' : 'Record';
-    const scopeLabel = isRecording ? 'RECORDING' : reviewing ? `${this.bpm} BPM` : 'STANDBY';
+    const scopeLabel = isRecording
+      ? 'RECORDING'
+      : this.isAnalyzingFile
+        ? 'ANALYZING'
+        : reviewing
+          ? `${this.bpm} BPM`
+          : 'STANDBY';
     const durationS = (Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1);
 
     return html`
@@ -60,9 +74,18 @@ export class RecordingPanel extends LitElement {
         <p class="caption">Raw transient signal captured from the microphone.</p>
 
         <div class="transport">
-          <button type="button" class="rec" ?data-on=${isRecording} @click=${this.onRecordClick}>
+          <button type="button" class="rec" ?data-on=${isRecording} ?disabled=${this.isAnalyzingFile} @click=${this.onRecordClick}>
             <span class="dot"></span>${recordLabel}
           </button>
+          <label class="upload" ?data-disabled=${isRecording || this.isAnalyzingFile}>
+            ${this.isAnalyzingFile ? 'Analyzing…' : 'Upload audio'}
+            <input
+              type="file"
+              accept="audio/*"
+              ?disabled=${isRecording || this.isAnalyzingFile}
+              @change=${this.onFileInputChange}
+            />
+          </label>
           ${!reviewing
             ? html`
                 <div class="metro" aria-label="Metronome tempo">
@@ -290,6 +313,41 @@ export class RecordingPanel extends LitElement {
     .phones:disabled {
       opacity: 0.5;
       cursor: default;
+    }
+
+    .upload {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      padding: var(--space-1-5) var(--space-3);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .upload:hover:not([data-disabled]) {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .upload[data-disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .upload input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     .metro-hint {

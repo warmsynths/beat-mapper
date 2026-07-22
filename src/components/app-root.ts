@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { provide } from '@lit/context';
 import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG, MIN_NOISE_FLOOR } from '../audio/audio-engine.ts';
+import { analyzeAudioFile } from '../audio/offline-analysis.ts';
 import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
 import { extractHitFeatures, classifyTakeHits, type HitFeatures, type DrumClass } from '../audio/classifier.ts';
 import {
@@ -63,6 +64,7 @@ export class AppRoot extends LitElement {
 
   @state() private errorMessage: string | null = null;
   @state() private infoMessage: string | null = null;
+  @state() private isAnalyzingFile = false;
   @state() private activeBank = this.deviceConfig.banks?.[0] ?? '';
   @state() private level = 0;
   @state() private levelThreshold = MIN_NOISE_FLOOR * DEFAULT_AUDIO_ENGINE_CONFIG.onsetRatio;
@@ -149,6 +151,40 @@ export class AppRoot extends LitElement {
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
     await this.engine.start(this.targetBpm, this.headphonesOn);
+  }
+
+  /**
+   * Alternative to recording live through the mic: run an uploaded audio
+   * file through the same onset detection + classification pipeline, for
+   * when the mic/live recording isn't working. Shares finishRecording with
+   * the live path once pendingHits is populated, so review/quantize/pattern
+   * behave identically either way.
+   */
+  private async handleFileUpload(file: File): Promise<void> {
+    if (this.sessionPhase === 'recording') this.engine.stop();
+
+    this.errorMessage = null;
+    this.infoMessage = null;
+    this.recordedHits = [];
+    this.pendingHits = [];
+    this.pattern = { steps: [], totalSteps: 16 };
+    this.selectedClass = null;
+    this.viewBar = 0;
+    this.sessionPhase = 'idle';
+    this.isAnalyzingFile = true;
+
+    try {
+      const { hits, sampleRate } = await analyzeAudioFile(file, this.engine.getConfig());
+      this.pendingHits = hits.map((h) => ({
+        features: extractHitFeatures(h.frames, sampleRate, this.engine.getFftSize()),
+        timeMs: h.timeMs,
+      }));
+      this.finishRecording();
+    } catch (err) {
+      this.errorMessage = err instanceof Error ? err.message : "Couldn't read that file.";
+    } finally {
+      this.isAnalyzingFile = false;
+    }
   }
 
   private finishRecording(): void {
@@ -306,11 +342,13 @@ export class AppRoot extends LitElement {
               .pattern=${this.pattern}
               .selectedClass=${this.selectedClass}
               .headphonesOn=${this.headphonesOn}
+              .isAnalyzingFile=${this.isAnalyzingFile}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
               @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
               @headphones-toggle=${this.onHeadphonesToggle}
+              @file-upload=${(e: CustomEvent<File>) => this.handleFileUpload(e.detail)}
             ></recording-panel>
           </div>
 

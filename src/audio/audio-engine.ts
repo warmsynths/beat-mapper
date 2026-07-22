@@ -7,7 +7,9 @@ import {
   type TransientFrame,
 } from './types.ts';
 
-const FEATURES = ['rms', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
+// Shared with offline-analysis.ts, so a file upload is analyzed with exactly
+// the same feature set as a live take.
+export const FEATURES = ['rms', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
@@ -20,8 +22,9 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
 // Exponential-moving-average smoothing for the ambient noise floor: small
 // enough that a loud hit (which stops updating the floor the instant it
 // crosses the gate) can't itself drag the floor up, but fast enough to track
-// a room/mic's real ambient level within a few hundred ms.
-const NOISE_FLOOR_ALPHA = 0.05;
+// a room/mic's real ambient level within a few hundred ms. Shared with
+// offline-analysis.ts for the same reason as FEATURES above.
+export const NOISE_FLOOR_ALPHA = 0.05;
 
 // Floor used in place of a near-zero tracked noise floor (e.g. right after
 // start(), before the EMA has caught up) so the ratio test has something
@@ -110,6 +113,13 @@ export class AudioEngine extends EventTarget {
 
   getFftSize(): number {
     return this.config.fftSize;
+  }
+
+  /** Current config (including any sensitivity adjustment from updateConfig),
+   * for offline-analysis.ts to reuse so an uploaded file is detected with the
+   * same sensitivity as a live take. */
+  getConfig(): AudioEngineConfig {
+    return this.config;
   }
 
   /**
