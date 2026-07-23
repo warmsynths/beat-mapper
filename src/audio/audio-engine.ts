@@ -101,6 +101,16 @@ export class AudioEngine extends EventTarget {
   /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
   private holdStartedAt = 0;
   private metronome: Metronome | null = null;
+  /** Raw mic audio for the current/last take, captured in parallel with
+   * analysis purely so a performer can download exactly what the engine
+   * heard (see getRecordingBlob) — analysis itself never touches this. */
+  private mediaRecorder: MediaRecorder | null = null;
+  private recordedChunks: Blob[] = [];
+  private lastRecordingBlob: Blob | null = null;
+  /** Resolves once the current/most recent take's MediaRecorder has actually
+   * flushed its final chunk — set by teardown() when it stops the recorder,
+   * since that's async even though stop() itself is synchronous. */
+  private recordingStoppedPromise: Promise<Blob | null> | null = null;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -155,6 +165,19 @@ export class AudioEngine extends EventTarget {
   }
 
   /**
+   * The just-finished take's raw mic audio, for a performer to download and
+   * send along when a transcription looks wrong — the literal bytes the
+   * engine analyzed, rather than a separate phone recording of the same
+   * performance (which can differ enough in mic/room to make debugging
+   * misleading). Call after stop(); resolves null if the browser doesn't
+   * support MediaRecorder or nothing was captured.
+   */
+  async getRecordingBlob(): Promise<Blob | null> {
+    if (this.recordingStoppedPromise) return this.recordingStoppedPromise;
+    return this.lastRecordingBlob;
+  }
+
+  /**
    * @param metronomeBpm Tempo for the reference click/pulse that runs for
    * the duration of the take, to help the performer stay on grid. Shares
    * this engine's AudioContext (rather than a separate one) so it needs no
@@ -200,6 +223,25 @@ export class AudioEngine extends EventTarget {
       this.analyzer.start();
       this.metronome = new Metronome(this.ctx, metronomeBpm, metronomeAudible);
       this.metronome.start();
+
+      this.recordedChunks = [];
+      this.lastRecordingBlob = null;
+      this.recordingStoppedPromise = null;
+      if (typeof MediaRecorder !== 'undefined') {
+        try {
+          this.mediaRecorder = new MediaRecorder(this.stream);
+          this.mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) this.recordedChunks.push(e.data);
+          };
+          this.mediaRecorder.start();
+        } catch {
+          // Recording capture is a nice-to-have for later download/debugging;
+          // analysis itself never depends on it, so a failure here (an
+          // unsupported mime type, e.g.) shouldn't block the take.
+          this.mediaRecorder = null;
+        }
+      }
+
       this.setState(EngineState.LISTENING);
     } catch (err) {
       this.dispatchEvent(new CustomEvent<Error>('error', { detail: new Error(describeMicError(err)) }));
@@ -219,6 +261,27 @@ export class AudioEngine extends EventTarget {
     this.analyzer = null;
     this.waveNode?.disconnect();
     this.waveNode = null;
+
+    // Stopped before the stream's tracks are, so the recorder gets a clean
+    // final chunk rather than racing a track that's already gone dead.
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      const mr = this.mediaRecorder;
+      const chunks = this.recordedChunks;
+      this.recordingStoppedPromise = new Promise((resolve) => {
+        mr.addEventListener(
+          'stop',
+          () => {
+            const blob = chunks.length ? new Blob(chunks, { type: mr.mimeType || 'audio/webm' }) : null;
+            this.lastRecordingBlob = blob;
+            resolve(blob);
+          },
+          { once: true }
+        );
+      });
+      mr.stop();
+    }
+    this.mediaRecorder = null;
+
     this.source?.disconnect();
     this.source = null;
     this.stream?.getTracks().forEach((track) => track.stop());

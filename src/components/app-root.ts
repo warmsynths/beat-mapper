@@ -44,6 +44,19 @@ interface BankSlice {
   sessionPhase: SessionPhase;
 }
 
+/** One hit's full classification detail, for "download diagnostics" — see
+ * lastTakeDiagnostics. */
+interface HitDiagnostic {
+  timeMs: number;
+  class: DrumClass;
+  confidence: number;
+  brightness: number;
+  lowBandEnergy: number;
+  midBandEnergy: number;
+  highBandEnergy: number;
+  flatness: number;
+}
+
 const emptySlice = (): BankSlice => ({
   recordedHits: [],
   bpm: 100,
@@ -86,6 +99,12 @@ export class AppRoot extends LitElement {
   @state() private pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @state() private selectedClass: DrumClass | null = null;
   @state() private viewBar = 0;
+  /** Whether lastTakeAudio has something in it for "download audio" to
+   * enable — tracked separately as a plain boolean (rather than exposing the
+   * Blob/File itself as reactive state) since that's all the UI needs.
+   * "Download diagnostics" doesn't need its own flag: it's available exactly
+   * when sessionPhase is 'reviewing'. */
+  @state() private hasTakeAudio = false;
 
   /** Per-bank saved takes (per-bank memory). The active bank lives in the
    * working @state above; other banks are parked here until re-selected. */
@@ -95,6 +114,17 @@ export class AppRoot extends LitElement {
   /** Raw per-hit features captured so far this take — classified all at once,
    * relative to each other, once the take ends (see finishRecording). */
   private pendingHits: { features: HitFeatures; timeMs: number }[] = [];
+  /** The just-finished take's raw audio — a live take's mic capture, or the
+   * exact file that was uploaded — kept only so "download audio" can hand
+   * back the literal bytes that were analyzed. Null when neither exists
+   * (e.g. MediaRecorder unsupported). */
+  private lastTakeAudio: Blob | File | null = null;
+  /** Per-hit classification detail (brightness, band energy, confidence —
+   * everything classifyTakeHits saw) for "download diagnostics", so a
+   * transcription that looks wrong can be debugged from the numbers
+   * directly instead of re-deriving them from a screenshot + a separate
+   * recording. */
+  private lastTakeDiagnostics: HitDiagnostic[] = [];
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -139,6 +169,8 @@ export class AppRoot extends LitElement {
 
     if (this.sessionPhase === 'recording') {
       this.engine.stop();
+      this.lastTakeAudio = await this.engine.getRecordingBlob();
+      this.hasTakeAudio = this.lastTakeAudio !== null;
       this.finishRecording();
       return;
     }
@@ -148,6 +180,9 @@ export class AppRoot extends LitElement {
     this.pattern = { steps: [], totalSteps: 16 };
     this.selectedClass = null;
     this.viewBar = 0;
+    this.lastTakeAudio = null;
+    this.lastTakeDiagnostics = [];
+    this.hasTakeAudio = false;
     this.sessionPhase = 'recording';
     this.recordingStartedAt = performance.now();
     await this.engine.start(this.targetBpm, this.headphonesOn);
@@ -172,6 +207,11 @@ export class AppRoot extends LitElement {
     this.viewBar = 0;
     this.sessionPhase = 'idle';
     this.isAnalyzingFile = true;
+    // The uploaded file itself is exactly what gets analyzed below, so it
+    // doubles as the take's "download audio" — no separate capture needed.
+    this.lastTakeAudio = file;
+    this.lastTakeDiagnostics = [];
+    this.hasTakeAudio = true;
 
     try {
       const { hits, sampleRate } = await analyzeAudioFile(file, this.engine.getConfig());
@@ -204,11 +244,58 @@ export class AppRoot extends LitElement {
       hits.push({ class: result.class, controlId: control.id, controlLabel: control.label, confidence: result.confidence, timeMs });
       return hits;
     }, []);
+    // Kept separately from recordedHits (rather than folded into it) since
+    // this is for "download diagnostics", not the UI — it includes every
+    // hit classifyTakeHits saw, even ones getControls dropped above.
+    this.lastTakeDiagnostics = this.pendingHits.map(({ features, timeMs }, i) => ({
+      timeMs,
+      class: results[i].class,
+      confidence: results[i].confidence,
+      brightness: features.brightness,
+      lowBandEnergy: features.lowBandEnergy,
+      midBandEnergy: features.midBandEnergy,
+      highBandEnergy: features.highBandEnergy,
+      flatness: features.flatness,
+    }));
 
     this.bpm = this.targetBpm;
     this.pattern = quantizeHits(this.recordedHits, this.bpm);
     this.viewBar = 0;
     this.sessionPhase = 'reviewing';
+  }
+
+  /** Triggers a browser download for `data` named `filename` via a
+   * throwaway object URL + anchor click — the standard no-dependency way to
+   * save a Blob/File the page already holds in memory. */
+  private triggerDownload(data: Blob | File, filename: string): void {
+    const url = URL.createObjectURL(data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private downloadAudio(): void {
+    if (!this.lastTakeAudio) return;
+    // MediaRecorder's mime type (hence container/extension) varies by
+    // browser — webm on Chrome/Firefox, often mp4 on Safari; an uploaded
+    // file just keeps its own name.
+    const isUpload = this.lastTakeAudio instanceof File;
+    const ext = isUpload ? '' : (this.lastTakeAudio.type.split('/')[1] ?? 'webm').split(';')[0];
+    const filename = isUpload ? (this.lastTakeAudio as File).name : `beat-mapper-take.${ext}`;
+    this.triggerDownload(this.lastTakeAudio, filename);
+  }
+
+  private downloadDiagnostics(): void {
+    if (this.lastTakeDiagnostics.length === 0) return;
+    const payload = {
+      bpm: this.bpm,
+      device: this.deviceConfig.id,
+      hits: this.lastTakeDiagnostics,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    this.triggerDownload(blob, 'beat-mapper-diagnostics.json');
   }
 
   private adjustBpm(delta: number): void {
@@ -268,6 +355,12 @@ export class AppRoot extends LitElement {
     this.saveActiveBank();
     this.activeBank = next;
     this.loadBank(next);
+    // lastTakeAudio/lastTakeDiagnostics aren't part of per-bank memory (see
+    // BankSlice) — the download buttons would otherwise keep offering the
+    // take from whichever bank was active when it was captured.
+    this.lastTakeAudio = null;
+    this.lastTakeDiagnostics = [];
+    this.hasTakeAudio = false;
   };
 
   private onDeviceChange = (id: string): void => {
@@ -282,6 +375,9 @@ export class AppRoot extends LitElement {
     this.selectedClass = null;
     this.viewBar = 0;
     this.sessionPhase = 'idle';
+    this.lastTakeAudio = null;
+    this.lastTakeDiagnostics = [];
+    this.hasTakeAudio = false;
   };
 
   private toggleSelectedClass(lane: DrumClass): void {
@@ -343,12 +439,15 @@ export class AppRoot extends LitElement {
               .selectedClass=${this.selectedClass}
               .headphonesOn=${this.headphonesOn}
               .isAnalyzingFile=${this.isAnalyzingFile}
+              .hasTakeAudio=${this.hasTakeAudio}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
               @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
               @headphones-toggle=${this.onHeadphonesToggle}
               @file-upload=${(e: CustomEvent<File>) => this.handleFileUpload(e.detail)}
+              @download-audio=${() => this.downloadAudio()}
+              @download-diagnostics=${() => this.downloadDiagnostics()}
             ></recording-panel>
           </div>
 

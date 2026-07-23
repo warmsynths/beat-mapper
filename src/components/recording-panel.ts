@@ -29,9 +29,16 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
   @property({ type: Boolean }) headphonesOn = false;
   @property({ type: Boolean }) isAnalyzingFile = false;
+  @property({ type: Boolean }) hasTakeAudio = false;
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
+  };
+  private onDownloadAudioClick = (): void => {
+    this.dispatchEvent(new CustomEvent('download-audio', { bubbles: true, composed: true }));
+  };
+  private onDownloadDiagnosticsClick = (): void => {
+    this.dispatchEvent(new CustomEvent('download-diagnostics', { bubbles: true, composed: true }));
   };
   private adjustBpm(delta: number): void {
     this.dispatchEvent(new CustomEvent<number>('bpm-adjust', { detail: delta, bubbles: true, composed: true }));
@@ -148,6 +155,11 @@ export class RecordingPanel extends LitElement {
                 </span>
               </div>
               <pattern-grid .pattern=${this.pattern} .selectedClass=${this.selectedClass}></pattern-grid>
+              <div class="downloads">
+                <button type="button" ?disabled=${!this.hasTakeAudio} @click=${this.onDownloadAudioClick}>Download audio</button>
+                <button type="button" @click=${this.onDownloadDiagnosticsClick}>Download diagnostics</button>
+                <span class="downloads-hint">For sharing a take that transcribed wrong.</span>
+              </div>
             `
           : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
       </section>
@@ -469,6 +481,43 @@ export class RecordingPanel extends LitElement {
     }
     .bpm button:hover {
       background: var(--hair-soft);
+    }
+
+    .downloads {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: 1px dashed var(--hair);
+    }
+    .downloads button {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      padding: var(--space-1-5) var(--space-3);
+      cursor: pointer;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .downloads button:hover:not(:disabled) {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .downloads button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .downloads-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
     }
   `;
 }
