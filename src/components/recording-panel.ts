@@ -30,6 +30,7 @@ export class RecordingPanel extends LitElement {
   @property({ type: Boolean }) headphonesOn = false;
   @property({ type: Boolean }) isAnalyzingFile = false;
   @property({ type: Boolean }) hasTakeAudio = false;
+  @property({ attribute: false }) activeClasses: DrumClass[] = ['kick', 'snare', 'hat'];
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
@@ -55,6 +56,9 @@ export class RecordingPanel extends LitElement {
     // Reset so choosing the same file again still fires 'change'.
     input.value = '';
     if (file) this.dispatchEvent(new CustomEvent<File>('file-upload', { detail: file, bubbles: true, composed: true }));
+  };
+  private onActiveClassClick = (cls: DrumClass): void => {
+    this.dispatchEvent(new CustomEvent<DrumClass>('active-class-toggle', { detail: cls, bubbles: true, composed: true }));
   };
 
   render() {
@@ -134,14 +138,22 @@ export class RecordingPanel extends LitElement {
         <div class="legend">
           ${DRUM_CLASS_LANES.slice().reverse().map((lane) => {
             const s = CLASS_COLORS[lane];
+            const active = this.activeClasses.includes(lane);
             return html`
-              <div class="key">
+              <button
+                type="button"
+                class="key"
+                ?data-off=${!active}
+                ?disabled=${isRecording}
+                @click=${() => this.onActiveClassClick(lane)}
+              >
                 <span class="sym">${unsafeHTML(classShapeSvg(s.shape, s.fg))}</span>
                 <span class="ktext"><b>${s.label.charAt(0) + s.label.slice(1).toLowerCase()}</b><em>${s.gloss}</em></span>
-              </div>
+              </button>
             `;
           })}
         </div>
+        <p class="legend-hint">Tap a sound you never use to turn it off — the transcription will never reach for it.</p>
 
         <div class="fig fig2">Fig. 02 — Transcribed Sequence<span class="line"></span></div>
         ${reviewing
@@ -406,6 +418,32 @@ export class RecordingPanel extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--space-3);
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity var(--dur-fast) var(--ease);
+    }
+    .key[data-off] {
+      opacity: 0.35;
+    }
+    .key:hover:not(:disabled) {
+      opacity: 0.7;
+    }
+    .key[data-off]:hover:not(:disabled) {
+      opacity: 0.55;
+    }
+    .key:disabled {
+      cursor: default;
+    }
+    .legend-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
+      margin: var(--space-2) 0 0;
     }
     .sym {
       width: 24px;

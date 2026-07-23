@@ -91,6 +91,13 @@ export class AppRoot extends LitElement {
    * this exact value afterward rather than re-estimated from hit timing, so
    * it holds steady even where the performer drifted slightly off the click. */
   @state() private targetBpm = 100;
+  /** Which sounds the performer actually uses — see classifyTakeHits. Not
+   * every performer uses all three; a performer who never uses a hat
+   * shouldn't have the classifier ever able to reach for "hat" just because
+   * a take happens to have some hit that measures brighter than the rest.
+   * Global (not per-bank) since it's a property of how someone performs,
+   * not of any one beat. */
+  @state() private activeClasses: DrumClass[] = ['kick', 'snare', 'hat'];
 
   // Working take for the active bank.
   @state() private sessionPhase: SessionPhase = 'idle';
@@ -236,7 +243,7 @@ export class AppRoot extends LitElement {
 
     // Classified together, relative to each other, rather than hit-by-hit
     // against fixed pitch targets — see classifyTakeHits.
-    const results = classifyTakeHits(this.pendingHits.map((h) => h.features));
+    const results = classifyTakeHits(this.pendingHits.map((h) => h.features), this.activeClasses);
     this.recordedHits = this.pendingHits.reduce<RecordedHit[]>((hits, { timeMs }, i) => {
       const result = results[i];
       const [control] = getControls(this.deviceConfig, this.deviceConfig.classMapping[result.class]);
@@ -412,6 +419,15 @@ export class AppRoot extends LitElement {
   private onHeadphonesToggle = (event: CustomEvent<boolean>): void => {
     this.headphonesOn = event.detail;
   };
+  private onActiveClassToggle = (event: CustomEvent<DrumClass>): void => {
+    const cls = event.detail;
+    // At least one class always has to stay active — classifyTakeHits has
+    // nothing to label hits with otherwise.
+    if (this.activeClasses.length === 1 && this.activeClasses.includes(cls)) return;
+    this.activeClasses = this.activeClasses.includes(cls)
+      ? this.activeClasses.filter((c) => c !== cls)
+      : [...this.activeClasses, cls];
+  };
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
@@ -440,11 +456,13 @@ export class AppRoot extends LitElement {
               .headphonesOn=${this.headphonesOn}
               .isAnalyzingFile=${this.isAnalyzingFile}
               .hasTakeAudio=${this.hasTakeAudio}
+              .activeClasses=${this.activeClasses}
               @record-toggle=${() => this.handleRecordButton()}
               @bpm-adjust=${(e: CustomEvent<number>) => this.adjustBpm(e.detail)}
               @target-bpm-adjust=${(e: CustomEvent<number>) => this.adjustTargetBpm(e.detail)}
               @lane-select=${(e: CustomEvent<DrumClass>) => this.toggleSelectedClass(e.detail)}
               @headphones-toggle=${this.onHeadphonesToggle}
+              @active-class-toggle=${this.onActiveClassToggle}
               @file-upload=${(e: CustomEvent<File>) => this.handleFileUpload(e.detail)}
               @download-audio=${() => this.downloadAudio()}
               @download-diagnostics=${() => this.downloadDiagnostics()}

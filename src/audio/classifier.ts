@@ -134,17 +134,20 @@ export function extractHitFeatures(
 const MIN_CLASS_SEPARATION_BRIGHTNESS = 0.15;
 
 /** Ascending-brightness groups of original indices, split at the largest
- * gaps — at most 2 splits (3 groups), and only where a gap is wide enough to
- * plausibly be a different sound rather than the same sound played a bit
- * differently. */
-function groupByBrightness(brightness: number[]): number[][] {
+ * gaps — at most `maxSplits` of them (maxSplits + 1 groups), and only where
+ * a gap is wide enough to plausibly be a different sound rather than the
+ * same sound played a bit differently. `maxSplits` is one less than however
+ * many classes are actually in play (see classifyTakeHits) — a take can
+ * never split into more distinct groups than there are sounds it's allowed
+ * to be. */
+function groupByBrightness(brightness: number[], maxSplits: number): number[][] {
   const order = brightness.map((_, i) => i).sort((a, b) => brightness[a] - brightness[b]);
   const gaps = order
     .slice(0, -1)
     .map((_, i) => ({ afterPos: i, size: brightness[order[i + 1]] - brightness[order[i]] }))
     .filter((g) => g.size >= MIN_CLASS_SEPARATION_BRIGHTNESS)
     .sort((a, b) => b.size - a.size)
-    .slice(0, 2)
+    .slice(0, maxSplits)
     .map((g) => g.afterPos)
     .sort((a, b) => a - b);
 
@@ -161,32 +164,34 @@ function groupByBrightness(brightness: number[]): number[][] {
 const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
 
 /**
- * Which class name goes with each group. With all 3 groups present, the
- * take's own clustering already fully determines the answer — kick < snare
- * < hat is the only order-preserving assignment, so it's used outright, no
- * matter where the first hit happens to land.
+ * Which class name goes with each group, out of `orderedActiveClasses` (a
+ * low-to-high subsequence of kick/snare/hat — see classifyTakeHits). With as
+ * many groups as active classes, the take's own clustering already fully
+ * determines the answer — ascending brightness order is the only
+ * order-preserving assignment, so it's used outright, no matter where the
+ * first hit happens to land.
  *
- * With fewer than 3 groups, the take's own clustering can't say *which*
+ * With fewer groups than that, the take's own clustering can't say *which*
  * class is missing — so as ground truth, a performer almost always opens a
- * beat on the kick: whichever group contains the take's first hit (index 0)
- * is taken to be "kick", and the remaining group(s) fill in snare then hat
- * outward from there. This only ever has to place at most one more group on
- * each side, since groups.length < 3 here. Anchoring on the take's own first
- * hit rather than a fixed absolute pitch handles performers whose kick
- * doesn't happen to be deeply bass-heavy (a quiet, breathy kick can measure
- * *brighter* than a loud, sung snare) without having to guess a "typical"
- * register that may not match them at all.
+ * beat on the bassiest sound they use: whichever group contains the take's
+ * first hit (index 0) is taken to be `orderedActiveClasses[0]`, and the
+ * remaining group(s) fill in the rest of orderedActiveClasses outward from
+ * there. Anchoring on the take's own first hit rather than a fixed absolute
+ * pitch handles performers whose kick doesn't happen to be deeply
+ * bass-heavy (a quiet, breathy kick can measure *brighter* than a loud, sung
+ * snare) without having to guess a "typical" register that may not match
+ * them at all.
  */
-function labelGroups(groups: number[][], firstHitGroupIndex: number): DrumClass[] {
-  if (groups.length === 3) return CLASSES_LOW_TO_HIGH;
+function labelGroups(groups: number[][], firstHitGroupIndex: number, orderedActiveClasses: DrumClass[]): DrumClass[] {
+  if (groups.length === orderedActiveClasses.length) return orderedActiveClasses;
 
   const labels: DrumClass[] = new Array(groups.length);
-  labels[firstHitGroupIndex] = 'kick';
-  const outward: DrumClass[] = ['snare', 'hat'];
+  labels[firstHitGroupIndex] = orderedActiveClasses[0];
+  const outward = orderedActiveClasses.slice(1);
   let next = 0;
-  for (let i = firstHitGroupIndex + 1; i < groups.length; i++) labels[i] = outward[next++] ?? 'hat';
+  for (let i = firstHitGroupIndex + 1; i < groups.length; i++) labels[i] = outward[next++] ?? outward.at(-1)!;
   next = 0;
-  for (let i = firstHitGroupIndex - 1; i >= 0; i--) labels[i] = outward[next++] ?? 'hat';
+  for (let i = firstHitGroupIndex - 1; i >= 0; i--) labels[i] = outward[next++] ?? outward.at(-1)!;
 
   return labels;
 }
@@ -195,13 +200,18 @@ function labelGroups(groups: number[][], firstHitGroupIndex: number): DrumClass[
  * Classifies every hit in a take *relative to the others in that same
  * take*, instead of against fixed absolute targets: a performer's own kick,
  * snare and hat sit wherever their voice/kit/mic put them, but within one
- * take a kick is reliably the bassiest of the three, snare in the middle,
- * hat the brightest. So this sorts all the take's hits by brightness (see
+ * take a kick is reliably the bassiest of the active classes, hat (if in
+ * play) the brightest. So this sorts all the take's hits by brightness (see
  * HitFeatures.brightness) and splits them at the largest gaps (see
  * groupByBrightness), then labels each group low-to-high — anchored on the
- * take's first hit when there isn't full 3-way separation to go on
- * (labelGroups). A take with fewer than 3 real sounds naturally collapses to
- * fewer groups rather than being forced into 3.
+ * take's first hit when there isn't full separation to go on (labelGroups).
+ * A take with fewer real sounds than `activeClasses` allows naturally
+ * collapses to fewer groups rather than being forced into all of them.
+ *
+ * `activeClasses` is which of kick/snare/hat the performer actually uses —
+ * default is all three, but a performer who (say) never uses a hat should
+ * pass `['kick', 'snare']` so a take never has "hat" to fall into in the
+ * first place, however different two of their sounds measure.
  *
  * `featuresList` must be in chronological order — both callers (live take,
  * file upload) already build it that way.
@@ -211,13 +221,17 @@ function labelGroups(groups: number[][], firstHitGroupIndex: number): DrumClass[
  * take's darkest or brightest group, or the only group there is) scores full
  * confidence on that side, since there's nothing to have been confused with.
  */
-export function classifyTakeHits(featuresList: HitFeatures[]): ClassificationResult[] {
+export function classifyTakeHits(
+  featuresList: HitFeatures[],
+  activeClasses: DrumClass[] = CLASSES_LOW_TO_HIGH
+): ClassificationResult[] {
   if (featuresList.length === 0) return [];
 
+  const orderedActiveClasses = CLASSES_LOW_TO_HIGH.filter((c) => activeClasses.includes(c));
   const brightness = featuresList.map((f) => f.brightness);
-  const groups = groupByBrightness(brightness);
+  const groups = groupByBrightness(brightness, orderedActiveClasses.length - 1);
   const firstHitGroupIndex = groups.findIndex((idxs) => idxs.includes(0));
-  const labels = labelGroups(groups, firstHitGroupIndex);
+  const labels = labelGroups(groups, firstHitGroupIndex, orderedActiveClasses);
 
   const results: ClassificationResult[] = new Array(featuresList.length);
   groups.forEach((idxs, groupIndex) => {
