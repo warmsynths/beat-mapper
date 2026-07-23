@@ -17,6 +17,10 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   releaseRatio: 0.7,
   maxHoldMs: 400,
   cooldownMs: 50,
+  // ~3 frames at fftSize 512 / 48kHz. Real hits (even short, quiet ones)
+  // observed in practice hold for 150ms+; anything under 30ms is a spike,
+  // not a percussive sound.
+  minHoldMs: 30,
 };
 
 // Exponential-moving-average smoothing for the ambient noise floor: small
@@ -283,7 +287,14 @@ export class AudioEngine extends EventTarget {
         if (frame.rms <= this.releaseGate || elapsedMs >= this.config.maxHoldMs) {
           const frames = this.holdBuffer;
           this.holdBuffer = [];
-          this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          // A hold this short was never a percussive hit — see minHoldMs —
+          // so it's dropped instead of dispatched. Still goes through
+          // cooldown rather than straight back to LISTENING, since whatever
+          // triggered it (a spike right as the floor was settling) is likely
+          // still elevated for a moment.
+          if (elapsedMs >= this.config.minHoldMs) {
+            this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          }
           this.enterCooldown();
         }
         break;

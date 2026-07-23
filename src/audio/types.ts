@@ -39,6 +39,16 @@ export interface AudioEngineConfig {
   maxHoldMs: number;
   /** Minimum dead time after a hit ends before a new one can begin. */
   cooldownMs: number;
+  /**
+   * Shortest hold that counts as a real hit. A single loud sample (a mic
+   * bump, a click, a stray spike right as the noise floor is still settling)
+   * can cross the onset gate and immediately fall back below the release
+   * gate within one or two frames — nowhere near long enough to be an actual
+   * percussive sound, but long enough to get captured and classified as a
+   * (spurious, usually silent-sounding) hit. Anything held for less than
+   * this is dropped rather than emitted.
+   */
+  minHoldMs: number;
 }
 
 export interface EngineStateChangeDetail {

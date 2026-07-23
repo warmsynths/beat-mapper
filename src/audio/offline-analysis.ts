@@ -71,7 +71,11 @@ function detectHits(samples: Float32Array, sampleRate: number, config: AudioEngi
       holdBuffer.push(frame);
       const elapsedMs = (frame.timestamp - holdStartedAt) * 1000;
       if (frame.rms <= releaseGate || elapsedMs >= config.maxHoldMs) {
-        hits.push({ frames: holdBuffer, timeMs: holdStartedAt * 1000 });
+        // A hold this short was never a percussive hit — see
+        // AudioEngineConfig.minHoldMs — so it's dropped instead of kept.
+        if (elapsedMs >= config.minHoldMs) {
+          hits.push({ frames: holdBuffer, timeMs: holdStartedAt * 1000 });
+        }
         holdBuffer = [];
         state = 'cooldown';
         cooldownUntil = frame.timestamp + config.cooldownMs / 1000;
