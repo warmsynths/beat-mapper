@@ -18,12 +18,6 @@ export interface ClassificationResult {
 }
 
 export interface ClassifierThresholds {
-  /** Reference brightness (see HitFeatures.brightness) for a typical kick. */
-  kickBrightness: number;
-  /** Reference brightness for a typical snare. */
-  snareBrightness: number;
-  /** Reference brightness for a typical hat/cymbal. */
-  hatBrightness: number;
   /** Upper bound (Hz) of the "low band" used for energy bucketing. */
   lowBandHz: number;
   /** Upper bound (Hz) of the "mid band" used for energy bucketing; above this is "high band". */
@@ -31,16 +25,6 @@ export interface ClassifierThresholds {
 }
 
 export const DEFAULT_CLASSIFIER_THRESHOLDS: ClassifierThresholds = {
-  // Used only as a coarse tie-breaker when a take doesn't give classifyTakeHits
-  // enough of its own variety to tell classes apart by relative brightness
-  // alone (see classifyTakeHits) — never as a hard per-hit boundary. Evenly
-  // spaced across brightness's fixed 0 (all-bass) .. 2 (all-treble) range:
-  // unlike a raw Hz centroid, brightness is already a normalized ratio, so it
-  // doesn't need a performer-specific "typical register" prior to be
-  // meaningful.
-  kickBrightness: 0.35,
-  snareBrightness: 1.0,
-  hatBrightness: 1.65,
   lowBandHz: 200,
   midBandHz: 2000,
 };
@@ -101,14 +85,6 @@ function ramp(value: number, from: number, to: number): number {
   return clamp01((value - from) / (to - from));
 }
 
-// How far away (in brightness units) a class's reference point can be before
-// that class scores zero, for the small-take fallback in classifyTakeHits.
-const BRIGHTNESS_FALLOFF = 1.2;
-
-function brightnessCloseness(brightness: number, reference: number): number {
-  return clamp01(1 - Math.abs(brightness - reference) / BRIGHTNESS_FALLOFF);
-}
-
 /**
  * Extracts the classification-relevant features from an aggregated onset
  * window (the frames captured while AudioEngine held a hit above its onset
@@ -157,8 +133,6 @@ export function extractHitFeatures(
 // stayed under 0.13.
 const MIN_CLASS_SEPARATION_BRIGHTNESS = 0.15;
 
-const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
-
 /** Ascending-brightness groups of original indices, split at the largest
  * gaps — at most 2 splits (3 groups), and only where a gap is wide enough to
  * plausibly be a different sound rather than the same sound played a bit
@@ -184,47 +158,37 @@ function groupByBrightness(brightness: number[]): number[][] {
   return groups;
 }
 
+const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
+
 /**
- * Which class name goes with each group, low-to-high. With all 3 groups
- * present there's only one order-preserving way to do it (kick < snare <
- * hat). With fewer, relative brightness alone can't say e.g. whether a
- * single, uniform take is all kicks or all hats — so as a last resort, each
- * possible low-to-high labelling is scored against the fixed reference
- * points (DEFAULT_CLASSIFIER_THRESHOLDS) and the closest match wins. This is
- * the only place those fixed points still matter, and only when the take
- * itself doesn't have enough variety to self-calibrate.
+ * Which class name goes with each group. With all 3 groups present, the
+ * take's own clustering already fully determines the answer — kick < snare
+ * < hat is the only order-preserving assignment, so it's used outright, no
+ * matter where the first hit happens to land.
+ *
+ * With fewer than 3 groups, the take's own clustering can't say *which*
+ * class is missing — so as ground truth, a performer almost always opens a
+ * beat on the kick: whichever group contains the take's first hit (index 0)
+ * is taken to be "kick", and the remaining group(s) fill in snare then hat
+ * outward from there. This only ever has to place at most one more group on
+ * each side, since groups.length < 3 here. Anchoring on the take's own first
+ * hit rather than a fixed absolute pitch handles performers whose kick
+ * doesn't happen to be deeply bass-heavy (a quiet, breathy kick can measure
+ * *brighter* than a loud, sung snare) without having to guess a "typical"
+ * register that may not match them at all.
  */
-function labelGroups(groups: number[][], brightness: number[], thresholds: ClassifierThresholds): DrumClass[] {
+function labelGroups(groups: number[][], firstHitGroupIndex: number): DrumClass[] {
   if (groups.length === 3) return CLASSES_LOW_TO_HIGH;
 
-  const groupMean = groups.map((idxs) => idxs.reduce((sum, i) => sum + brightness[i], 0) / idxs.length);
-  const ref: Record<DrumClass, number> = {
-    kick: thresholds.kickBrightness,
-    snare: thresholds.snareBrightness,
-    hat: thresholds.hatBrightness,
-  };
-  // Every increasing (low-to-high) way to pick `groups.length` names out of
-  // CLASSES_LOW_TO_HIGH — with 3 classes that's only 3 choices for 1 group,
-  // or 3 choices for 2 groups.
-  const candidates: DrumClass[][] =
-    groups.length === 1
-      ? CLASSES_LOW_TO_HIGH.map((c) => [c])
-      : [
-          ['kick', 'snare'],
-          ['kick', 'hat'],
-          ['snare', 'hat'],
-        ];
+  const labels: DrumClass[] = new Array(groups.length);
+  labels[firstHitGroupIndex] = 'kick';
+  const outward: DrumClass[] = ['snare', 'hat'];
+  let next = 0;
+  for (let i = firstHitGroupIndex + 1; i < groups.length; i++) labels[i] = outward[next++] ?? 'hat';
+  next = 0;
+  for (let i = firstHitGroupIndex - 1; i >= 0; i--) labels[i] = outward[next++] ?? 'hat';
 
-  let best = candidates[0];
-  let bestCost = Infinity;
-  for (const candidate of candidates) {
-    const cost = candidate.reduce((sum, cls, i) => sum + Math.abs(groupMean[i] - ref[cls]), 0);
-    if (cost < bestCost) {
-      bestCost = cost;
-      best = candidate;
-    }
-  }
-  return best;
+  return labels;
 }
 
 /**
@@ -234,45 +198,38 @@ function labelGroups(groups: number[][], brightness: number[], thresholds: Class
  * take a kick is reliably the bassiest of the three, snare in the middle,
  * hat the brightest. So this sorts all the take's hits by brightness (see
  * HitFeatures.brightness) and splits them at the largest gaps (see
- * groupByBrightness) — whatever comes out lowest is "kick", middle is
- * "snare", highest is "hat" (labelGroups). A take with fewer than 3 real
- * sounds naturally collapses to fewer groups rather than being forced into 3.
+ * groupByBrightness), then labels each group low-to-high — anchored on the
+ * take's first hit when there isn't full 3-way separation to go on
+ * (labelGroups). A take with fewer than 3 real sounds naturally collapses to
+ * fewer groups rather than being forced into 3.
  *
- * Confidence reflects how well the take separated: for a group formed by an
- * actual gap in the data, it's how wide that gap was relative to
- * MIN_CLASS_SEPARATION_BRIGHTNESS; for a group whose label came from the
- * fixed-point fallback (too little variety to self-calibrate), it's how
- * close that group's average brightness was to the reference it matched.
+ * `featuresList` must be in chronological order — both callers (live take,
+ * file upload) already build it that way.
+ *
+ * Confidence is how wide the gap to each neighboring group was, relative to
+ * MIN_CLASS_SEPARATION_BRIGHTNESS: a group with no neighbor on one side (the
+ * take's darkest or brightest group, or the only group there is) scores full
+ * confidence on that side, since there's nothing to have been confused with.
  */
-export function classifyTakeHits(
-  featuresList: HitFeatures[],
-  thresholds: ClassifierThresholds = DEFAULT_CLASSIFIER_THRESHOLDS
-): ClassificationResult[] {
+export function classifyTakeHits(featuresList: HitFeatures[]): ClassificationResult[] {
   if (featuresList.length === 0) return [];
 
   const brightness = featuresList.map((f) => f.brightness);
   const groups = groupByBrightness(brightness);
-  const labels = labelGroups(groups, brightness, thresholds);
-  const ref: Record<DrumClass, number> = {
-    kick: thresholds.kickBrightness,
-    snare: thresholds.snareBrightness,
-    hat: thresholds.hatBrightness,
-  };
+  const firstHitGroupIndex = groups.findIndex((idxs) => idxs.includes(0));
+  const labels = labelGroups(groups, firstHitGroupIndex);
 
   const results: ClassificationResult[] = new Array(featuresList.length);
   groups.forEach((idxs, groupIndex) => {
     const cls = labels[groupIndex];
-    const confidence =
-      groups.length === 3
-        ? Math.min(
-            groupIndex > 0
-              ? ramp(brightness[idxs[0]] - brightness[groups[groupIndex - 1].at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
-              : 1,
-            groupIndex < groups.length - 1
-              ? ramp(brightness[groups[groupIndex + 1][0]] - brightness[idxs.at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
-              : 1
-          )
-        : brightnessCloseness(idxs.reduce((sum, i) => sum + brightness[i], 0) / idxs.length, ref[cls]);
+    const confidence = Math.min(
+      groupIndex > 0
+        ? ramp(brightness[idxs[0]] - brightness[groups[groupIndex - 1].at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
+        : 1,
+      groupIndex < groups.length - 1
+        ? ramp(brightness[groups[groupIndex + 1][0]] - brightness[idxs.at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
+        : 1
+    );
 
     for (const i of idxs) {
       results[i] = { class: cls, confidence: clamp01(confidence), features: featuresList[i] };
