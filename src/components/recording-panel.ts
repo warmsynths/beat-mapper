@@ -28,9 +28,18 @@ export class RecordingPanel extends LitElement {
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
   @property({ type: Boolean }) headphonesOn = false;
+  @property({ type: Boolean }) isAnalyzingFile = false;
+  @property({ type: Boolean }) hasTakeAudio = false;
+  @property({ attribute: false }) activeClasses: DrumClass[] = ['kick', 'snare', 'hat'];
 
   private onRecordClick = (): void => {
     this.dispatchEvent(new CustomEvent('record-toggle', { bubbles: true, composed: true }));
+  };
+  private onDownloadAudioClick = (): void => {
+    this.dispatchEvent(new CustomEvent('download-audio', { bubbles: true, composed: true }));
+  };
+  private onDownloadDiagnosticsClick = (): void => {
+    this.dispatchEvent(new CustomEvent('download-diagnostics', { bubbles: true, composed: true }));
   };
   private adjustBpm(delta: number): void {
     this.dispatchEvent(new CustomEvent<number>('bpm-adjust', { detail: delta, bubbles: true, composed: true }));
@@ -41,12 +50,28 @@ export class RecordingPanel extends LitElement {
   private onHeadphonesClick = (): void => {
     this.dispatchEvent(new CustomEvent<boolean>('headphones-toggle', { detail: !this.headphonesOn, bubbles: true, composed: true }));
   };
+  private onFileInputChange = (event: Event): void => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    // Reset so choosing the same file again still fires 'change'.
+    input.value = '';
+    if (file) this.dispatchEvent(new CustomEvent<File>('file-upload', { detail: file, bubbles: true, composed: true }));
+  };
+  private onActiveClassClick = (cls: DrumClass): void => {
+    this.dispatchEvent(new CustomEvent<DrumClass>('active-class-toggle', { detail: cls, bubbles: true, composed: true }));
+  };
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
     const reviewing = this.sessionPhase === 'reviewing';
     const recordLabel = isRecording ? 'Stop' : reviewing ? 'Record again' : 'Record';
-    const scopeLabel = isRecording ? 'RECORDING' : reviewing ? `${this.bpm} BPM` : 'STANDBY';
+    const scopeLabel = isRecording
+      ? 'RECORDING'
+      : this.isAnalyzingFile
+        ? 'ANALYZING'
+        : reviewing
+          ? `${this.bpm} BPM`
+          : 'STANDBY';
     const durationS = (Math.max(...this.recordedHits.map((h) => h.timeMs), 0) / 1000).toFixed(1);
 
     return html`
@@ -60,9 +85,18 @@ export class RecordingPanel extends LitElement {
         <p class="caption">Raw transient signal captured from the microphone.</p>
 
         <div class="transport">
-          <button type="button" class="rec" ?data-on=${isRecording} @click=${this.onRecordClick}>
+          <button type="button" class="rec" ?data-on=${isRecording} ?disabled=${this.isAnalyzingFile} @click=${this.onRecordClick}>
             <span class="dot"></span>${recordLabel}
           </button>
+          <label class="upload" ?data-disabled=${isRecording || this.isAnalyzingFile}>
+            ${this.isAnalyzingFile ? 'Analyzing…' : 'Upload audio'}
+            <input
+              type="file"
+              accept="audio/*"
+              ?disabled=${isRecording || this.isAnalyzingFile}
+              @change=${this.onFileInputChange}
+            />
+          </label>
           ${!reviewing
             ? html`
                 <div class="metro" aria-label="Metronome tempo">
@@ -104,14 +138,22 @@ export class RecordingPanel extends LitElement {
         <div class="legend">
           ${DRUM_CLASS_LANES.slice().reverse().map((lane) => {
             const s = CLASS_COLORS[lane];
+            const active = this.activeClasses.includes(lane);
             return html`
-              <div class="key">
+              <button
+                type="button"
+                class="key"
+                ?data-off=${!active}
+                ?disabled=${isRecording}
+                @click=${() => this.onActiveClassClick(lane)}
+              >
                 <span class="sym">${unsafeHTML(classShapeSvg(s.shape, s.fg))}</span>
                 <span class="ktext"><b>${s.label.charAt(0) + s.label.slice(1).toLowerCase()}</b><em>${s.gloss}</em></span>
-              </div>
+              </button>
             `;
           })}
         </div>
+        <p class="legend-hint">Tap a sound you never use to turn it off — the transcription will never reach for it.</p>
 
         <div class="fig fig2">Fig. 02 — Transcribed Sequence<span class="line"></span></div>
         ${reviewing
@@ -125,6 +167,11 @@ export class RecordingPanel extends LitElement {
                 </span>
               </div>
               <pattern-grid .pattern=${this.pattern} .selectedClass=${this.selectedClass}></pattern-grid>
+              <div class="downloads">
+                <button type="button" ?disabled=${!this.hasTakeAudio} @click=${this.onDownloadAudioClick}>Download audio</button>
+                <button type="button" @click=${this.onDownloadDiagnosticsClick}>Download diagnostics</button>
+                <span class="downloads-hint">For sharing a take that transcribed wrong.</span>
+              </div>
             `
           : html`<p class="placeholder">Record a take to see the transcribed sequence here.</p>`}
       </section>
@@ -292,6 +339,41 @@ export class RecordingPanel extends LitElement {
       cursor: default;
     }
 
+    .upload {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      padding: var(--space-1-5) var(--space-3);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .upload:hover:not([data-disabled]) {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .upload[data-disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .upload input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     .metro-hint {
       font-family: var(--serif);
       font-style: italic;
@@ -336,6 +418,32 @@ export class RecordingPanel extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--space-3);
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity var(--dur-fast) var(--ease);
+    }
+    .key[data-off] {
+      opacity: 0.35;
+    }
+    .key:hover:not(:disabled) {
+      opacity: 0.7;
+    }
+    .key[data-off]:hover:not(:disabled) {
+      opacity: 0.55;
+    }
+    .key:disabled {
+      cursor: default;
+    }
+    .legend-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
+      margin: var(--space-2) 0 0;
     }
     .sym {
       width: 24px;
@@ -411,6 +519,43 @@ export class RecordingPanel extends LitElement {
     }
     .bpm button:hover {
       background: var(--hair-soft);
+    }
+
+    .downloads {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: 1px dashed var(--hair);
+    }
+    .downloads button {
+      font-family: var(--mono);
+      font-size: var(--text-2xs);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      background: var(--paper);
+      border: 1px solid var(--hair);
+      padding: var(--space-1-5) var(--space-3);
+      cursor: pointer;
+      transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+    }
+    .downloads button:hover:not(:disabled) {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .downloads button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .downloads-hint {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: var(--text-sm);
+      color: var(--ink-soft);
+      opacity: 0.75;
     }
   `;
 }

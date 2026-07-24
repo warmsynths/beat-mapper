@@ -7,7 +7,9 @@ import {
   type TransientFrame,
 } from './types.ts';
 
-const FEATURES = ['rms', 'spectralCentroid', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
+// Shared with offline-analysis.ts, so a file upload is analyzed with exactly
+// the same feature set as a live take.
+export const FEATURES = ['rms', 'spectralFlatness', 'powerSpectrum', 'zcr'] as const;
 
 export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
@@ -15,13 +17,18 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   releaseRatio: 0.7,
   maxHoldMs: 400,
   cooldownMs: 50,
+  // ~3 frames at fftSize 512 / 48kHz. Real hits (even short, quiet ones)
+  // observed in practice hold for 150ms+; anything under 30ms is a spike,
+  // not a percussive sound.
+  minHoldMs: 30,
 };
 
 // Exponential-moving-average smoothing for the ambient noise floor: small
 // enough that a loud hit (which stops updating the floor the instant it
 // crosses the gate) can't itself drag the floor up, but fast enough to track
-// a room/mic's real ambient level within a few hundred ms.
-const NOISE_FLOOR_ALPHA = 0.05;
+// a room/mic's real ambient level within a few hundred ms. Shared with
+// offline-analysis.ts for the same reason as FEATURES above.
+export const NOISE_FLOOR_ALPHA = 0.05;
 
 // Floor used in place of a near-zero tracked noise floor (e.g. right after
 // start(), before the EMA has caught up) so the ratio test has something
@@ -94,6 +101,16 @@ export class AudioEngine extends EventTarget {
   /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
   private holdStartedAt = 0;
   private metronome: Metronome | null = null;
+  /** Raw mic audio for the current/last take, captured in parallel with
+   * analysis purely so a performer can download exactly what the engine
+   * heard (see getRecordingBlob) — analysis itself never touches this. */
+  private mediaRecorder: MediaRecorder | null = null;
+  private recordedChunks: Blob[] = [];
+  private lastRecordingBlob: Blob | null = null;
+  /** Resolves once the current/most recent take's MediaRecorder has actually
+   * flushed its final chunk — set by teardown() when it stops the recorder,
+   * since that's async even though stop() itself is synchronous. */
+  private recordingStoppedPromise: Promise<Blob | null> | null = null;
 
   constructor(config: AudioEngineConfig = DEFAULT_AUDIO_ENGINE_CONFIG) {
     super();
@@ -110,6 +127,13 @@ export class AudioEngine extends EventTarget {
 
   getFftSize(): number {
     return this.config.fftSize;
+  }
+
+  /** Current config (including any sensitivity adjustment from updateConfig),
+   * for offline-analysis.ts to reuse so an uploaded file is detected with the
+   * same sensitivity as a live take. */
+  getConfig(): AudioEngineConfig {
+    return this.config;
   }
 
   /**
@@ -138,6 +162,19 @@ export class AudioEngine extends EventTarget {
 
   updateConfig(patch: Partial<AudioEngineConfig>): void {
     this.config = { ...this.config, ...patch };
+  }
+
+  /**
+   * The just-finished take's raw mic audio, for a performer to download and
+   * send along when a transcription looks wrong — the literal bytes the
+   * engine analyzed, rather than a separate phone recording of the same
+   * performance (which can differ enough in mic/room to make debugging
+   * misleading). Call after stop(); resolves null if the browser doesn't
+   * support MediaRecorder or nothing was captured.
+   */
+  async getRecordingBlob(): Promise<Blob | null> {
+    if (this.recordingStoppedPromise) return this.recordingStoppedPromise;
+    return this.lastRecordingBlob;
   }
 
   /**
@@ -186,6 +223,25 @@ export class AudioEngine extends EventTarget {
       this.analyzer.start();
       this.metronome = new Metronome(this.ctx, metronomeBpm, metronomeAudible);
       this.metronome.start();
+
+      this.recordedChunks = [];
+      this.lastRecordingBlob = null;
+      this.recordingStoppedPromise = null;
+      if (typeof MediaRecorder !== 'undefined') {
+        try {
+          this.mediaRecorder = new MediaRecorder(this.stream);
+          this.mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) this.recordedChunks.push(e.data);
+          };
+          this.mediaRecorder.start();
+        } catch {
+          // Recording capture is a nice-to-have for later download/debugging;
+          // analysis itself never depends on it, so a failure here (an
+          // unsupported mime type, e.g.) shouldn't block the take.
+          this.mediaRecorder = null;
+        }
+      }
+
       this.setState(EngineState.LISTENING);
     } catch (err) {
       this.dispatchEvent(new CustomEvent<Error>('error', { detail: new Error(describeMicError(err)) }));
@@ -205,6 +261,27 @@ export class AudioEngine extends EventTarget {
     this.analyzer = null;
     this.waveNode?.disconnect();
     this.waveNode = null;
+
+    // Stopped before the stream's tracks are, so the recorder gets a clean
+    // final chunk rather than racing a track that's already gone dead.
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+      const mr = this.mediaRecorder;
+      const chunks = this.recordedChunks;
+      this.recordingStoppedPromise = new Promise((resolve) => {
+        mr.addEventListener(
+          'stop',
+          () => {
+            const blob = chunks.length ? new Blob(chunks, { type: mr.mimeType || 'audio/webm' }) : null;
+            this.lastRecordingBlob = blob;
+            resolve(blob);
+          },
+          { once: true }
+        );
+      });
+      mr.stop();
+    }
+    this.mediaRecorder = null;
+
     this.source?.disconnect();
     this.source = null;
     this.stream?.getTracks().forEach((track) => track.stop());
@@ -224,7 +301,6 @@ export class AudioEngine extends EventTarget {
     const frame: TransientFrame = {
       timestamp: this.ctx.currentTime,
       rms: raw.rms ?? 0,
-      spectralCentroid: raw.spectralCentroid ?? 0,
       spectralFlatness: raw.spectralFlatness ?? 0,
       powerSpectrum: raw.powerSpectrum ?? new Float32Array(0),
       zcr: raw.zcr ?? 0,
@@ -274,7 +350,14 @@ export class AudioEngine extends EventTarget {
         if (frame.rms <= this.releaseGate || elapsedMs >= this.config.maxHoldMs) {
           const frames = this.holdBuffer;
           this.holdBuffer = [];
-          this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          // A hold this short was never a percussive hit — see minHoldMs —
+          // so it's dropped instead of dispatched. Still goes through
+          // cooldown rather than straight back to LISTENING, since whatever
+          // triggered it (a spike right as the floor was settling) is likely
+          // still elevated for a moment.
+          if (elapsedMs >= this.config.minHoldMs) {
+            this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
+          }
           this.enterCooldown();
         }
         break;
