@@ -501,7 +501,10 @@ export class AppRoot extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: var(--space-8) 0;
+      padding: var(--space-4) 0;
+      background: var(--paper, #f4f0e6);
+      color: var(--ink, #201e19);
+      box-sizing: border-box;
     }
 
     .sheet {
@@ -509,7 +512,7 @@ export class AppRoot extends LitElement {
       max-width: 1080px;
       margin: 0 auto;
       background: var(--paper);
-      padding: var(--space-9) var(--space-10) var(--space-10);
+      padding: var(--space-5) var(--space-6) var(--space-6);
       box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06), 0 30px 70px -30px rgba(0, 0, 0, 0.35);
     }
     /* paper grain */
