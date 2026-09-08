@@ -29,6 +29,7 @@ export class HardwarePanel extends LitElement {
   @property({ type: Number }) viewBar = 0;
   @property({ attribute: false }) pattern: QuantizedPattern = { steps: [], totalSteps: 16 };
   @property({ type: Boolean }) isRecording = false;
+  @property({ attribute: false }) liveClass: DrumClass | null = null;
 
   @property({ type: Number }) sensMin = 0;
   @property({ type: Number }) sensMax = 1;
@@ -57,7 +58,13 @@ export class HardwarePanel extends LitElement {
         )
       : null;
     const count = (lane: DrumClass): number => this.pattern.steps.filter((s) => s.class === lane).length;
-    const status = this.isRecording ? 'RECORDING' : reviewing ? 'REVIEW' : 'LIVE INPUT';
+    const status = this.isRecording
+      ? this.liveClass
+        ? `REC · ${CLASS_COLORS[this.liveClass].label}`
+        : 'RECORDING'
+      : reviewing
+      ? 'REVIEW'
+      : 'LIVE INPUT';
     const bankTag = this.deviceConfig.banks ? ` · BANK ${this.activeBank}` : '';
 
     return html`
@@ -65,6 +72,7 @@ export class HardwarePanel extends LitElement {
 
       <device-atlas
         .selectedClass=${this.selectedClass}
+        .liveClass=${this.liveClass}
         .stepHighlights=${stepHighlights}
         .reviewing=${reviewing}
       ></device-atlas>

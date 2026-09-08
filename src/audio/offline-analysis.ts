@@ -1,5 +1,5 @@
 import Meyda, { type MeydaFeaturesObject } from 'meyda';
-import { DEFAULT_AUDIO_ENGINE_CONFIG, FEATURES, MIN_NOISE_FLOOR, NOISE_FLOOR_ALPHA } from './audio-engine.ts';
+import { DEFAULT_AUDIO_ENGINE_CONFIG, FEATURES } from './audio-engine.ts';
 import type { AudioEngineConfig, TransientFrame } from './types.ts';
 
 export interface OfflineHit {
@@ -31,16 +31,19 @@ function downmixToMono(buffer: AudioBuffer): Float32Array {
  * suppression here — an uploaded file was never played back through
  * speakers into a mic, so there's no click bleed to guard against.
  */
-function detectHits(samples: Float32Array, sampleRate: number, config: AudioEngineConfig): OfflineHit[] {
+import { OnsetDetector } from './onset-detector.ts';
+
+export function detectHits(samples: Float32Array, sampleRate: number, config: AudioEngineConfig): OfflineHit[] {
   const fftSize = config.fftSize;
   const numBuffers = Math.floor(samples.length / fftSize);
+  const detector = new OnsetDetector({
+    fftSize,
+    sampleRate,
+    minHoldMs: config.minHoldMs,
+    maxHoldMs: config.maxHoldMs,
+    cooldownMs: config.cooldownMs,
+  });
 
-  let state: 'listening' | 'hold' | 'cooldown' = 'listening';
-  let noiseFloor = 0;
-  let holdBuffer: TransientFrame[] = [];
-  let holdStartedAt = 0;
-  let releaseGate = 0;
-  let cooldownUntil = 0;
   const hits: OfflineHit[] = [];
 
   for (let b = 0; b < numBuffers; b++) {
@@ -57,32 +60,15 @@ function detectHits(samples: Float32Array, sampleRate: number, config: AudioEngi
       zcr: raw.zcr ?? 0,
     };
 
-    if (state === 'listening') noiseFloor += (frame.rms - noiseFloor) * NOISE_FLOOR_ALPHA;
-    const gate = Math.max(noiseFloor, MIN_NOISE_FLOOR) * config.onsetRatio;
-
-    if (state === 'listening') {
-      if (frame.rms >= gate) {
-        holdBuffer = [frame];
-        releaseGate = gate * config.releaseRatio;
-        holdStartedAt = frame.timestamp;
-        state = 'hold';
-      }
-    } else if (state === 'hold') {
-      holdBuffer.push(frame);
-      const elapsedMs = (frame.timestamp - holdStartedAt) * 1000;
-      if (frame.rms <= releaseGate || elapsedMs >= config.maxHoldMs) {
-        // A hold this short was never a percussive hit — see
-        // AudioEngineConfig.minHoldMs — so it's dropped instead of kept.
-        if (elapsedMs >= config.minHoldMs) {
-          hits.push({ frames: holdBuffer, timeMs: holdStartedAt * 1000 });
-        }
-        holdBuffer = [];
-        state = 'cooldown';
-        cooldownUntil = frame.timestamp + config.cooldownMs / 1000;
-      }
-    } else if (frame.timestamp >= cooldownUntil) {
-      state = 'listening';
+    const completedHit = detector.processFrame(frame);
+    if (completedHit) {
+      hits.push({ frames: completedHit, timeMs: completedHit[0].timestamp * 1000 });
     }
+  }
+
+  const flushed = detector.flush((numBuffers * fftSize) / sampleRate);
+  if (flushed) {
+    hits.push({ frames: flushed, timeMs: flushed[0].timestamp * 1000 });
   }
 
   return hits;

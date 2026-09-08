@@ -1,5 +1,6 @@
 import Meyda, { type MeydaFeaturesObject } from 'meyda';
 import { Metronome } from './metronome.ts';
+import { OnsetDetector } from './onset-detector.ts';
 import {
   EngineState,
   type AudioEngineConfig,
@@ -15,12 +16,9 @@ export const DEFAULT_AUDIO_ENGINE_CONFIG: AudioEngineConfig = {
   fftSize: 512,
   onsetRatio: 1.3,
   releaseRatio: 0.7,
-  maxHoldMs: 400,
-  cooldownMs: 50,
-  // ~3 frames at fftSize 512 / 48kHz. Real hits (even short, quiet ones)
-  // observed in practice hold for 150ms+; anything under 30ms is a spike,
-  // not a percussive sound.
-  minHoldMs: 30,
+  maxHoldMs: 120,
+  cooldownMs: 25,
+  minHoldMs: 10,
 };
 
 // Exponential-moving-average smoothing for the ambient noise floor: small
@@ -90,16 +88,9 @@ export class AudioEngine extends EventTarget {
   private waveNode: AnalyserNode | null = null;
 
   private state: EngineState = EngineState.IDLE;
-  private holdBuffer: TransientFrame[] = [];
-  private cooldownTimer: ReturnType<typeof setTimeout> | null = null;
+  private onsetDetector: OnsetDetector = new OnsetDetector();
   private config: AudioEngineConfig;
   private lastLevelEmitAt = 0;
-  /** Rolling ambient rms level, updated only while LISTENING (see NOISE_FLOOR_ALPHA). */
-  private noiseFloor = 0;
-  /** rms a held hit must decay below to be considered "released" (gate × releaseRatio). */
-  private releaseGate = 0;
-  /** ctx.currentTime when the current hold began, for the maxHoldMs safety cap. */
-  private holdStartedAt = 0;
   private metronome: Metronome | null = null;
   /** Raw mic audio for the current/last take, captured in parallel with
    * analysis purely so a performer can download exactly what the engine
@@ -212,6 +203,14 @@ export class AudioEngine extends EventTarget {
       this.waveNode.fftSize = 2048;
       this.source.connect(this.waveNode);
 
+      this.onsetDetector = new OnsetDetector({
+        fftSize: this.config.fftSize,
+        sampleRate: this.ctx.sampleRate,
+        minHoldMs: this.config.minHoldMs,
+        maxHoldMs: this.config.maxHoldMs,
+        cooldownMs: this.config.cooldownMs,
+      });
+
       this.analyzer = Meyda.createMeydaAnalyzer({
         audioContext: this.ctx,
         source: this.source,
@@ -262,6 +261,12 @@ export class AudioEngine extends EventTarget {
     this.waveNode?.disconnect();
     this.waveNode = null;
 
+    const flushed = this.onsetDetector.flush(this.ctx?.currentTime ?? 0);
+    if (flushed) {
+      this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: flushed }));
+    }
+    this.onsetDetector.reset();
+
     // Stopped before the stream's tracks are, so the recorder gets a clean
     // final chunk rather than racing a track that's already gone dead.
     if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
@@ -288,11 +293,6 @@ export class AudioEngine extends EventTarget {
     this.stream = null;
     void this.ctx?.close();
     this.ctx = null;
-
-    if (this.cooldownTimer) clearTimeout(this.cooldownTimer);
-    this.cooldownTimer = null;
-    this.holdBuffer = [];
-    this.noiseFloor = 0;
   }
 
   private onFeatures(raw: Partial<MeydaFeaturesObject>): void {
@@ -307,80 +307,24 @@ export class AudioEngine extends EventTarget {
     };
 
     const suppressingClick = this.metronome?.isJustAfterClick(frame.timestamp, METRONOME_SUPPRESS_S) ?? false;
-
-    // Only LISTENING updates the floor — the onset itself and its decay
-    // tail (ONSET_HOLD/COOLDOWN) must never feed back into what counts as
-    // "ambient", or the gate would chase the hit it's supposed to catch.
-    // Frames right after a click are skipped too, so the click's own
-    // recurring bleed can't drag the floor up and desensitize real hits.
-    if (this.state === EngineState.LISTENING && !suppressingClick) {
-      this.noiseFloor += (frame.rms - this.noiseFloor) * NOISE_FLOOR_ALPHA;
-    }
-    const gate = Math.max(this.noiseFloor, MIN_NOISE_FLOOR) * this.config.onsetRatio;
+    const gate = this.onsetDetector.getNoiseFloor() * 1.5;
     this.maybeEmitLevel(frame.rms, gate);
 
-    switch (this.state) {
-      case EngineState.LISTENING:
-        if (!suppressingClick && frame.rms >= gate) this.beginOnsetHold(frame, gate);
-        break;
-
-      case EngineState.ONSET_HOLD: {
-        // A hold can stay open for up to maxHoldMs, easily long enough to
-        // span a metronome click that lands mid-decay. Unlike LISTENING
-        // (which just needs to not trigger a *new* onset on the click),
-        // frames captured here get averaged straight into the hit's
-        // classification features — so without this same suppression, the
-        // click's bright/broadband bleed folds into a real hit's centroid
-        // and drags it toward the next class up (kick read as snare, snare
-        // read as hat). Skipping the frame entirely (not just excluding it
-        // from onset detection) keeps the hold open on real signal only.
-        if (suppressingClick) break;
-
-        this.holdBuffer.push(frame);
-        const elapsedMs = (frame.timestamp - this.holdStartedAt) * 1000;
-        // Real hits (a beatboxed "boom"'s vowel swell, a sustained "tsss"
-        // snare hiss) commonly take 150-300ms to decay below the ambient
-        // floor — far longer than a fixed short window. Riding the level
-        // down to a release threshold (rather than clipping to one fixed
-        // duration for every sound) captures each hit's actual characteristic
-        // body instead of just its attack transient, and avoids splitting one
-        // hit's decay tail into a spurious second onset. maxHoldMs is only a
-        // safety cap for sustained non-percussive input (e.g. background
-        // noise) that never drops back down on its own.
-        if (frame.rms <= this.releaseGate || elapsedMs >= this.config.maxHoldMs) {
-          const frames = this.holdBuffer;
-          this.holdBuffer = [];
-          // A hold this short was never a percussive hit — see minHoldMs —
-          // so it's dropped instead of dispatched. Still goes through
-          // cooldown rather than straight back to LISTENING, since whatever
-          // triggered it (a spike right as the floor was settling) is likely
-          // still elevated for a moment.
-          if (elapsedMs >= this.config.minHoldMs) {
-            this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: frames }));
-          }
-          this.enterCooldown();
-        }
-        break;
-      }
-
-      // IDLE / COOLDOWN: ignore incoming frames entirely.
-      default:
-        break;
+    const hit = this.onsetDetector.processFrame(frame, suppressingClick);
+    if (hit) {
+      this.dispatchEvent(new CustomEvent<TransientFrame[]>('transient-detected', { detail: hit }));
     }
-  }
 
-  private beginOnsetHold(firstFrame: TransientFrame, gate: number): void {
-    this.holdBuffer = [firstFrame];
-    this.releaseGate = gate * this.config.releaseRatio;
-    this.holdStartedAt = firstFrame.timestamp;
-    this.setState(EngineState.ONSET_HOLD);
-  }
-
-  private enterCooldown(): void {
-    this.setState(EngineState.COOLDOWN);
-    this.cooldownTimer = setTimeout(() => {
-      this.setState(EngineState.LISTENING);
-    }, this.config.cooldownMs);
+    const detState = this.onsetDetector.getState();
+    const mappedState =
+      detState === 'hold'
+        ? EngineState.ONSET_HOLD
+        : detState === 'cooldown'
+        ? EngineState.COOLDOWN
+        : EngineState.LISTENING;
+    if (this.state !== mappedState) {
+      this.setState(mappedState);
+    }
   }
 
   private maybeEmitLevel(level: number, threshold: number): void {

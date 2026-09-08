@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test test/*.test.ts"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.2.9",
@@ -17,6 +18,7 @@
     "meyda": "^5.6.3"
   },
   "devDependencies": {
+    "@types/node": "^26.5.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   }

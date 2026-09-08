@@ -45,6 +45,9 @@ export class DeviceAtlas extends LitElement {
   /** Which sound is selected for step editing (drives lit pads). */
   @property({ attribute: false }) selectedClass: DrumClass | null = null;
 
+  /** Which sound was just detected live in real time (~10ms latency). Drives instant visual pad flash. */
+  @property({ attribute: false }) liveClass: DrumClass | null = null;
+
   /** Step indices (0–15) lit for the selected sound in the current bar,
    * or null when not in step-editing mode. */
   @property({ attribute: false }) stepHighlights: Set<number> | null = null;
@@ -84,26 +87,33 @@ export class DeviceAtlas extends LitElement {
 
   private renderGridDevice() {
     const stepMode = this.stepHighlights !== null && this.selectedClass !== null;
+    const liveControlIds = this.liveClass ? (this.deviceConfig?.classMapping[this.liveClass] ?? []) : [];
 
     const perfPads = Array.from({ length: 16 }, (_, i) => {
       const x = COLS[i % 4];
       const y = ROWS[Math.floor(i / 4)];
+      const control = this.deviceConfig?.controls[i];
       const lit = stepMode && this.stepHighlights!.has(i);
+      const isLive = Boolean(this.liveClass && control && liveControlIds.includes(control.id));
+      const fill = isLive ? CLASS_COLORS[this.liveClass!].fg : 'var(--paper)';
+      const strokeWidth = isLive ? '2.4' : '1.2';
       return svg`
-        <g class=${`pad ${stepMode ? 'live' : ''}`} @click=${() => this.togglePad(i)}>
-          <rect x=${x} y=${y} width=${PAD} height=${PAD} rx="5" fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2"/>
+        <g class=${`pad ${stepMode ? 'live' : ''} ${isLive ? 'live-hit' : ''}`} @click=${() => this.togglePad(i)}>
+          <rect x=${x} y=${y} width=${PAD} height=${PAD} rx="5" fill=${fill} stroke="var(--ink)" stroke-width=${strokeWidth}/>
           ${lit ? this.mark(x + PAD / 2, y + PAD / 2, this.selectedClass!) : nothing}
+          ${isLive && !lit ? this.mark(x + PAD / 2, y + PAD / 2, this.liveClass!) : nothing}
         </g>`;
     });
 
     const selectors = SELECTOR_LANES.map((lane, row) => {
       const y = ROWS[row];
       const sel = this.selectedClass === lane;
+      const isLiveLane = this.liveClass === lane;
       return svg`
-        <g class=${`sel ${this.reviewing ? 'active' : ''}`} @click=${() => this.toggleClass(lane)}>
+        <g class=${`sel ${this.reviewing ? 'active' : ''} ${isLiveLane ? 'live-lane' : ''}`} @click=${() => this.toggleClass(lane)}>
           <rect x=${FIFTH_X} y=${y} width=${PAD} height=${PAD} rx="5"
-                fill=${CLASS_COLORS[lane].fg} stroke="var(--ink)" stroke-width=${sel ? 2.6 : 1.2}/>
-          ${sel ? svg`<rect x=${FIFTH_X - 3} y=${y - 3} width=${PAD + 6} height=${PAD + 6} rx="7" fill="none" stroke="var(--ink)" stroke-width="1"/>` : nothing}
+                fill=${CLASS_COLORS[lane].fg} stroke="var(--ink)" stroke-width=${isLiveLane ? 3.4 : sel ? 2.6 : 1.2}/>
+          ${isLiveLane || sel ? svg`<rect x=${FIFTH_X - 3} y=${y - 3} width=${PAD + 6} height=${PAD + 6} rx="7" fill="none" stroke="var(--ink)" stroke-width=${isLiveLane ? 2 : 1}/>` : nothing}
         </g>`;
     });
 
@@ -150,17 +160,23 @@ export class DeviceAtlas extends LitElement {
 
   private renderPocketDevice() {
     const stepMode = this.stepHighlights !== null && this.selectedClass !== null;
+    const liveControlIds = this.liveClass ? (this.deviceConfig?.classMapping[this.liveClass] ?? []) : [];
 
     const pads = Array.from({ length: 16 }, (_, i) => {
       const x = POCKET_COLS[i % 4];
       const y = POCKET_ROWS[Math.floor(i / 4)];
       const cx = x + POCKET_PAD_R;
       const cy = y + POCKET_PAD_R;
+      const control = this.deviceConfig?.controls[i];
       const lit = stepMode && this.stepHighlights!.has(i);
+      const isLive = Boolean(this.liveClass && control && liveControlIds.includes(control.id));
+      const fill = isLive ? CLASS_COLORS[this.liveClass!].fg : 'var(--paper)';
+      const strokeWidth = isLive ? '2.4' : '1.2';
       return svg`
-        <g class=${`pad ${stepMode ? 'live' : ''}`} @click=${() => this.togglePad(i)}>
-          <circle cx=${cx} cy=${cy} r=${POCKET_PAD_R} fill="var(--paper)" stroke="var(--ink)" stroke-width="1.2"/>
+        <g class=${`pad ${stepMode ? 'live' : ''} ${isLive ? 'live-hit' : ''}`} @click=${() => this.togglePad(i)}>
+          <circle cx=${cx} cy=${cy} r=${POCKET_PAD_R} fill=${fill} stroke="var(--ink)" stroke-width=${strokeWidth}/>
           ${lit ? this.mark(cx, cy, this.selectedClass!) : nothing}
+          ${isLive && !lit ? this.mark(cx, cy, this.liveClass!) : nothing}
         </g>`;
     });
 

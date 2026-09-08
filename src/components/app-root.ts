@@ -4,7 +4,13 @@ import { provide } from '@lit/context';
 import { AudioEngine, DEFAULT_AUDIO_ENGINE_CONFIG, MIN_NOISE_FLOOR } from '../audio/audio-engine.ts';
 import { analyzeAudioFile } from '../audio/offline-analysis.ts';
 import { EngineState, type LevelDetail, type TransientFrame } from '../audio/types.ts';
-import { extractHitFeatures, classifyTakeHits, type HitFeatures, type DrumClass } from '../audio/classifier.ts';
+import {
+  extractHitFeatures,
+  classifyTakeHits,
+  classifySingleHit,
+  type HitFeatures,
+  type DrumClass,
+} from '../audio/classifier.ts';
 import {
   quantizeHits,
   MIN_BPM,
@@ -98,6 +104,8 @@ export class AppRoot extends LitElement {
    * Global (not per-bank) since it's a property of how someone performs,
    * not of any one beat. */
   @state() private activeClasses: DrumClass[] = ['kick', 'snare', 'hat'];
+  @state() private liveDetectedClass: DrumClass | null = null;
+  private liveFlashTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Working take for the active bank.
   @state() private sessionPhase: SessionPhase = 'idle';
@@ -168,11 +176,21 @@ export class AppRoot extends LitElement {
 
     const features = extractHitFeatures(event.detail, sampleRate, this.engine.getFftSize());
     this.pendingHits = [...this.pendingHits, { features, timeMs: performance.now() - this.recordingStartedAt }];
+
+    // Real-time live visual pad flash (~10ms latency)
+    const singleResult = classifySingleHit(features, this.activeClasses);
+    this.liveDetectedClass = singleResult.class;
+    if (this.liveFlashTimer) clearTimeout(this.liveFlashTimer);
+    this.liveFlashTimer = setTimeout(() => {
+      this.liveDetectedClass = null;
+    }, 140);
   };
 
   private async handleRecordButton(): Promise<void> {
     this.errorMessage = null;
     this.infoMessage = null;
+    if (this.liveFlashTimer) clearTimeout(this.liveFlashTimer);
+    this.liveDetectedClass = null;
 
     if (this.sessionPhase === 'recording') {
       this.engine.stop();
@@ -480,6 +498,7 @@ export class AppRoot extends LitElement {
               .viewBar=${this.viewBar}
               .pattern=${this.pattern}
               .isRecording=${isRecording}
+              .liveClass=${this.liveDetectedClass}
               .sensMin=${SENS_MIN}
               .sensMax=${SENS_MAX}
               .sensitivity=${this.sensitivity}

@@ -3,12 +3,20 @@ import type { TransientFrame } from './types.ts';
 export type DrumClass = 'kick' | 'snare' | 'hat';
 
 export interface HitFeatures {
-  /** 0 (all energy in the low band) .. 2 (all energy in the high band) — see extractHitFeatures. */
+  /** 0 (all energy in the low band) .. 2 (all energy in the high band). */
   brightness: number;
+  /** Measure of noise-likeness vs tonality: 0 (pure tone) .. 1 (white noise). */
   flatness: number;
+  /** Proportion of total energy in the low band (< 250 Hz). */
   lowBandEnergy: number;
+  /** Proportion of total energy in the mid band (250 Hz .. 2500 Hz). */
   midBandEnergy: number;
+  /** Proportion of total energy in the high band (> 2500 Hz). */
   highBandEnergy: number;
+  /** Energy-weighted normalized zero-crossing rate (crossings / bufferSize in 0..1). */
+  zcr: number;
+  /** Duration in milliseconds of the transient hold window. */
+  durationMs: number;
 }
 
 export interface ClassificationResult {
@@ -25,9 +33,11 @@ export interface ClassifierThresholds {
 }
 
 export const DEFAULT_CLASSIFIER_THRESHOLDS: ClassifierThresholds = {
-  lowBandHz: 200,
-  midBandHz: 2000,
+  lowBandHz: 250,
+  midBandHz: 2500,
 };
+
+export const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
 
 /**
  * Sums powerSpectrum energy into low/mid/high bands given the bin frequency
@@ -59,10 +69,7 @@ function bandEnergy(
 /**
  * Energy-weighted average: frames are weighted by their own rms so the loud,
  * characteristic body of a hit dominates the result instead of being diluted
- * by the many quiet, spectrally-unrepresentative frames in its rising attack
- * and decaying tail (which, since onset holding rides a hit's whole envelope
- * rather than one fixed-length window, can otherwise be half the frames in
- * the buffer).
+ * by quiet attack or decay frames.
  */
 function weightedAverage(values: number[], weights: number[]): number {
   let sum = 0;
@@ -86,12 +93,9 @@ function ramp(value: number, from: number, to: number): number {
 }
 
 /**
- * Extracts the classification-relevant features from an aggregated onset
- * window (the frames captured while AudioEngine held a hit above its onset
- * gate — see audio-engine.ts). Energy-weighted averaging gives a stable read
- * on the hit's characteristic body rather than its attack transient. Pure
- * feature extraction — see classifyTakeHits for how a whole take's worth of
- * these gets turned into kick/snare/hat labels.
+ * Extracts a 5-dimensional acoustic feature vector from an aggregated transient
+ * hold window. Energy-weighted averaging yields stable values for low/mid/high band
+ * energy, spectral flatness, and zero-crossing rate.
  */
 export function extractHitFeatures(
   frames: TransientFrame[],
@@ -100,126 +104,116 @@ export function extractHitFeatures(
   thresholds: ClassifierThresholds = DEFAULT_CLASSIFIER_THRESHOLDS
 ): HitFeatures {
   if (frames.length === 0) {
-    return { brightness: 0, flatness: 0, lowBandEnergy: 0, midBandEnergy: 0, highBandEnergy: 0 };
+    return {
+      brightness: 0,
+      flatness: 0,
+      lowBandEnergy: 0,
+      midBandEnergy: 0,
+      highBandEnergy: 0,
+      zcr: 0,
+      durationMs: 0,
+    };
   }
 
   const weights = frames.map((f) => f.rms);
   const flatness = weightedAverage(frames.map((f) => f.spectralFlatness), weights);
+  const zcr = weightedAverage(frames.map((f) => f.zcr / fftSize), weights);
+  const durationMs =
+    frames.length > 1
+      ? (frames.at(-1)!.timestamp - frames[0].timestamp) * 1000
+      : (fftSize / sampleRate) * 1000;
 
   const bandSums = frames.map((f) => bandEnergy(f.powerSpectrum, sampleRate, fftSize, thresholds));
   const lowBandEnergy = weightedAverage(bandSums.map((b) => b.low), weights);
   const midBandEnergy = weightedAverage(bandSums.map((b) => b.mid), weights);
   const highBandEnergy = weightedAverage(bandSums.map((b) => b.high), weights);
-  // 0 (all energy in the low band) .. 2 (all energy in the high band) — a
-  // coarse, power-weighted "which third of the spectrum" score. Deliberately
-  // not a spectral-centroid mean: a mean is pulled by how *far* a bin sits
-  // from zero, so a long, thin tail of moderate high-frequency energy (mic
-  // self-noise, breath hiss) can drag a hit's average frequency up even when
-  // the clear plurality of its *power* sits in the low band — this was
-  // verified against a real take, where a hit with 80%+ of its energy under
-  // 200Hz still produced a centroid reading indistinguishable from actually
-  // bright hits. Scoring by which band already holds the energy sidesteps
-  // that.
   const brightness = midBandEnergy + 2 * highBandEnergy;
 
-  return { brightness, flatness, lowBandEnergy, midBandEnergy, highBandEnergy };
+  return { brightness, flatness, lowBandEnergy, midBandEnergy, highBandEnergy, zcr, durationMs };
 }
-
-// Two hits' brightness scores only count as different *classes* — not just
-// two different-sounding hits of the same class — if they're at least this
-// far apart on the 0 (all-bass) .. 2 (all-treble) scale. Calibrated against a
-// real take with a genuine kick/snare/hat spread: the real gaps between
-// classes landed at 0.17-0.26, while hit-to-hit variation within one class
-// stayed under 0.13.
-const MIN_CLASS_SEPARATION_BRIGHTNESS = 0.15;
-
-/** Ascending-brightness groups of original indices, split at the largest
- * gaps — at most `maxSplits` of them (maxSplits + 1 groups), and only where
- * a gap is wide enough to plausibly be a different sound rather than the
- * same sound played a bit differently. `maxSplits` is one less than however
- * many classes are actually in play (see classifyTakeHits) — a take can
- * never split into more distinct groups than there are sounds it's allowed
- * to be. */
-function groupByBrightness(brightness: number[], maxSplits: number): number[][] {
-  const order = brightness.map((_, i) => i).sort((a, b) => brightness[a] - brightness[b]);
-  const gaps = order
-    .slice(0, -1)
-    .map((_, i) => ({ afterPos: i, size: brightness[order[i + 1]] - brightness[order[i]] }))
-    .filter((g) => g.size >= MIN_CLASS_SEPARATION_BRIGHTNESS)
-    .sort((a, b) => b.size - a.size)
-    .slice(0, maxSplits)
-    .map((g) => g.afterPos)
-    .sort((a, b) => a - b);
-
-  const groups: number[][] = [];
-  let start = 0;
-  for (const afterPos of gaps) {
-    groups.push(order.slice(start, afterPos + 1));
-    start = afterPos + 1;
-  }
-  groups.push(order.slice(start));
-  return groups;
-}
-
-const CLASSES_LOW_TO_HIGH: DrumClass[] = ['kick', 'snare', 'hat'];
 
 /**
- * Which class name goes with each group, out of `orderedActiveClasses` (a
- * low-to-high subsequence of kick/snare/hat — see classifyTakeHits). With as
- * many groups as active classes, the take's own clustering already fully
- * determines the answer — ascending brightness order is the only
- * order-preserving assignment, so it's used outright, no matter where the
- * first hit happens to land.
- *
- * With fewer groups than that, the take's own clustering can't say *which*
- * class is missing — so as ground truth, a performer almost always opens a
- * beat on the bassiest sound they use: whichever group contains the take's
- * first hit (index 0) is taken to be `orderedActiveClasses[0]`, and the
- * remaining group(s) fill in the rest of orderedActiveClasses outward from
- * there. Anchoring on the take's own first hit rather than a fixed absolute
- * pitch handles performers whose kick doesn't happen to be deeply
- * bass-heavy (a quiet, breathy kick can measure *brighter* than a loud, sung
- * snare) without having to guess a "typical" register that may not match
- * them at all.
+ * Computes unnormalized acoustic likelihood scores for Kick, Snare, and Hat
+ * based on physical acoustic principles of human vocal percussion.
  */
-function labelGroups(groups: number[][], firstHitGroupIndex: number, orderedActiveClasses: DrumClass[]): DrumClass[] {
-  if (groups.length === orderedActiveClasses.length) return orderedActiveClasses;
+export function scoreHit(features: HitFeatures): Record<DrumClass, number> {
+  const { lowBandEnergy, highBandEnergy, flatness, zcr, durationMs } = features;
 
-  const labels: DrumClass[] = new Array(groups.length);
-  labels[firstHitGroupIndex] = orderedActiveClasses[0];
-  const outward = orderedActiveClasses.slice(1);
-  let next = 0;
-  for (let i = firstHitGroupIndex + 1; i < groups.length; i++) labels[i] = outward[next++] ?? outward.at(-1)!;
-  next = 0;
-  for (let i = firstHitGroupIndex - 1; i >= 0; i--) labels[i] = outward[next++] ?? outward.at(-1)!;
+  let kick = 0;
+  let snare = 0;
+  let hat = 0;
 
-  return labels;
+  // 1. Low-Band (< 250 Hz): Kick fundamental
+  kick += ramp(lowBandEnergy, 0.20, 0.65) * 4.0;
+  if (lowBandEnergy > 0.25) {
+    hat -= ramp(lowBandEnergy, 0.20, 0.50) * 5.0;
+    snare -= ramp(lowBandEnergy, 0.35, 0.65) * 2.5;
+  }
+
+  // 2. High-Band (> 2500 Hz): Hat & Snare sizzle
+  hat += ramp(highBandEnergy, 0.25, 0.70) * 4.0;
+  snare += ramp(highBandEnergy, 0.15, 0.50) * 1.5;
+  if (highBandEnergy > 0.25) {
+    kick -= ramp(highBandEnergy, 0.20, 0.50) * 4.0;
+  }
+
+  // 3. Spectral Flatness: Turbulent unvoiced friction (Snare & Hat)
+  snare += ramp(flatness, 0.25, 0.65) * 3.5;
+  hat += ramp(flatness, 0.20, 0.55) * 1.5;
+  if (flatness > 0.35) {
+    kick -= ramp(flatness, 0.30, 0.60) * 3.0;
+  }
+
+  // 4. Zero-Crossing Rate: High-frequency frication
+  hat += ramp(zcr, 0.20, 0.60) * 4.0;
+  snare += ramp(zcr, 0.12, 0.40) * 2.0;
+  if (zcr > 0.25) {
+    kick -= ramp(zcr, 0.20, 0.45) * 3.5;
+  }
+
+  // 5. Transient Duration
+  if (durationMs < 50) {
+    hat += ramp(50 - durationMs, 0, 30) * 1.5;
+  }
+  if (durationMs > 70) {
+    kick += ramp(durationMs, 70, 120) * 1.5;
+    snare += ramp(durationMs, 60, 110) * 1.0;
+    hat -= ramp(durationMs, 70, 120) * 2.0;
+  }
+
+  return { kick, snare, hat };
 }
 
 /**
- * Classifies every hit in a take *relative to the others in that same
- * take*, instead of against fixed absolute targets: a performer's own kick,
- * snare and hat sit wherever their voice/kit/mic put them, but within one
- * take a kick is reliably the bassiest of the active classes, hat (if in
- * play) the brightest. So this sorts all the take's hits by brightness (see
- * HitFeatures.brightness) and splits them at the largest gaps (see
- * groupByBrightness), then labels each group low-to-high — anchored on the
- * take's first hit when there isn't full separation to go on (labelGroups).
- * A take with fewer real sounds than `activeClasses` allows naturally
- * collapses to fewer groups rather than being forced into all of them.
- *
- * `activeClasses` is which of kick/snare/hat the performer actually uses —
- * default is all three, but a performer who (say) never uses a hat should
- * pass `['kick', 'snare']` so a take never has "hat" to fall into in the
- * first place, however different two of their sounds measure.
- *
- * `featuresList` must be in chronological order — both callers (live take,
- * file upload) already build it that way.
- *
- * Confidence is how wide the gap to each neighboring group was, relative to
- * MIN_CLASS_SEPARATION_BRIGHTNESS: a group with no neighbor on one side (the
- * take's darkest or brightest group, or the only group there is) scores full
- * confidence on that side, since there's nothing to have been confused with.
+ * Classifies an individual hit in real time against active drum classes.
+ */
+export function classifySingleHit(
+  features: HitFeatures,
+  activeClasses: DrumClass[] = CLASSES_LOW_TO_HIGH
+): ClassificationResult {
+  const allowed = CLASSES_LOW_TO_HIGH.filter((c) => activeClasses.includes(c));
+  if (allowed.length === 0) {
+    return { class: 'kick', confidence: 0, features };
+  }
+  if (allowed.length === 1) {
+    return { class: allowed[0], confidence: 1, features };
+  }
+
+  const scores = scoreHit(features);
+  const ranked = [...allowed].sort((a, b) => scores[b] - scores[a]);
+  const bestClass = ranked[0];
+  const secondClass = ranked[1];
+
+  const margin = scores[bestClass] - scores[secondClass];
+  const confidence = clamp01(ramp(margin, 0.5, 4.0));
+
+  return { class: bestClass, confidence, features };
+}
+
+/**
+ * Classifies every hit in a take using hybrid classification:
+ * Tier 1 evaluates each hit against absolute physical acoustic boundaries.
+ * Tier 2 resolves borderline cases using relative take distribution without rigid first-hit assumptions.
  */
 export function classifyTakeHits(
   featuresList: HitFeatures[],
@@ -227,28 +221,39 @@ export function classifyTakeHits(
 ): ClassificationResult[] {
   if (featuresList.length === 0) return [];
 
-  const orderedActiveClasses = CLASSES_LOW_TO_HIGH.filter((c) => activeClasses.includes(c));
-  const brightness = featuresList.map((f) => f.brightness);
-  const groups = groupByBrightness(brightness, orderedActiveClasses.length - 1);
-  const firstHitGroupIndex = groups.findIndex((idxs) => idxs.includes(0));
-  const labels = labelGroups(groups, firstHitGroupIndex, orderedActiveClasses);
+  const allowed = CLASSES_LOW_TO_HIGH.filter((c) => activeClasses.includes(c));
+  if (allowed.length === 1) {
+    return featuresList.map((f) => ({ class: allowed[0], confidence: 1, features: f }));
+  }
 
-  const results: ClassificationResult[] = new Array(featuresList.length);
-  groups.forEach((idxs, groupIndex) => {
-    const cls = labels[groupIndex];
-    const confidence = Math.min(
-      groupIndex > 0
-        ? ramp(brightness[idxs[0]] - brightness[groups[groupIndex - 1].at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
-        : 1,
-      groupIndex < groups.length - 1
-        ? ramp(brightness[groups[groupIndex + 1][0]] - brightness[idxs.at(-1)!], 0, MIN_CLASS_SEPARATION_BRIGHTNESS * 2)
-        : 1
-    );
+  // Tier 1: Independent per-hit acoustic vector classification
+  const singleResults = featuresList.map((f) => classifySingleHit(f, allowed));
 
-    for (const i of idxs) {
-      results[i] = { class: cls, confidence: clamp01(confidence), features: featuresList[i] };
+  // If all hits have clear confidence or there are too few hits to build a take distribution, keep Tier 1
+  const hasLowConfidence = singleResults.some((r) => r.confidence < 0.4);
+  if (!hasLowConfidence || featuresList.length < 3) {
+    return singleResults;
+  }
+
+  // Tier 2: Take-level relative distribution for borderline hits
+  const lowEnergies = featuresList.map((f) => f.lowBandEnergy);
+  const zcrs = featuresList.map((f) => f.zcr);
+  const maxLow = Math.max(...lowEnergies);
+  const maxZcr = Math.max(...zcrs);
+
+  return singleResults.map((result, i) => {
+    if (result.confidence >= 0.4) return result;
+
+    const f = featuresList[i];
+    if (allowed.includes('kick') && f.lowBandEnergy === maxLow && f.lowBandEnergy > 0.25) {
+      return { class: 'kick', confidence: 0.6, features: f };
     }
+    if (allowed.includes('hat') && f.zcr === maxZcr && f.highBandEnergy > 0.35) {
+      return { class: 'hat', confidence: 0.6, features: f };
+    }
+    if (allowed.includes('snare') && f.flatness > 0.35) {
+      return { class: 'snare', confidence: 0.5, features: f };
+    }
+    return result;
   });
-
-  return results;
 }
