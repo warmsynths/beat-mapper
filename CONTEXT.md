@@ -40,3 +40,17 @@ The mapping of detected hits onto a musical timeline:
 - Snapping hit timestamps to a 16th-note grid at the target BPM.
 - Onset tolerance windows allowing human vocal syncopation to resolve to intended beat subdivisions.
 - Device pad mapping routing each classified hit to its corresponding hardware drum pad.
+
+## Pattern Library
+
+The app's primary mode. Capture (beatbox transcription) remains available as a second mode and shares the same device layer.
+
+### Library Pattern
+A curated, device-agnostic groove (`src/library/patterns.ts`): metadata (genre, feel, default BPM + range, tags) plus one lane per drum class. Lanes are 16th-note step strings — `x` is a hit, `-` a rest, whitespace between bars is ignored. Every lane has the same length, a whole number of bars.
+
+### Feel / Density
+- **Feel**: `straight`, `swung`, `half-time` or `broken` — descriptive metadata only; steps always sit on the 16th grid.
+- **Density**: derived, never stored — hits per bar across all lanes (`sparse` ≤ 10, `medium` ≤ 17, `busy` above).
+
+### Device Mapping
+`toQuantizedPattern` lays a Library Pattern out for the selected device by routing each lane through that device's `classMapping` (first mapped control) — the same routing a hand-edited step uses. Switching device re-maps the loaded pattern rather than clearing it. Loaded patterns enter the same review state as a transcribed take, so pads can still be tapped to edit.

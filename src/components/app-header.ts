@@ -13,9 +13,9 @@ export class AppHeader extends LitElement {
 
   render() {
     return html`
-      <div class="eyebrow">Field Manual №01 · Vocal Percussion</div>
+      <div class="eyebrow">Field Manual №01 · Drum Patterns</div>
       <h1>Beat Mapper</h1>
-      <p class="tag">Translating human beatbox to silicon memory.</p>
+      <p class="tag">A library of grooves, mapped to your gear.</p>
       <hr class="rule" />
       <div class="meta">
         <span>Edition 2026</span>

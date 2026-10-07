@@ -26,6 +26,9 @@ import { po32Config } from '../devices/po32.ts';
 import { audioEngineContext, deviceConfigContext } from '../state/contexts.ts';
 import './app-header.ts';
 import './app-footer.ts';
+import { PATTERNS } from '../library/patterns.ts';
+import { toQuantizedPattern } from '../library/pattern.ts';
+import './pattern-library.ts';
 import './recording-panel.ts';
 import './hardware-panel.ts';
 
@@ -38,6 +41,7 @@ const SENS_MIN = 1.1;
 const SENS_MAX = 3.0;
 
 type SessionPhase = 'idle' | 'recording' | 'reviewing';
+type AppMode = 'library' | 'capture';
 
 /** Everything about one bank's transcribed take — persisted per SET so
  * switching banks recalls that bank's work (per-bank memory). */
@@ -48,6 +52,8 @@ interface BankSlice {
   selectedClass: DrumClass | null;
   viewBar: number;
   sessionPhase: SessionPhase;
+  /** Id of the library pattern this bank was loaded from, if any. */
+  libraryId: string;
 }
 
 /** One hit's full classification detail, for "download diagnostics" — see
@@ -70,6 +76,7 @@ const emptySlice = (): BankSlice => ({
   selectedClass: null,
   viewBar: 0,
   sessionPhase: 'idle',
+  libraryId: '',
 });
 
 @customElement('app-root')
@@ -81,6 +88,10 @@ export class AppRoot extends LitElement {
   @state()
   private deviceConfig: DeviceConfig = DEVICES[0];
 
+  /** Library browses curated patterns; capture is the beatbox transcriber. */
+  @state() private mode: AppMode = 'library';
+  /** Library pattern currently loaded into the working bank ('' = none). */
+  @state() private libraryId = '';
   @state() private errorMessage: string | null = null;
   @state() private infoMessage: string | null = null;
   @state() private isAnalyzingFile = false;
@@ -346,6 +357,7 @@ export class AppRoot extends LitElement {
         selectedClass: this.selectedClass,
         viewBar: this.viewBar,
         sessionPhase: this.sessionPhase === 'recording' ? 'reviewing' : this.sessionPhase,
+        libraryId: this.libraryId,
       },
     };
   }
@@ -358,15 +370,16 @@ export class AppRoot extends LitElement {
     this.selectedClass = s.selectedClass;
     this.viewBar = s.viewBar;
     this.sessionPhase = s.sessionPhase;
+    this.libraryId = s.libraryId;
     this.errorMessage = null;
     this.infoMessage = null;
   }
 
   private get usedBanks(): string[] {
     const used = Object.entries(this.bankStore)
-      .filter(([, s]) => s.recordedHits.length > 0)
+      .filter(([, s]) => s.pattern.steps.length > 0)
       .map(([b]) => b);
-    if (this.recordedHits.length > 0 && !used.includes(this.activeBank)) used.push(this.activeBank);
+    if (this.pattern.steps.length > 0 && !used.includes(this.activeBank)) used.push(this.activeBank);
     return used;
   }
 
@@ -392,9 +405,11 @@ export class AppRoot extends LitElement {
     const next = DEVICES.find((d) => d.id === id);
     if (!next) return;
     if (this.sessionPhase === 'recording') this.engine.stop();
+    const keepLibraryId = this.libraryId;
     this.deviceConfig = next;
     this.bankStore = {};
     this.activeBank = next.banks?.[0] ?? '';
+    this.libraryId = '';
     this.recordedHits = [];
     this.pattern = { steps: [], totalSteps: 16 };
     this.selectedClass = null;
@@ -403,7 +418,50 @@ export class AppRoot extends LitElement {
     this.lastTakeAudio = null;
     this.lastTakeDiagnostics = [];
     this.hasTakeAudio = false;
+    // A library groove isn't tied to a device — show it on the new one.
+    if (keepLibraryId) this.loadLibraryPattern(keepLibraryId);
   };
+
+  /** Shows a library pattern on the current device's pads, in the same
+   * review state a transcribed take lands in (so pad edits still work). */
+  private loadLibraryPattern(id: string): void {
+    const found = PATTERNS.find((p) => p.id === id);
+    if (!found) return;
+    if (this.sessionPhase === 'recording') this.engine.stop();
+    this.libraryId = id;
+    this.recordedHits = [];
+    this.bpm = found.bpm;
+    this.pattern = toQuantizedPattern(found, this.deviceConfig);
+    this.selectedClass = 'kick';
+    this.viewBar = 0;
+    this.sessionPhase = 'reviewing';
+    this.errorMessage = null;
+    this.infoMessage = null;
+    this.lastTakeAudio = null;
+    this.lastTakeDiagnostics = [];
+    this.hasTakeAudio = false;
+  }
+
+  private setMode(next: AppMode): void {
+    if (next === this.mode) return;
+    if (this.sessionPhase === 'recording') {
+      this.engine.stop();
+      this.finishRecording();
+    }
+    // Capture starts from a clean slate rather than showing a library
+    // groove (with no take behind it) in the transcription panel.
+    if (next === 'capture' && this.libraryId) {
+      const blank = emptySlice();
+      this.libraryId = '';
+      this.recordedHits = blank.recordedHits;
+      this.bpm = blank.bpm;
+      this.pattern = blank.pattern;
+      this.selectedClass = blank.selectedClass;
+      this.viewBar = blank.viewBar;
+      this.sessionPhase = blank.sessionPhase;
+    }
+    this.mode = next;
+  }
 
   private toggleSelectedClass(lane: DrumClass): void {
     this.selectedClass = this.selectedClass === lane ? null : lane;
@@ -449,7 +507,13 @@ export class AppRoot extends LitElement {
 
   render() {
     const isRecording = this.sessionPhase === 'recording';
-    const status = isRecording ? 'recording' : this.sessionPhase === 'reviewing' ? 'review' : 'standby';
+    const status = isRecording
+      ? 'recording'
+      : this.mode === 'library'
+      ? 'library'
+      : this.sessionPhase === 'reviewing'
+      ? 'review'
+      : 'standby';
 
     return html`
       <div class="sheet">
@@ -458,9 +522,19 @@ export class AppRoot extends LitElement {
 
         <app-header .status=${status}></app-header>
 
+        <nav class="modes" aria-label="Mode">
+          <button type="button" class=${this.mode === 'library' ? 'on' : ''} @click=${() => this.setMode('library')}>Library</button>
+          <button type="button" class=${this.mode === 'capture' ? 'on' : ''} @click=${() => this.setMode('capture')}>Capture</button>
+        </nav>
+
         <div class="spread">
           <div class="leaf leaf-left">
-            <recording-panel
+            ${this.mode === 'library'
+              ? html`<pattern-library
+                  .selectedId=${this.libraryId}
+                  @pattern-select=${(e: CustomEvent<string>) => this.loadLibraryPattern(e.detail)}
+                ></pattern-library>`
+              : html`<recording-panel
               .sessionPhase=${this.sessionPhase}
               .level=${this.level}
               .levelThreshold=${this.levelThreshold}
@@ -484,7 +558,7 @@ export class AppRoot extends LitElement {
               @file-upload=${(e: CustomEvent<File>) => this.handleFileUpload(e.detail)}
               @download-audio=${() => this.downloadAudio()}
               @download-diagnostics=${() => this.downloadDiagnostics()}
-            ></recording-panel>
+            ></recording-panel>`}
           </div>
 
           <div class="leaf leaf-right">
@@ -593,6 +667,30 @@ export class AppRoot extends LitElement {
     .crop.br::after {
       bottom: 0;
       right: 0;
+    }
+
+    .modes {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-top: var(--space-6);
+    }
+    .modes button {
+      font-family: var(--grot);
+      font-weight: var(--w-bold);
+      font-size: var(--text-md);
+      letter-spacing: var(--track-wide);
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--paper);
+      border: 1px solid var(--ink);
+      padding: var(--space-2) var(--space-6);
+      min-height: 40px;
+      cursor: pointer;
+    }
+    .modes button.on {
+      background: var(--ink);
+      color: var(--paper);
     }
 
     .spread {
