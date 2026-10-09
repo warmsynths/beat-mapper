@@ -83,7 +83,7 @@ export class CueApp extends LitElement {
   private onResize = () => { this.vw = innerWidth; this.vh = innerHeight; };
 
   private onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') return this.set({ search: false, rack: false, themes: false });
+    if (e.key === 'Escape') return this.set({ search: false, rack: false, themes: false, info: false });
     const t = (e.composedPath()[0] as HTMLElement | undefined)?.tagName;
     if (t === 'INPUT' || t === 'TEXTAREA' || t === 'BUTTON') return;
     if (e.key === ' ') { e.preventDefault(); this.toggle(); }
@@ -118,7 +118,12 @@ export class CueApp extends LitElement {
     clearInterval(this.timer);
     this.timer = window.setInterval(() => {
       const next = tick(this.s), d = partData(selected(this.s), next.part);
-      INST.forEach(i => { if (d[i.key][next.step] === 'x') hit(i.key); });
+      INST.forEach(i => {
+        const ch = d[i.key][next.step];
+        if (ch === 'X') hit(i.key, 'accent');
+        else if (ch === 'x') hit(i.key, 'normal');
+        else if (ch === 'g') hit(i.key, 'ghost');
+      });
       this.set(next);
     }, 60000 / bpmOf(this.s) / 4);
     this.set({ playing: true });
@@ -167,6 +172,7 @@ export class CueApp extends LitElement {
           ${s.search ? this.renderSearch(x, compact) : nothing}
           ${s.themes ? this.renderThemes(compact) : nothing}
           ${s.rack ? this.renderRack(x, compact) : nothing}
+          ${s.info ? this.renderInfo(x, compact) : nothing}
         </div>
       </div>
     `;
@@ -184,11 +190,13 @@ export class CueApp extends LitElement {
           </button>
         </div>
         <button class="device-pill" style="height:${hb}px;" title="Choose your machine"
-          @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false })}>
+          @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false, info: false })}>
           ${compact ? x.dev.short : x.dev.id} <span class="caret">▾</span>
         </button>
+        <button class="info-btn" style="width:${hb}px;height:${hb}px;" title="Beat notes & finger drumming guide" aria-label="Beat notes"
+          @click=${() => this.set({ info: !s.info, search: false, rack: false, themes: false })}>i</button>
         <button class="theme-btn" style="width:${hb}px;height:${hb}px;" title="Change theme" aria-label="Change theme"
-          @click=${() => this.set({ themes: !s.themes, search: false, rack: false })}><span class="swatch"></span></button>
+          @click=${() => this.set({ themes: !s.themes, search: false, rack: false, info: false })}><span class="swatch"></span></button>
         <div class="controls">
           <div class="seg">
             ${x.parts.map(id => {
@@ -263,8 +271,8 @@ export class CueApp extends LitElement {
     const cntH = Math.floor(clamp(ch * 0.6, 22, 48)), ss = Math.floor(Math.min(cw, ch) * 0.52), br = Math.round(Math.min(cw, ch) * 0.22);
     const cols = [labW + 'px'];
     for (let b = 0; b < g.bpl; b++) { cols.push(`repeat(4,${cw}px)`); if (b < g.bpl - 1) cols.push(bgap - cg + 'px'); }
-    const shape = (k: LaneKey, size: number, color = SHP[k].c) =>
-      html`<i class="shape" style="width:${size}px;height:${size}px;background:${color};border-radius:${SHP[k].r};clip-path:${SHP[k].clip};"></i>`;
+    const shape = (k: LaneKey, size: number, color = SHP[k].c, opacity = 1) =>
+      html`<i class="shape" style="width:${size}px;height:${size}px;background:${color};border-radius:${SHP[k].r};clip-path:${SHP[k].clip};opacity:${opacity};"></i>`;
 
     const lines = Array.from({ length: g.n }, (_, l) => B.slice(l * g.bpl, (l + 1) * g.bpl));
     return html`
@@ -283,17 +291,26 @@ export class CueApp extends LitElement {
                 return html`<span class="count" style="background:${now ? ACC : 'transparent'};color:${now ? INK : j === 0 ? CREAM : MUTED};font-family:${j === 0 ? TW : HG};font-weight:${j === 0 ? 400 : 600};font-size:${Math.round(j === 0 ? Math.min(cntH * 0.8, 40) : Math.min(cntH * 0.5, 18))}px;">${j === 0 ? b + 1 : SUB[j]}</span>`;
               })}
               ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}
-            ${lanes.map(ln => html`
+            ${lanes.map(ln => {
+              const hand = x.base.hands?.[ln.key];
+              return html`
               <span class="lane-label" style="justify-content:${compact ? 'center' : 'flex-start'};padding:0 ${compact ? 0 : 4}px;font-size:${Math.round(Math.min(22, ch * 0.34))}px;">
                 ${shape(ln.key, Math.round(Math.min(18, ch * 0.32)), ln.key === 'h' ? CREAM : ln.key === 's' ? 'var(--snareL)' : SHP[ln.key].c)}${compact ? '' : titleCase(ln.label)}
+                ${hand && !compact ? html`<small class="hand-badge" title="Recommended hand: ${hand}">${hand}</small>` : nothing}
               </span>
               ${bs.map((b, bi) => html`
                 ${[0, 1, 2, 3].map(j => {
-                  const i = b * 4 + j, on = x.sel[ln.key][i] === 'x', now = i === step;
-                  return html`<span class="cell" style="border-radius:${br}px;background:${on ? CREAM : now ? mix(ACC, 28) : mix(CREAM, 10)};box-shadow:${on && now ? `0 0 0 3px ${ACC}` : 'none'};">
-                    ${on ? shape(ln.key, Math.floor(now ? ss * 1.15 : ss)) : nothing}</span>`;
+                  const i = b * 4 + j, char = x.sel[ln.key][i], on = char !== '.', now = i === step;
+                  const isAccent = char === 'X', isGhost = char === 'g';
+                  const stepHand = x.base.stepHands?.[ln.key]?.[i];
+                  const noteSize = Math.floor(now ? ss * 1.15 : isAccent ? ss * 1.15 : isGhost ? ss * 0.65 : ss);
+                  return html`<span class="cell" style="position:relative;border-radius:${br}px;background:${on ? (isGhost ? mix(CREAM, 65) : CREAM) : now ? mix(ACC, 28) : mix(CREAM, 10)};box-shadow:${on && now ? `0 0 0 3px ${ACC}` : isAccent ? `0 0 0 2px ${ACC}` : 'none'};">
+                    ${on ? shape(ln.key, noteSize, undefined, isGhost ? 0.7 : 1) : nothing}
+                    ${stepHand && on ? html`<span class="step-hand">${stepHand}</span>` : nothing}
+                  </span>`;
                 })}
-                ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}`)}
+                ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}`;
+            })}
           </div>`)}
       </div>
     `;
@@ -312,8 +329,12 @@ export class CueApp extends LitElement {
     return html`
       <div class="keys" style="grid-template-columns:repeat(${cols},${size}px);gap:${gap}px;">
         ${Array.from({ length: 16 }, (_, i) => {
-          const on = x.sel[x.layer.key][i] === 'x';
-          return html`<span class="key" style="width:${size}px;height:${size}px;border-radius:${Math.round(size * 0.26)}px;font-size:${Math.round(size * 0.38)}px;border-color:${on ? col : mix(CREAM, 18)};background:${on ? col : mix(CREAM, 6)};color:${on ? INK : 'var(--mute2)'};box-shadow:${i === x.step ? `0 0 0 4px ${CREAM}` : 'none'};">${i + 1}</span>`;
+          const char = x.sel[x.layer.key][i];
+          const on = char !== '.';
+          const isAccent = char === 'X', isGhost = char === 'g';
+          return html`<span class="key" style="position:relative;width:${size}px;height:${size}px;border-radius:${Math.round(size * 0.26)}px;font-size:${Math.round(size * 0.38)}px;border-color:${on ? col : mix(CREAM, 18)};background:${on ? (isGhost ? mix(col, 55) : col) : mix(CREAM, 6)};color:${on ? INK : 'var(--mute2)'};box-shadow:${i === x.step ? `0 0 0 4px ${CREAM}` : isAccent ? `0 0 0 2px ${ACC}` : 'none'};">
+            ${i + 1}${isAccent ? html`<small class="dyn-mark">▲</small>` : isGhost ? html`<small class="dyn-mark">°</small>` : nothing}
+          </span>`;
         })}
       </div>
     `;
@@ -449,14 +470,76 @@ export class CueApp extends LitElement {
           <div style="max-width:880px;margin:0 auto;padding:${compact ? '0 20px 24px' : '0 40px 40px'};box-sizing:border-box;">
             ${x.list.map(p => html`
               <button class="item" @click=${() => this.select(p.id)}>
-                <span class="item-name" style="font-size:${compact ? 24 : 30}px;">${p.name}</span>
+                <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                  <span class="item-name" style="font-size:${compact ? 24 : 30}px;">${p.name}</span>
+                  ${p.difficulty ? html`<span class="diff-tag diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>` : nothing}
+                </div>
                 <span class="item-bpm">${p.bpm}<small> BPM</small></span>
-                <span class="item-artist">${p.artist}</span>
+                <span class="item-artist">${p.artist}${p.gear ? ` · ${p.gear}` : ''}</span>
                 <span class="item-genre">${p.genre}</span>
               </button>`)}
             ${x.list.length ? nothing : html`<span class="empty">Nothing matches. Try an artist or a genre.</span>`}
           </div>
         </div>
+      </section>
+    `;
+  }
+
+  private renderInfo(x: Derived, compact: boolean) {
+    const p = x.base;
+    const close = () => this.set({ info: false });
+    return html`
+      <div class="scrim" @click=${close}></div>
+      <section class="sheet-up info-sheet" style="padding:${compact ? '18px 20px calc(24px + env(safe-area-inset-bottom))' : '28px 40px 36px'};">
+        <div class="ov-bar">
+          <div class="info-head">
+            <span class="sheet-title">${p.name}</span>
+            ${p.difficulty ? html`<span class="diff-tag diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>` : nothing}
+          </div>
+          <button class="ov-close ov-close-dark" @click=${close}>Done</button>
+        </div>
+
+        <div class="info-meta">
+          <span>${p.artist}</span>
+          <span>·</span>
+          <span>${p.genre}</span>
+          <span>·</span>
+          <span>${p.bpm} BPM</span>
+        </div>
+
+        ${p.gear ? html`
+          <div class="info-section">
+            <span class="info-label">Original Gear & Sound History</span>
+            <p class="info-body">${p.gear}</p>
+          </div>` : nothing}
+
+        ${p.tip ? html`
+          <div class="info-section">
+            <span class="info-label">Finger Drumming & Programming Tip</span>
+            <p class="info-body tip-body">${p.tip}</p>
+          </div>` : nothing}
+
+        ${p.hands ? html`
+          <div class="info-section">
+            <span class="info-label">Recommended Finger Drumming Hands</span>
+            <div class="hands-grid">
+              ${Object.entries(p.hands).map(([k, hand]) => {
+                const inst = INST.find(i => i.key === k);
+                return html`
+                  <div class="hand-item">
+                    <span class="hand-inst">${inst ? inst.label : k.toUpperCase()}</span>
+                    <span class="hand-val">${hand}</span>
+                  </div>`;
+              })}
+            </div>
+          </div>` : nothing}
+
+        ${p.tags && p.tags.length ? html`
+          <div class="info-section">
+            <div class="info-tags">
+              ${p.tags.map(t => html`<span class="info-tag">#${t}</span>`)}
+            </div>
+          </div>` : nothing}
       </section>
     `;
   }
@@ -531,6 +614,8 @@ export class CueApp extends LitElement {
     .device-pill { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 18px; border: 2px solid var(--fg); border-radius: 999px; background: transparent; color: var(--fg); font-size: 14px; font-weight: 700; white-space: nowrap; }
     .device-pill:hover { background: var(--fg); color: var(--ink); }
     .caret { font-size: 11px; }
+    .info-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 17px; font-weight: 700; }
+    .info-btn:hover { background: var(--fg); color: var(--ink); }
     .theme-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; }
     .swatch { width: 22px; height: 22px; border-radius: 50%; background: conic-gradient(var(--acc) 0 25%, var(--kick) 0 50%, var(--fg) 0 75%, var(--snareL) 0); }
     .controls { flex: 1 0 100%; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -552,6 +637,8 @@ export class CueApp extends LitElement {
     .score > span { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; white-space: nowrap; }
     .count { border-radius: 999px; }
     .lane-label { gap: 8px; font-family: 'Tilt Warp', sans-serif; color: var(--fg); }
+    .hand-badge { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 16%, transparent); color: var(--acc); font-family: 'Host Grotesk', sans-serif; font-weight: 700; margin-left: 6px; }
+    .step-hand { position: absolute; bottom: 2px; font-size: 9px; font-weight: 800; font-family: 'Host Grotesk', sans-serif; color: var(--ink); line-height: 1; }
 
     .draw { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
     .keys { display: grid; }
@@ -617,6 +704,11 @@ export class CueApp extends LitElement {
     .item { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 2px 16px; padding: 14px 0; border: none; border-bottom: 2px solid var(--div); background: transparent; color: var(--ink); text-align: left; }
     .item:hover { color: var(--bg); }
     .item-name { font-family: 'Tilt Warp', sans-serif; line-height: 1.12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .diff-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-family: 'Host Grotesk', sans-serif; }
+    .diff-beginner { background: color-mix(in srgb, #22c55e 20%, transparent); color: #16a34a; border: 1px solid #22c55e; }
+    .diff-intermediate { background: color-mix(in srgb, #eab308 20%, transparent); color: #ca8a04; border: 1px solid #eab308; }
+    .diff-advanced { background: color-mix(in srgb, #ef4444 20%, transparent); color: #dc2626; border: 1px solid #ef4444; }
+    .dyn-mark { font-size: 10px; margin-left: 2px; color: var(--acc); font-weight: 700; }
     .item-bpm { font-family: 'Tilt Warp', sans-serif; font-size: 18px; white-space: nowrap; }
     .item-bpm small, .machine small { font-family: 'Host Grotesk', sans-serif; font-size: 11px; font-weight: 700; }
     .item-artist { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -629,8 +721,22 @@ export class CueApp extends LitElement {
     .machine small { font-size: 12px; font-weight: 600; }
 
     .scrim { position: absolute; inset: 0; z-index: 11; background: color-mix(in srgb, var(--ink) 60%, transparent); }
-    .sheet-up { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; max-height: 80%; overflow-y: auto; background: var(--bg); border-top: 2px solid var(--fg); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; }
+    .sheet-up { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; max-height: 85%; overflow-y: auto; background: var(--bg); border-top: 2px solid var(--fg); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; }
     .sheet-title { font-family: 'Tilt Warp', sans-serif; font-size: 26px; font-weight: 400; }
+    .info-sheet { max-width: 680px; margin: 0 auto; border-radius: 24px 24px 0 0; }
+    .info-head { display: flex; align-items: center; gap: 12px; }
+    .info-meta { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--mute); font-weight: 600; margin-top: -6px; }
+    .info-section { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .info-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--acc); text-transform: uppercase; }
+    .info-body { margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg); }
+    .tip-body { padding: 12px 16px; border-radius: 12px; background: color-mix(in srgb, var(--fg) 8%, transparent); border-left: 3px solid var(--acc); }
+    .hands-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+    .hand-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; border-radius: 10px; background: color-mix(in srgb, var(--fg) 7%, transparent); font-size: 13px; }
+    .hand-inst { font-weight: 700; color: var(--mute); font-family: 'Tilt Warp', sans-serif; font-size: 12px; }
+    .hand-val { font-weight: 800; color: var(--fg); }
+    .info-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .info-tag { font-size: 12px; color: var(--mute); padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 7%, transparent); }
+
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
     .theme-card { display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 2px solid; border-radius: 18px; text-align: left; }
     .dots { display: flex; gap: 5px; }

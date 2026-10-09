@@ -59,8 +59,11 @@ A curated, device-agnostic groove (`src/library/patterns.ts`): metadata (genre, 
 
 The pattern library as a two-job app: **Program** (enter a pattern into your machine, one drum at a time) and **Play** (a score to learn it by hand). Source lives in `src/cue/`; the earlier library + beatbox Capture UI moved to `capture.html` unchanged.
 
-- **Cue pattern**: a famous groove (`src/cue/data/library.ts`) with 16-step lanes for kick, snare, hat, open hat plus optional percussion (clap, rim, tom, bongo, cowbell, shaker, crash). Lanes use `x` / `.`.
-- **Part**: Main, Var (only when the groove has a known variation bar) or Fill (known, or generated per genre). **Chain** loops main, main, var, fill.
+- **Cue pattern**: curated reference grooves and finger drumming drills (`src/cue/data/library.ts`) with 16-step lanes for kick, snare, hat, open hat plus optional percussion (clap, rim, tom, bongo, cowbell, shaker, crash). Lanes use dynamic characters: `X` (accent), `x` (normal hit), `g` (ghost note), `.` (rest).
+- **Dynamics**: three distinct velocity and sizing levels (`X` accent = punchy volume & highlighted visual; `x` normal = standard velocity; `g` ghost = feather-light velocity & soft visual).
+- **Catalogue & Curriculum**: 135 masterfully transcribed beats spanning holy grail breakbeats, golden era boom bap, lofi/chillhop grooves, machine/electronic classics, house/techno foundations, hip-hop/trap/drill, UK garage/jungle/bass, Latin/Afro/world, reggae/dub, rock/punk/pop, and a 10-beat progressive finger drumming curriculum across Beginner, Intermediate, and Advanced tiers.
+- **Rich Metadata & Inspector**: every beat includes Difficulty, historical Gear context, finger drumming & programming Tips, Tags, and recommended Hand assignments (`L` / `R`), accessible via an Inspector modal (`(i)` button).
+- **Part**: Main (or Bar 1), Var (Bar 2 or variation) or Fill (known, or generated per genre). **Chain** loops main, main, var, fill.
 - **Machine**: one of 20 drum machines; each maps every lane to the pad/track/instrument it goes on (`map`), or leaves it unmapped when the machine has no such sound. Mappings marked `guess` are suggestions.
 - **Focus**: in Play, the beats (1–4) being practised; playback loops only those.
 - `?view=mobile` pins the layout to a phone frame for previewing on desktop.

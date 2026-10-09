@@ -14,10 +14,16 @@ export function audio(): AudioContext {
   return ctx;
 }
 
-export function hit(key: LaneKey): void {
+export type Dynamic = 'accent' | 'normal' | 'ghost';
+
+export function hit(key: LaneKey, dynamic: Dynamic = 'normal'): void {
   const c = audio(), t = c.currentTime, g = c.createGain();
   g.connect(c.destination);
-  const env = (peak: number, dur: number) => { g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur); };
+  const vel = dynamic === 'accent' ? 1.25 : dynamic === 'ghost' ? 0.35 : 1.0;
+  const env = (peak: number, dur: number) => {
+    g.gain.setValueAtTime(peak * vel, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + (dynamic === 'ghost' ? dur * 0.75 : dur));
+  };
   const noiseThrough = (type: BiquadFilterType, freq: number, dur: number, offsets = [0]) => {
     const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.connect(g);
     offsets.forEach(dt => { const n = c.createBufferSource(); n.buffer = noise; n.connect(f); n.start(t + dt); n.stop(t + dt + dur + 0.02); });
@@ -25,7 +31,8 @@ export function hit(key: LaneKey): void {
 
   if (key === 'k') {
     const o = c.createOscillator();
-    o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+    o.frequency.setValueAtTime(dynamic === 'accent' ? 165 : 150, t);
+    o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
     env(0.9, 0.32); o.connect(g); o.start(t); o.stop(t + 0.33);
   } else if (key === 't' || key === 'b') {
     const o = c.createOscillator(), f0 = key === 't' ? 170 : 420;
@@ -41,6 +48,7 @@ export function hit(key: LaneKey): void {
     noiseThrough('highpass', key === 'z' ? 6000 : 5000, dur); env(key === 'z' ? 0.15 : 0.25, dur);
   } else {
     const dur = key === 's' ? 0.16 : key === 'h' ? 0.045 : 0.28;
-    noiseThrough(key === 's' ? 'bandpass' : 'highpass', key === 's' ? 1800 : 7000, dur); env(key === 's' ? 0.6 : 0.28, dur);
+    noiseThrough(key === 's' ? 'bandpass' : 'highpass', key === 's' ? (dynamic === 'ghost' ? 1400 : 1800) : 7000, dur);
+    env(key === 's' ? 0.6 : 0.28, dur);
   }
 }

@@ -11,8 +11,18 @@ describe('Cue library data', () => {
     for (const p of LIB) {
       for (const part of ['MAIN', 'VAR', 'FILL'] as const) {
         const d = partData(p, part);
-        for (const i of INST) assert.match(d[i.key], /^[x.]{16}$/, `${p.id} ${part} ${i.key}`);
+        for (const i of INST) assert.match(d[i.key], /^[xXg.]{16}$/, `${p.id} ${part} ${i.key}`);
       }
+    }
+  });
+
+  it('has comprehensive catalogue with rich metadata and hands', () => {
+    assert.ok(LIB.length >= 130, `Catalogue has ${LIB.length} patterns`);
+    for (const p of LIB) {
+      assert.ok(p.difficulty, `${p.id} missing difficulty`);
+      assert.ok(p.gear, `${p.id} missing gear`);
+      assert.ok(p.tip, `${p.id} missing tip`);
+      assert.ok(p.hands, `${p.id} missing hands`);
     }
   });
 
@@ -59,7 +69,7 @@ describe('Cue model', () => {
   });
 
   it('searches name, artist and genre', () => {
-    assert.deepStrictEqual(derive(state({ query: 'james brown' })).list.map(p => p.id).sort(), ['coldsweat', 'funky']);
+    assert.deepStrictEqual(derive(state({ query: 'james brown' })).list.map(p => p.id).sort(), ['coldsweat', 'funky', 'giveitup']);
     assert.ok(derive(state({ query: 'zzz' })).list.length === 0);
   });
 
