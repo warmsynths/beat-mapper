@@ -292,26 +292,20 @@ export class CueApp extends LitElement {
                 return html`<span class="count" style="background:${now ? ACC : 'transparent'};color:${now ? INK : j === 0 ? CREAM : MUTED};font-family:${j === 0 ? TW : HG};font-weight:${j === 0 ? 400 : 600};font-size:${Math.round(j === 0 ? Math.min(cntH * 0.8, 40) : Math.min(cntH * 0.5, 18))}px;">${j === 0 ? b + 1 : SUB[j]}</span>`;
               })}
               ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}
-            ${lanes.map(ln => {
-              const hand = x.base.hands?.[ln.key];
-              return html`
+            ${lanes.map(ln => html`
               <span class="lane-label" style="justify-content:${compact ? 'center' : 'flex-start'};padding:0 ${compact ? 0 : 4}px;font-size:${Math.round(Math.min(22, ch * 0.34))}px;">
                 ${shape(ln.key, Math.round(Math.min(18, ch * 0.32)), ln.key === 'h' ? CREAM : ln.key === 's' ? 'var(--snareL)' : SHP[ln.key].c)}${compact ? '' : titleCase(ln.label)}
-                ${hand && !compact ? html`<small class="hand-badge" title="Recommended hand: ${hand}">${hand}</small>` : nothing}
               </span>
               ${bs.map((b, bi) => html`
                 ${[0, 1, 2, 3].map(j => {
                   const i = b * 4 + j, char = x.sel[ln.key][i], on = char !== '.', now = i === step;
                   const isAccent = char === 'X', isGhost = char === 'g';
-                  const stepHand = x.base.stepHands?.[ln.key]?.[i];
                   const noteSize = Math.floor(now ? ss * 1.15 : isAccent ? ss * 1.15 : isGhost ? ss * 0.65 : ss);
                   return html`<span class="cell" style="position:relative;border-radius:${br}px;background:${on ? (isGhost ? mix(CREAM, 65) : CREAM) : now ? mix(ACC, 28) : mix(CREAM, 10)};box-shadow:${on && now ? `0 0 0 3px ${ACC}` : isAccent ? `0 0 0 2px ${ACC}` : 'none'};">
                     ${on ? shape(ln.key, noteSize, undefined, isGhost ? 0.7 : 1) : nothing}
-                    ${stepHand && on ? html`<span class="step-hand">${stepHand}</span>` : nothing}
                   </span>`;
                 })}
-                ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}`;
-            })}
+                ${bi < bs.length - 1 ? html`<span></span>` : nothing}`)}`)}
           </div>`)}
       </div>
     `;
@@ -631,8 +625,6 @@ export class CueApp extends LitElement {
     .score > span { display: flex; align-items: center; justify-content: center; min-width: 0; overflow: hidden; white-space: nowrap; }
     .count { border-radius: 999px; }
     .lane-label { gap: 8px; font-family: 'Tilt Warp', sans-serif; color: var(--fg); }
-    .hand-badge { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 16%, transparent); color: var(--acc); font-family: 'Host Grotesk', sans-serif; font-weight: 700; margin-left: 6px; }
-    .step-hand { position: absolute; bottom: 2px; font-size: 9px; font-weight: 800; font-family: 'Host Grotesk', sans-serif; color: var(--ink); line-height: 1; }
 
     .draw { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
     .keys { display: grid; }
