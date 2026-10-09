@@ -54,3 +54,13 @@ A curated, device-agnostic groove (`src/library/patterns.ts`): metadata (genre, 
 
 ### Device Mapping
 `toQuantizedPattern` lays a Library Pattern out for the selected device by routing each lane through that device's `classMapping` (first mapped control) — the same routing a hand-edited step uses. Switching device re-maps the loaded pattern rather than clearing it. Loaded patterns enter the same review state as a transcribed take, so pads can still be tapped to edit.
+
+## Cue (the app at `index.html`)
+
+The pattern library as a two-job app: **Program** (enter a pattern into your machine, one drum at a time) and **Play** (a score to learn it by hand). Source lives in `src/cue/`; the earlier library + beatbox Capture UI moved to `capture.html` unchanged.
+
+- **Cue pattern**: a famous groove (`src/cue/data/library.ts`) with 16-step lanes for kick, snare, hat, open hat plus optional percussion (clap, rim, tom, bongo, cowbell, shaker, crash). Lanes use `x` / `.`.
+- **Part**: Main, Var (only when the groove has a known variation bar) or Fill (known, or generated per genre). **Chain** loops main, main, var, fill.
+- **Machine**: one of 20 drum machines; each maps every lane to the pad/track/instrument it goes on (`map`), or leaves it unmapped when the machine has no such sound. Mappings marked `guess` are suggestions.
+- **Focus**: in Play, the beats (1–4) being practised; playback loops only those.
+- `?view=mobile` pins the layout to a phone frame for previewing on desktop.

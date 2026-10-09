@@ -1,0 +1,11 @@
+/* Cue — global page frame. Theme colours are CSS custom properties set on
+   :root by themes.ts; these defaults are the Aubergine theme so the first
+   paint matches before the stored theme is applied. */
+:root {
+  color-scheme: dark;
+  --bg: #2B1D30; --bg2: #221726; --ink: #150E18; --fg: #F7EADF;
+  --mute: #C3ADBF; --mute2: #9C8598; --acc: #FFB38A; --panel: #33243A;
+  --line: #4A3651; --div: #E3DCC4; --kick: #E0573A; --snare: #3E63C4;
+  --snareL: #7FA0F0; --open: #D29A12;
+}
+html, body { margin: 0; height: 100%; background: var(--bg2); overflow: hidden; }
