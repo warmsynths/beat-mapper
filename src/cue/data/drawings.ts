@@ -118,6 +118,29 @@ export function drawDevice(d: Device, L: LaneKey): Drawing {
     kn(5, 29, 11); lab(2, 40.5, 17, 3, 'INST SELECT', 1.1, { center: 1, mute: 1 });
     btn(5, 46, 11, 6, { acc: '#b5533f', nob: 1 });
     strips(20, 43.6, 4.8125, 4, 0.8); keyRow(20, 45.2, 4.8125, 4, 7.5, { r: 0.4 });
+  } else if (id === 'TR-808') {
+    H = 44; R = 1.2;
+    lab(4, 3, 20, 3, 'Roland', 1.5, { mute: 1 }); lab(4, 6.5, 14, 2.6, 'Rhythm Composer', 1.1, { mute: 1 }); lab(4, 9.2, 14, 3.4, 'TR-808', 2.2, { fw: 600 });
+    kn(5, 14, 6); lab(3, 21, 10, 2.4, 'ACCENT', 0.9, { center: 1, mute: 1 });
+    d.inst!.forEach((n, i) => { const x = 19 + i * 6.6; kn(x + 1.4, 3, 3.2); kn(x + 1.4, 8, 3.2); kn(x + 1.4, 13, 3.2); a('inst', x + 0.4, 18, 5.4, 2.8, { text: n, fs: 1, hl: hlOf(n) }); });
+    kn(4, 25, 9); lab(3, 35, 11, 2.4, 'TEMPO', 0.9, { center: 1, mute: 1 });
+    btn(4, 38.5, 9, 3.5, { acc: '#b5533f', nob: 1 });
+    strips(19, 27, 4.9, 4.3, 1); keyRow(19, 29, 4.9, 4.3, 9, { r: 0.3 });
+  } else if (id === 'TR-909') {
+    H = 36; R = 1.2;
+    lab(4, 3, 20, 3, 'Roland', 1.5, { mute: 1 }); lab(4, 6.5, 14, 4, 'TR-909', 2.6, { fw: 600 });
+    a('screen', 4, 12, 10, 4.5, { scr: 1, fs: 1.1 }); kn(5, 18, 6);
+    d.inst!.forEach((n, i) => { const x = 19 + i * 6.9; kn(x + 1.6, 3, 3.2); kn(x + 1.6, 8, 3.2); a('inst', x + 0.4, 13.5, 5.6, 2.8, { text: n, fs: 1, hl: hlOf(n) }); });
+    btn(4, 27, 9, 4, { acc: '#b5533f', nob: 1 });
+    keyRow(19, 21, 4.9, 4.3, 8, { r: 0.4, grey: 1 });
+  } else if (id === 'RD-78') {
+    H = 46; R = 1.5;
+    brand('BEHRINGER', 'RD-78', 1.2, 2.4);
+    kn(4, 13, 8); lab(3, 22, 10, 2.4, 'TEMPO', 0.9, { center: 1, mute: 1 });
+    for (let i = 0; i < 4; i++) btn(4 + (i % 2) * 5, 26 + Math.floor(i / 2) * 4, 3.5, 2.5);
+    d.inst!.forEach((n, i) => { const x = 18 + i * 5.3; a('fader', x + 2, 3, 1.1, 10); kn(x + 0.9, 14.5, 3); a('inst', x + 0.2, 19, 4.8, 2.6, { text: n, fs: 0.85, hl: hlOf(n) }); });
+    btn(4, 36, 9, 4.5, { acc: '#b5533f', nob: 1 });
+    keyRow(18, 28, 4.95, 4.3, 8, { r: 0.4 });
   } else if (id === 'RD-8') {
     H = 40; R = 1;
     brand('BEHRINGER', 'RD-8', 1.2, 2.4);

@@ -1,4 +1,4 @@
-import { chainOf, DEVS, INST, LIB, partData, type Device, type Inst, type LaneKey, type Lanes, type PartId, type Pattern } from './data/library.ts';
+import { barsOf, chainOf, DEVS, INST, LIB, partData, type Device, type Inst, type LaneKey, type Lanes, type PartId, type Pattern } from './data/library.ts';
 import { kitById, kitFor, type Kit } from './engine/audio.ts';
 
 export type Mode = 'program' | 'play';
@@ -12,7 +12,8 @@ export interface State {
   beats: number[];
   /** Lanes ticked off in Program. */
   done: Partial<Record<LaneKey, boolean>>;
-  part: PartId; chain: boolean; perc: boolean; bar: number;
+  /** `bar` = position in the chain; `pg` = which Main bar is shown (0 = bar 1). */
+  part: PartId; chain: boolean; perc: boolean; bar: number; pg: number;
   playing: boolean; step: number; tempo: number | null;
   /** What's typed in the BPM field before it's committed; null = show the tempo. */
   tempoDraft: string | null;
@@ -29,7 +30,7 @@ export const initState = (theme: string): State => ({
   selectedId: 'apache', query: '', genre: 'ALL', search: false, rack: false, rackQ: '', themes: false, theme,
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
-  part: 'MAIN', chain: false, perc: false, bar: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false, zoom: true
+  part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false, zoom: true
 });
 
 export const saveDevice = (id: string) => { try { localStorage.setItem(DEVICE_KEY, id); } catch { /* storage unavailable */ } };
@@ -45,6 +46,8 @@ export interface Derived {
   base: Pattern; sel: Lanes; dev: Device;
   lanes: Inst[]; layer: Inst; li: number; last: boolean;
   extraN: number; parts: PartId[];
+  /** Bars in the current part, and bars in a full chain. */
+  barsN: number; chainN: number;
   list: Pattern[]; genres: string[]; makers: { maker: string; items: Device[] }[];
   step: number; bpm: number; allBeats: boolean;
   kit: Kit; suits: Kit;
@@ -52,7 +55,7 @@ export interface Derived {
 }
 
 export function derive(s: State): Derived {
-  const base = selected(s), sel = partData(base, s.part), dev = DEVS.find(d => d.id === s.device) || DEVS[0];
+  const base = selected(s), sel = partData(base, s.part, s.pg), dev = DEVS.find(d => d.id === s.device) || DEVS[0];
   const hasHits = (str: string) => /[xXg]/.test(str);
   const lanes = INST.filter(i => hasHits(sel[i.key]) && (i.core || s.perc));
   const extraN = INST.filter(i => !i.core && hasHits(sel[i.key])).length;
@@ -78,6 +81,7 @@ export function derive(s: State): Derived {
   const rq = s.rackQ.trim().toLowerCase(), dl = DEVS.filter(d => !rq || (d.maker + ' ' + d.id).toLowerCase().includes(rq));
   return {
     base, sel, dev, lanes, layer, li, last: li >= lanes.length - 1, extraN, parts, list,
+    barsN: barsOf(base, s.part), chainN: chainOf(base).length,
     genres: [...new Set(LIB.map(p => p.genre))].sort(),
     makers: [...new Set(dl.map(d => d.maker))].map(m => ({ maker: m, items: dl.filter(d => d.maker === m) })),
     step: s.playing ? s.step : -1, bpm: bpmOf(s), allBeats: s.beats.length === 4,
@@ -90,7 +94,7 @@ export function derive(s: State): Derived {
 export function selectPattern(id: string): Partial<State> {
   const p = LIB.find(x => x.id === id) || LIB[0];
   const first = INST.find(i => /[xXg]/.test(p[i.key]));
-  return { selectedId: p.id, part: 'MAIN', bar: 0, perc: false, tempo: null, tempoDraft: null, kit: null, kitMenu: false, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
+  return { selectedId: p.id, part: 'MAIN', bar: 0, pg: 0, perc: false, tempo: null, tempoDraft: null, kit: null, kitMenu: false, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
 }
 
 /**
@@ -104,14 +108,20 @@ export function toggleBeat(cur: number[], b: number): number[] {
   return has ? cur.filter(x => x !== b) : cur.concat(b).sort((x, y) => x - y);
 }
 
-/** Advances the playhead one 16th. Play mode loops only the focused beats; chain steps bars main, main, var, fill. */
-export function tick(s: State): { step: number; part: PartId; bar: number } {
+/**
+ * Advances the playhead one 16th. Play mode loops only the focused beats and moves through every bar of the part;
+ * chain steps through the chain's bars (see chainOf).
+ */
+export function tick(s: State): { step: number; part: PartId; bar: number; pg: number } {
   const B = s.mode === 'play' ? s.beats : [0, 1, 2, 3];
   const allow = B.flatMap(b => [b * 4, b * 4 + 1, b * 4 + 2, b * 4 + 3]);
   const step = allow[(allow.indexOf(s.step) + 1) % allow.length];
-  let part = s.part, bar = s.bar;
-  if (s.chain && s.step >= 0 && step === allow[0]) { bar = (bar + 1) % 4; part = chainOf(selected(s))[bar]; }
-  return { step, part, bar };
+  let part = s.part, bar = s.bar, pg = s.pg;
+  if (s.step >= 0 && step === allow[0]) {
+    if (s.chain) { const ch = chainOf(selected(s)); bar = (bar + 1) % ch.length; [part, pg] = ch[bar]; }
+    else if (s.mode === 'play') pg = (pg + 1) % barsOf(selected(s), part);
+  }
+  return { step, part, bar, pg };
 }
 
 /** Commits a typed tempo: digits only, clamped to 40–220; anything unparseable keeps the current tempo. */

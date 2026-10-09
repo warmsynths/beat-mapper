@@ -119,7 +119,7 @@ export class CueApp extends LitElement {
     audio().resume();
     clearInterval(this.timer);
     this.timer = window.setInterval(() => {
-      const base = selected(this.s), next = tick(this.s), d = partData(base, next.part);
+      const base = selected(this.s), next = tick(this.s), d = partData(base, next.part, next.pg);
       const kit = kitById(this.s.kit) || kitFor(base);
       INST.forEach(i => {
         const ch = d[i.key][next.step];
@@ -140,7 +140,8 @@ export class CueApp extends LitElement {
   private select(id: string) { this.set(selectPattern(id), true); }
   private openSearch() { this.focusSearch = true; this.set({ search: true, rack: false, themes: false, kitMenu: false }); }
   private setMode(m: Mode) { this.set({ mode: m, step: -1 }, true); }
-  private setPart(id: PartId) { this.set({ part: id, chain: false, bar: 0, done: {} }); }
+  private setPart(id: PartId) { this.set({ part: id, chain: false, bar: 0, pg: 0, done: {} }); }
+  private setPage(n: number) { this.set({ pg: n, chain: false, bar: 0, done: {} }); }
   private pickDevice(id: string) { saveDevice(id); this.set({ device: id, rack: false, done: {} }); }
   private pickTheme(id: string) { applyTheme(id, true); this.set({ theme: id }); }
   private nudgeTempo(d: number) { this.set({ tempo: clamp(bpmOf(this.s) + d, 40, 220), tempoDraft: null }, true); }
@@ -241,10 +242,11 @@ export class CueApp extends LitElement {
                 style="height:${compact ? 26 : 30}px;background:${on ? CREAM : 'transparent'};color:${on ? INK : MUTED};">${PART_LABEL[id][0]}</button>`;
             })}
           </div>
+          ${x.base.bars ? this.barTabs(x, compact) : nothing}
           <button class="toggle" title="Loop main, main, variation, fill"
             style="height:${compact ? 30 : 34}px;${s.chain ? `background:${ACC};color:${INK};border-color:${ACC};` : pill(false)}"
-            @click=${() => this.set({ chain: !s.chain, part: 'MAIN', bar: 0, done: {} }, true)}>
-            ${compact ? 'Chain' : s.chain ? `Chain · bar ${s.bar + 1}/4` : 'Chain 4 bars'}
+            @click=${() => this.set({ chain: !s.chain, part: 'MAIN', bar: 0, pg: 0, done: {} }, true)}>
+            ${compact ? 'Chain' : s.chain ? `Chain · bar ${s.bar + 1}/${x.chainN}` : `Chain ${x.chainN} bars`}
           </button>
           ${x.extraN > 0 ? html`
             <button class="toggle" title="Show extra percussion" style="height:${compact ? 30 : 34}px;${pill(s.perc)}"
@@ -253,6 +255,24 @@ export class CueApp extends LitElement {
             </button>` : nothing}
         </div>
       </header>
+    `;
+  }
+
+  /**
+   * Bar 1 2 3 4 for multi-bar beats. Stays in place, dimmed and inert, on Var, Fill or Chain so the
+   * content below doesn't jump.
+   */
+  private barTabs(x: Derived, compact: boolean) {
+    const s = this.s, live = x.barsN > 1 && !s.chain, n = x.base.bars!.length + 1;
+    return html`
+      <div class="seg bars-seg" style="opacity:${live ? 1 : 0.35};pointer-events:${live ? 'auto' : 'none'};" aria-disabled=${live ? 'false' : 'true'}>
+        <span class="seg-lbl">Bar</span>
+        ${Array.from({ length: n }, (_, i) => {
+          const on = live && s.pg === i, h = compact ? 26 : 30;
+          return html`<button title="Bar ${i + 1} of ${n}" tabindex=${live ? 0 : -1} @click=${() => this.setPage(i)}
+            style="height:${h}px;min-width:${h}px;padding:0 6px;background:${on ? CREAM : 'transparent'};color:${on ? INK : CREAM};">${i + 1}</button>`;
+        })}
+      </div>
     `;
   }
 
@@ -427,7 +447,8 @@ export class CueApp extends LitElement {
     const key = x.dev.map[x.layer.key], capOn = dw.h > 200;
     const sentF = Math.round(clamp(Math.min(stg.w * 0.55 / 9, (stg.h - 140) / 4.6), stg.h < 300 ? 24 : 34, 72));
     const chipH = Math.round(sentF * 1.15);
-    const keysCap = (x.dev.fam === 'sp' ? 'Pads' : x.dev.fam === 'po' ? 'Buttons' : x.dev.fam === 'ct' ? 'Top 16 pads' : 'Step keys') + ` on your ${x.dev.short} · lit = press`;
+    const keysCap = (x.dev.fam === 'sp' ? 'Pads' : x.dev.fam === 'po' ? 'Buttons' : x.dev.fam === 'ct' ? 'Top 16 pads' : 'Step keys') + ` on your ${x.dev.short} · lit = press`
+      + (x.barsN > 1 && !s.chain && s.pg > 0 ? ` · bar ${s.pg + 1}: ${x.dev.fam === 'po' || x.dev.fam === 'sp' ? 'next pattern' : 'next page'}` : '');
     return html`
       <div class="prog-d">
         <div class="sentence-col" style="gap:${stg.h < 300 ? 14 : 26}px;">
@@ -662,6 +683,8 @@ export class CueApp extends LitElement {
     .controls { flex: 1 0 100%; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .seg { display: flex; gap: 2px; padding: 2px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 9%, transparent); }
     .seg button { padding: 0 12px; border: none; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .bars-seg { align-items: center; transition: opacity 0.15s; }
+    .seg-lbl { padding: 0 6px 0 10px; font-size: 12px; font-weight: 700; color: var(--mute); }
     .toggle { padding: 0 12px; border: 2px solid; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 
     nav { flex: none; display: flex; align-items: flex-end; border-bottom: 2px solid color-mix(in srgb, var(--fg) 20%, transparent); }

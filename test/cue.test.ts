@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { chainOf, DEVS, INST, LIB, partData } from '../src/cue/data/library.ts';
+import { barsOf, chainOf, DEVS, INST, LIB, partData } from '../src/cue/data/library.ts';
 import { drawDevice } from '../src/cue/data/drawings.ts';
 import { commitTempo, derive, initState, selectPattern, tick, toggleBeat, type State } from '../src/cue/model.ts';
 import { KITS, kitFor } from '../src/cue/engine/audio.ts';
@@ -11,8 +11,10 @@ describe('Cue library data', () => {
   it('every pattern has 16 steps in every lane, for every part', () => {
     for (const p of LIB) {
       for (const part of ['MAIN', 'VAR', 'FILL'] as const) {
-        const d = partData(p, part);
-        for (const i of INST) assert.match(d[i.key], /^[xXg.]{16}$/, `${p.id} ${part} ${i.key}`);
+        for (let bar = 0; bar < barsOf(p, part); bar++) {
+          const d = partData(p, part, bar);
+          for (const i of INST) assert.match(d[i.key], /^[xXg.]{16}$/, `${p.id} ${part} bar ${bar + 1} ${i.key}`);
+        }
       }
     }
   });
@@ -50,9 +52,33 @@ describe('Cue library data', () => {
     }
   });
 
-  it('chains main, main, var (when there is one), fill', () => {
-    assert.deepStrictEqual(chainOf(LIB.find(p => p.id === 'amen')!), ['MAIN', 'MAIN', 'VAR', 'FILL']);
-    assert.deepStrictEqual(chainOf(LIB.find(p => p.id === 'billie')!), ['MAIN', 'MAIN', 'MAIN', 'FILL']);
+  it('chains main, main, var (when there is one), fill for one-bar beats', () => {
+    const one = LIB.filter(p => !p.bars);
+    const withVar = one.find(p => p.var)!, noVar = one.find(p => !p.var)!;
+    assert.deepStrictEqual(chainOf(withVar), [['MAIN', 0], ['MAIN', 0], ['VAR', 0], ['FILL', 0]]);
+    assert.deepStrictEqual(chainOf(noVar), [['MAIN', 0], ['MAIN', 0], ['MAIN', 0], ['FILL', 0]]);
+  });
+
+  it('chains every main bar, then var and fill, for multi-bar beats', () => {
+    assert.deepStrictEqual(chainOf(LIB.find(p => p.id === 'amen')!), [['MAIN', 0], ['MAIN', 1], ['MAIN', 2], ['MAIN', 3], ['VAR', 0], ['FILL', 0]]);
+    assert.deepStrictEqual(chainOf(LIB.find(p => p.id === 'billie')!), [['MAIN', 0], ['MAIN', 1], ['MAIN', 2], ['MAIN', 3], ['FILL', 0]]);
+  });
+
+  it('gives only Main extra bars, and keeps unlisted lanes from bar 1', () => {
+    const amen = LIB.find(p => p.id === 'amen')!;
+    assert.strictEqual(barsOf(amen, 'MAIN'), 4);
+    assert.strictEqual(barsOf(amen, 'VAR'), 1);
+    assert.strictEqual(barsOf(LIB.find(p => p.id === 'levee')!, 'MAIN'), 2);
+    assert.strictEqual(barsOf(LIB.find(p => p.id === 'apache')!, 'MAIN'), 1);
+    assert.strictEqual(partData(amen, 'MAIN', 1).h, amen.h);
+    assert.notStrictEqual(partData(amen, 'MAIN', 2).k, amen.k);
+  });
+
+  it('adds the TR-808, TR-909 and RD-78', () => {
+    for (const id of ['TR-808', 'TR-909', 'RD-78']) assert.ok(DEVS.find(d => d.id === id), id);
+    const rd78 = DEVS.find(d => d.id === 'RD-78')!;
+    assert.strictEqual(rd78.map.o, 'CY');
+    assert.strictEqual(rd78.map.t, undefined, 'RD-78 has no toms');
   });
 });
 
@@ -104,7 +130,32 @@ describe('Cue model', () => {
     let s = state({ selectedId: 'amen', chain: true, step: -1 });
     const parts: string[] = [];
     for (let i = 0; i < 16 * 4 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) parts.push(s.part); }
-    assert.deepStrictEqual(parts, ['MAIN', 'MAIN', 'VAR', 'FILL', 'MAIN']);
+    assert.deepStrictEqual(parts, ['MAIN', 'MAIN', 'MAIN', 'MAIN', 'VAR']);
+  });
+
+  it('chain walks every main bar of a multi-bar beat', () => {
+    let s = state({ selectedId: 'amen', chain: true, step: -1 });
+    const seen: string[] = [];
+    for (let i = 0; i < 16 * 6 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) seen.push(s.part + s.pg); }
+    assert.deepStrictEqual(seen, ['MAIN0', 'MAIN1', 'MAIN2', 'MAIN3', 'VAR0', 'FILL0', 'MAIN0']);
+  });
+
+  it('play loops through every bar of the part; program stays on the chosen bar', () => {
+    let s = state({ selectedId: 'levee', mode: 'play', step: -1 });
+    const bars: number[] = [];
+    for (let i = 0; i < 16 * 3 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) bars.push(s.pg); }
+    assert.deepStrictEqual(bars, [0, 1, 0, 1]);
+    let p = state({ selectedId: 'levee', mode: 'program', pg: 1, step: -1 });
+    for (let i = 0; i < 40; i++) p = { ...p, ...tick(p) };
+    assert.strictEqual(p.pg, 1);
+  });
+
+  it('shows the chosen main bar', () => {
+    const amen = LIB.find(p => p.id === 'amen')!;
+    assert.strictEqual(derive(state({ selectedId: 'amen', pg: 2 })).sel.k, partData(amen, 'MAIN', 2).k);
+    assert.strictEqual(derive(state({ selectedId: 'amen' })).barsN, 4);
+    assert.strictEqual(derive(state({ selectedId: 'amen', part: 'FILL' })).barsN, 1);
+    assert.strictEqual(derive(state({ selectedId: 'amen' })).chainN, 6);
   });
 
   it('starts each beat on the kit that suits its genre, and remembers a picked one', () => {

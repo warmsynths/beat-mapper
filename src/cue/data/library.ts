@@ -15,6 +15,8 @@ export interface Pattern extends Lanes {
   hands?: Partial<Record<LaneKey, string>>;
   stepHands?: Partial<Record<LaneKey, string>>;
   var?: Lanes; fill?: Lanes;
+  /** Main bars 2, 3, 4… (bar 1 is the pattern itself). */
+  bars?: Lanes[];
 }
 
 export type Family = 'sp' | 'po' | 'ct' | 'tr' | 'dt';
@@ -35,7 +37,7 @@ export const INST: Inst[] = (
 const XK = INST.filter(i => !i.core).map(i => i.key);
 export const E = '................';
 
-type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill'> & Partial<Lanes> & { var?: Partial<Lanes>; fill?: Partial<Lanes> };
+type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill' | 'bars'> & Partial<Lanes> & { var?: Partial<Lanes>; fill?: Partial<Lanes> };
 
 const RAW: RawPattern[] = [
   {
@@ -3702,6 +3704,27 @@ export const LIB: Pattern[] = RAW.map(r => {
   return p as Pattern;
 });
 
+// Extra Main bars (bar 1 is the pattern itself). Rough transcriptions: lanes not listed repeat bar 1.
+const BARS: Record<string, Partial<Lanes>[]> = {
+  amen: [{}, { k: 'x.x.......x.....', s: '....x..x.x....x.' }, { k: '..xx......x.....', s: '.x..x..x.x....x.', y: '..........x.....' }],
+  funky: [{ s: '....x..x.x.x.x.x' }, {}, { k: 'x.x.......x.x...', s: '....x..x.x..x.xx', o: '...............x' }],
+  billie: [{}, {}, { s: '....x.......x.xx' }],
+  levee: [{ k: 'xx.....x..x.....' }],
+  impeach: [{ k: 'x......x..x..x..', o: '..............x.' }, {}, { s: '....x.......x.x.', h: 'x.x.x.x.x.x.....' }],
+  think: [{ k: 'x......x..x.....' }, {}, { s: '....x..x.x..xxxx' }],
+  boombap: [{ k: 'x.....x..x.x....' }],
+  jungle: [{ k: 'x.x...x...x.....', s: '....x..x.x..x.x.' }, {}, { k: 'x.....x.x.x.....', s: '.x..x..xx...xxxx' }],
+  dnb: [{ k: 'x.........x..x..' }, {}, { s: '....x..x.x..xxxx' }]
+};
+/** A changed lane keeps bar 1's accent or ghost where both bars hit the same step. */
+const keepDynamics = (bar: string, main: string) => bar.split('').map((c, i) => c === '.' ? '.' : main[i] !== '.' ? main[i] : c).join('');
+LIB.forEach(p => {
+  const extra = BARS[p.id];
+  if (extra) p.bars = extra.map(b => Object.fromEntries(INST.map(i => [i.key, b[i.key] ? keepDynamics(b[i.key]!, p[i.key]) : p[i.key]])) as Lanes);
+});
+/** How many bars a part has: Main can have several, Var and Fill are one bar each. */
+export const barsOf = (p: Pattern, id: PartId) => id === 'MAIN' && p.bars ? p.bars.length + 1 : 1;
+
 // Generated fills, styled per genre, for patterns without a known fill bar.
 const FILL_STYLE: Record<string, string> = {
   Trap: 'trap', House: 'house', Techno: 'house', Electro: 'trap', Electronic: 'trap',
@@ -3730,12 +3753,20 @@ function makeFill(p: Pattern): Lanes {
   return f;
 }
 
-export function partData(p: Pattern, id: PartId): Lanes {
+/** One bar of a part; `bar` counts from 0 and only matters for Main. */
+export function partData(p: Pattern, id: PartId, bar = 0): Lanes {
+  if (id === 'MAIN' && bar > 0 && p.bars?.[bar - 1]) return p.bars[bar - 1];
   if (id === 'VAR' && p.var) return p.var;
   if (id === 'FILL') return p.fill || makeFill(p);
   return p;
 }
-export const chainOf = (p: Pattern): PartId[] => ['MAIN', 'MAIN', p.var ? 'VAR' : 'MAIN', 'FILL'];
+/**
+ * The bars Chain loops through, as [part, bar]. Multi-bar beats play every Main bar, then Var (if any) and Fill;
+ * one-bar beats loop main, main, var, fill.
+ */
+export const chainOf = (p: Pattern): [PartId, number][] => p.bars
+  ? [...Array.from({ length: p.bars.length + 1 }, (_, i): [PartId, number] => ['MAIN', i]), ...(p.var ? [['VAR', 0] as [PartId, number]] : []), ['FILL', 0]]
+  : [['MAIN', 0], ['MAIN', 0], [p.var ? 'VAR' : 'MAIN', 0], ['FILL', 0]];
 
 export const DEVS: Device[] = [
   { id: 'SP-404MKII', maker: 'Roland', short: 'SP-404', fam: 'sp', map: { k: 'A1', s: 'A2', h: 'A3', o: 'A4' }, method: 'TR-REC · PADS = STEPS 1–16' },
@@ -3756,12 +3787,15 @@ export const DEVS: Device[] = [
   { id: 'VOLCA BEATS', maker: 'Korg', short: 'VOLCA', fam: 'tr', inst: ['KICK', 'SNR', 'LTOM', 'HTOM', 'CHAT', 'OHAT', 'CLAP', 'CLAV', 'AGO', 'CRSH'], map: { k: 'KICK', s: 'SNR', h: 'CHAT', o: 'OHAT' }, rec: 'STEP', method: 'STEP MODE · PICK PART · TOUCH KEYS 1–16' },
   { id: 'DRUMLOGUE', maker: 'Korg', short: 'DRUMLOGUE', fam: 'tr', inst: ['BD', 'SD', 'LT', 'HT', 'CH', 'OH', 'RS', 'CP', 'MULTI'], map: { k: 'BD', s: 'SD', h: 'CH', o: 'OH' }, rec: 'STEP', method: 'STEP EDIT · PICK PART · STEP KEYS 1–16' },
   { id: 'DRUMBRUTE IMPACT', maker: 'Arturia', short: 'IMPACT', fam: 'tr', inst: ['KCK1', 'KCK2', 'SNR', 'TOMH', 'TOML', 'CYM', 'COW', 'CHH', 'OHH', 'FM'], map: { k: 'KCK1', s: 'SNR', h: 'CHH', o: 'OHH' }, rec: 'STEP', method: 'STEP MODE · PICK INSTRUMENT · STEP KEYS 1–16' },
+  { id: 'TR-808', maker: 'Roland', short: 'TR-808', fam: 'tr', inst: ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'CP', 'MA', 'CB', 'CY', 'OH', 'CH'], map: { k: 'BD', s: 'SD', h: 'CH', o: 'OH' }, method: 'STEP WRITE · INSTRUMENT SELECT · STEP KEYS 1–16' },
+  { id: 'TR-909', maker: 'Roland', short: 'TR-909', fam: 'tr', inst: ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'HC', 'CH', 'OH', 'CR', 'RD'], map: { k: 'BD', s: 'SD', h: 'CH', o: 'OH' }, method: 'PATTERN WRITE · PICK INSTRUMENT · STEP KEYS 1–16' },
+  { id: 'RD-78', maker: 'Behringer', short: 'RD-78', fam: 'tr', inst: ['BD', 'SD', 'RS', 'CP', 'HH', 'CY', 'CB', 'CL', 'LB', 'HB', 'LC', 'GU', 'MA', 'TB', 'MB'], map: { k: 'BD', s: 'SD', h: 'HH', o: 'CY' }, method: 'WRITE · PICK INSTRUMENT · STEP KEYS 1–16', guess: true },
   { id: 'RD-8', maker: 'Behringer', short: 'RD-8', fam: 'tr', inst: ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'CP', 'CB', 'CY', 'OH', 'CH'], map: { k: 'BD', s: 'SD', h: 'CH', o: 'OH' }, method: 'STEP WRITE · PICK INSTRUMENT · STEP KEYS 1–16' },
   { id: 'RD-9', maker: 'Behringer', short: 'RD-9', fam: 'tr', inst: ['BD', 'SD', 'LT', 'MT', 'HT', 'RS', 'CP', 'CH', 'OH', 'CR', 'RD'], map: { k: 'BD', s: 'SD', h: 'CH', o: 'OH' }, method: 'STEP WRITE · PICK INSTRUMENT · STEP KEYS 1–16' }
 ];
 
 // Map the extra percussion onto each machine. Sounds a machine has no slot for stay unmapped.
-const SYN: Record<string, string[]> = { c: ['CP', 'CLAP', 'HC'], r: ['RS', 'RIM'], t: ['LT', 'MT', 'HT', 'LTOM', 'HTOM', 'TOML', 'TOMH'], b: ['CONGA', 'BONGO'], w: ['CB', 'COW', 'AGO'], z: ['SHKR', 'MA'], y: ['CC', 'CY', 'CR', 'CRSH', 'CYM', 'RC', 'RD'] };
+const SYN: Record<string, string[]> = { c: ['CP', 'CLAP', 'HC'], r: ['RS', 'RIM'], t: ['LT', 'MT', 'HT', 'LTOM', 'HTOM', 'TOML', 'TOMH'], b: ['CONGA', 'BONGO', 'LB', 'HB', 'LC'], w: ['CB', 'COW', 'AGO'], z: ['SHKR', 'MA', 'TB'], y: ['CC', 'CY', 'CR', 'CRSH', 'CYM', 'RC', 'RD'] };
 const PO_X: Record<string, Partial<Record<LaneKey, string>>> = { 'PO-33': { c: '13', r: '14', z: '15', y: '16' }, 'PO-32': { c: '3', r: '4', t: '5', w: '6', b: '8', z: '9', y: '10' }, 'PO-12': { t: '3', r: '5', c: '6', w: '7', z: '11', y: '12' } };
 const RYTM = ['BD', 'SD', 'RS', 'CP', 'BT', 'LT', 'MT', 'HT', 'CH', 'OH', 'CY', 'CB'];
 DEVS.forEach(dv => {
