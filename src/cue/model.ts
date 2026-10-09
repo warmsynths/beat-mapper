@@ -1,4 +1,5 @@
 import { chainOf, DEVS, INST, LIB, partData, type Device, type Inst, type LaneKey, type Lanes, type PartId, type Pattern } from './data/library.ts';
+import { kitById, kitFor, type Kit } from './engine/audio.ts';
 
 export type Mode = 'program' | 'play';
 
@@ -13,6 +14,10 @@ export interface State {
   done: Partial<Record<LaneKey, boolean>>;
   part: PartId; chain: boolean; perc: boolean; bar: number;
   playing: boolean; step: number; tempo: number | null;
+  /** What's typed in the BPM field before it's committed; null = show the tempo. */
+  tempoDraft: string | null;
+  /** Chosen kit id; null = the one that suits the beat's genre. */
+  kit: string | null; kitMenu: boolean;
   /** Program: true = big key grid, false = whole machine drawing. */
   zoom: boolean;
 }
@@ -24,7 +29,7 @@ export const initState = (theme: string): State => ({
   selectedId: 'apache', query: '', genre: 'ALL', search: false, rack: false, rackQ: '', themes: false, theme,
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
-  part: 'MAIN', chain: false, perc: false, bar: 0, playing: false, step: -1, tempo: null, zoom: true
+  part: 'MAIN', chain: false, perc: false, bar: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false, zoom: true
 });
 
 export const saveDevice = (id: string) => { try { localStorage.setItem(DEVICE_KEY, id); } catch { /* storage unavailable */ } };
@@ -42,6 +47,7 @@ export interface Derived {
   extraN: number; parts: PartId[];
   list: Pattern[]; genres: string[]; makers: { maker: string; items: Device[] }[];
   step: number; bpm: number; allBeats: boolean;
+  kit: Kit; suits: Kit;
   hits: (k: LaneKey) => number[];
 }
 
@@ -75,15 +81,16 @@ export function derive(s: State): Derived {
     genres: [...new Set(LIB.map(p => p.genre))].sort(),
     makers: [...new Set(dl.map(d => d.maker))].map(m => ({ maker: m, items: dl.filter(d => d.maker === m) })),
     step: s.playing ? s.step : -1, bpm: bpmOf(s), allBeats: s.beats.length === 4,
+    kit: kitById(s.kit) || kitFor(base), suits: kitFor(base),
     hits: k => sel[k].split('').flatMap((x, i) => /[xXg]/.test(x) ? [i] : [])
   };
 }
 
-/** State for a freshly picked pattern: main part, first lane that has hits, whole bar. */
+/** State for a freshly picked pattern: main part, its own tempo and kit, first lane that has hits, whole bar. */
 export function selectPattern(id: string): Partial<State> {
   const p = LIB.find(x => x.id === id) || LIB[0];
   const first = INST.find(i => /[xXg]/.test(p[i.key]));
-  return { selectedId: p.id, part: 'MAIN', bar: 0, perc: false, tempo: null, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
+  return { selectedId: p.id, part: 'MAIN', bar: 0, perc: false, tempo: null, tempoDraft: null, kit: null, kitMenu: false, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
 }
 
 /**
@@ -105,4 +112,10 @@ export function tick(s: State): { step: number; part: PartId; bar: number } {
   let part = s.part, bar = s.bar;
   if (s.chain && s.step >= 0 && step === allow[0]) { bar = (bar + 1) % 4; part = chainOf(selected(s))[bar]; }
   return { step, part, bar };
+}
+
+/** Commits a typed tempo: digits only, clamped to 40–220; anything unparseable keeps the current tempo. */
+export function commitTempo(draft: string | null): Partial<State> {
+  const v = parseInt(draft ?? '', 10);
+  return isNaN(v) ? { tempoDraft: null } : { tempo: clamp(v, 40, 220), tempoDraft: null };
 }

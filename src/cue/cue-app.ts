@@ -1,10 +1,11 @@
 import { LitElement, css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { live } from 'lit/directives/live.js';
 import { ref } from 'lit/directives/ref.js';
 import { FAM, INST, LIB, partData, type LaneKey, type PartId } from './data/library.ts';
-import { audio, hit } from './engine/audio.ts';
+import { audio, hit, kitById, kitFor, KITS, preview } from './engine/audio.ts';
 import { layoutPanel, type PanelTheme } from './engine/panel.ts';
-import { bpmOf, clamp, derive, initState, saveDevice, selectPattern, selected, tick, titleCase, toggleBeat, type Derived, type Mode, type State } from './model.ts';
+import { bpmOf, clamp, commitTempo, derive, initState, saveDevice, selectPattern, selected, tick, titleCase, toggleBeat, type Derived, type Mode, type State } from './model.ts';
 import { applyTheme, storedTheme, THEMES } from './themes.ts';
 
 const CREAM = 'var(--fg)', INK = 'var(--ink)', ACC = 'var(--acc)', MUTED = 'var(--mute)';
@@ -84,7 +85,7 @@ export class CueApp extends LitElement {
   private onResize = () => { this.vw = innerWidth; this.vh = innerHeight; };
 
   private onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') return this.set({ search: false, rack: false, themes: false, info: false });
+    if (e.key === 'Escape') return this.set({ search: false, rack: false, themes: false, info: false, kitMenu: false });
     const t = (e.composedPath()[0] as HTMLElement | undefined)?.tagName;
     if (t === 'INPUT' || t === 'TEXTAREA' || t === 'BUTTON') return;
     if (e.key === ' ') { e.preventDefault(); this.toggle(); }
@@ -118,12 +119,13 @@ export class CueApp extends LitElement {
     audio().resume();
     clearInterval(this.timer);
     this.timer = window.setInterval(() => {
-      const next = tick(this.s), d = partData(selected(this.s), next.part);
+      const base = selected(this.s), next = tick(this.s), d = partData(base, next.part);
+      const kit = kitById(this.s.kit) || kitFor(base);
       INST.forEach(i => {
         const ch = d[i.key][next.step];
-        if (ch === 'X') hit(i.key, 'accent');
-        else if (ch === 'x') hit(i.key, 'normal');
-        else if (ch === 'g') hit(i.key, 'ghost');
+        if (ch === 'X') hit(i.key, 'accent', kit);
+        else if (ch === 'x') hit(i.key, 'normal', kit);
+        else if (ch === 'g') hit(i.key, 'ghost', kit);
       });
       this.set(next);
     }, 60000 / bpmOf(this.s) / 4);
@@ -136,12 +138,24 @@ export class CueApp extends LitElement {
   // ---- actions ---------------------------------------------------------
 
   private select(id: string) { this.set(selectPattern(id), true); }
-  private openSearch() { this.focusSearch = true; this.set({ search: true, rack: false, themes: false }); }
+  private openSearch() { this.focusSearch = true; this.set({ search: true, rack: false, themes: false, kitMenu: false }); }
   private setMode(m: Mode) { this.set({ mode: m, step: -1 }, true); }
   private setPart(id: PartId) { this.set({ part: id, chain: false, bar: 0, done: {} }); }
   private pickDevice(id: string) { saveDevice(id); this.set({ device: id, rack: false, done: {} }); }
   private pickTheme(id: string) { applyTheme(id, true); this.set({ theme: id }); }
-  private nudgeTempo(d: number) { this.set({ tempo: clamp(bpmOf(this.s) + d, 40, 220) }, true); }
+  private nudgeTempo(d: number) { this.set({ tempo: clamp(bpmOf(this.s) + d, 40, 220), tempoDraft: null }, true); }
+  private commitTempo() { if (this.s.tempoDraft !== null) this.set(commitTempo(this.s.tempoDraft), true); }
+  private onTempoKey(e: KeyboardEvent) {
+    const el = e.target as HTMLInputElement;
+    if (e.key === 'Enter') el.blur();
+    if (e.key === 'Escape') { e.stopPropagation(); this.set({ tempoDraft: null }); el.blur(); }
+  }
+  private toggleKitMenu() { this.set({ kitMenu: !this.s.kitMenu, rack: false, search: false, themes: false, info: false }); }
+  /** Picks a kit; while stopped, plays a short groove so you can hear it. */
+  private pickKit(id: string) {
+    this.set({ kit: id, kitMenu: false });
+    if (!this.s.playing) preview(kitById(id)!);
+  }
 
   /** Desktop "Done, next" — ticks the lane off, and after the last lane moves on to Play. */
   private next(x: Derived) {
@@ -183,21 +197,42 @@ export class CueApp extends LitElement {
     const s = this.s, hb = compact ? 40 : 46;
     const pill = (on: boolean) => `background:${on ? CREAM : 'transparent'};color:${on ? INK : CREAM};border-color:${on ? CREAM : mix(CREAM, 30)};`;
     return html`
-      <header style="gap:${compact ? '6px' : H < 700 ? '8px' : '12px'} 14px;padding:${compact ? '12px 20px 8px' : H < 700 ? '18px 40px 12px' : '28px 40px 18px'};">
-        <div class="title-col">
+      <header style="gap:${compact ? '6px' : H < 700 ? '8px' : '12px'} ${compact ? 8 : 14}px;padding:${compact ? '12px 20px 8px' : H < 700 ? '18px 40px 12px' : '28px 40px 18px'};">
+        <div class="title-col" style="flex:${compact ? '1 1 100%' : '1'};">
           <button class="title" title="Find a beat" @click=${() => this.openSearch()}>
-            <span class="name" style="font-size:${compact ? 24 : H < 700 ? 40 : 56}px;">${x.base.name}</span>
+            <span class="name-row" style="font-size:${compact ? 24 : H < 700 ? 40 : 56}px;">
+              <span class="name">${x.base.name}</span>
+              <svg class="chev" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"></path></svg>
+            </span>
             ${compact || H < 640 ? nothing : html`<span class="artist">${x.base.artist} — <u>find another beat</u></span>`}
           </button>
         </div>
+        <div class="kit-wrap">
+          <button class="kit-pill" title="Change drum kit" aria-haspopup="menu" aria-expanded=${s.kitMenu ? 'true' : 'false'}
+            style="height:${hb}px;padding:0 ${compact ? 12 : 16}px;background:${s.kitMenu ? CREAM : 'transparent'};color:${s.kitMenu ? INK : CREAM};"
+            @click=${() => this.toggleKitMenu()}>
+            ${compact ? nothing : html`<span class="kit-lbl">Kit</span>`}${x.kit.name} <span class="caret">▾</span>
+          </button>
+          ${s.kitMenu ? html`
+            <div class="kit-scrim" @click=${() => this.toggleKitMenu()}></div>
+            <div class="kit-menu" role="menu" style="${compact ? 'left:0;' : 'right:0;'}">
+              ${KITS.map(k => {
+                const on = k.id === x.kit.id;
+                return html`<button role="menuitemradio" aria-checked=${on ? 'true' : 'false'} style="background:${on ? mix(INK, 8) : 'transparent'};" @click=${() => this.pickKit(k.id)}>
+                  <span class="kit-name">${k.name}${k.id === x.suits.id ? html`<small>suits ${x.base.genre}</small>` : nothing}</span>
+                  <span>${on ? '✓' : ''}</span>
+                </button>`;
+              })}
+            </div>` : nothing}
+        </div>
         <button class="device-pill" style="height:${hb}px;" title="Choose your machine"
-          @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false, info: false })}>
+          @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false, info: false, kitMenu: false })}>
           ${compact ? x.dev.short : x.dev.id} <span class="caret">▾</span>
         </button>
         <button class="info-btn" style="width:${hb}px;height:${hb}px;" title="About this beat" aria-label="About this beat"
-          @click=${() => this.set({ info: !s.info, search: false, rack: false, themes: false })}>i</button>
+          @click=${() => this.set({ info: !s.info, search: false, rack: false, themes: false, kitMenu: false })}>i</button>
         <button class="theme-btn" style="width:${hb}px;height:${hb}px;" title="Change theme" aria-label="Change theme"
-          @click=${() => this.set({ themes: !s.themes, search: false, rack: false, info: false })}><span class="swatch"></span></button>
+          @click=${() => this.set({ themes: !s.themes, search: false, rack: false, info: false, kitMenu: false })}><span class="swatch"></span></button>
         <div class="controls">
           <div class="seg">
             ${x.parts.map(id => {
@@ -438,7 +473,14 @@ export class CueApp extends LitElement {
         </button>
         <div class="tempo">
           <button class="round" title="Slower" aria-label="Slower" @click=${() => this.nudgeTempo(-2)}>−</button>
-          <span class="bpm"><span>${x.bpm}</span><small>BPM</small></span>
+          <span class="bpm">
+            <input .value=${live(s.tempoDraft ?? String(x.bpm))} inputmode="numeric" aria-label="Tempo in BPM"
+              @focus=${(e: FocusEvent) => (e.target as HTMLInputElement).select()}
+              @input=${(e: InputEvent) => this.set({ tempoDraft: (e.target as HTMLInputElement).value.replace(/[^0-9]/g, '').slice(0, 3) })}
+              @blur=${() => this.commitTempo()}
+              @keydown=${(e: KeyboardEvent) => this.onTempoKey(e)}>
+            <small>BPM</small>
+          </span>
           <button class="round" title="Faster" aria-label="Faster" @click=${() => this.nudgeTempo(2)}>+</button>
         </div>
       </footer>
@@ -596,12 +638,23 @@ export class CueApp extends LitElement {
     header { flex: none; display: flex; flex-wrap: wrap; align-items: flex-start; }
     .title-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
     .title { max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border: none; background: transparent; padding: 0; text-align: left; color: var(--fg); }
-    .title .name { max-width: 100%; font-family: 'Tilt Warp', sans-serif; line-height: 1.12; padding-bottom: 0.04em; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title .name-row { max-width: 100%; display: flex; align-items: center; gap: 0.3em; }
+    .title .name { min-width: 0; font-family: 'Tilt Warp', sans-serif; line-height: 1.12; padding-bottom: 0.04em; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chev { flex: none; width: 0.42em; height: 0.28em; margin-top: 0.08em; color: var(--mute); }
     .title .artist { max-width: 100%; font-size: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .title u { text-underline-offset: 3px; }
     .device-pill { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 18px; border: 2px solid var(--fg); border-radius: 999px; background: transparent; color: var(--fg); font-size: 14px; font-weight: 700; white-space: nowrap; }
     .device-pill:hover { background: var(--fg); color: var(--ink); }
     .caret { font-size: 11px; }
+    .kit-wrap { position: relative; flex: none; }
+    .kit-pill { display: flex; align-items: center; gap: 6px; border: 2px solid var(--fg); border-radius: 999px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .kit-lbl { font-weight: 600; opacity: 0.75; }
+    .kit-scrim { position: fixed; inset: 0; z-index: 20; }
+    .kit-menu { position: absolute; top: calc(100% + 8px); z-index: 21; min-width: 220px; display: flex; flex-direction: column; padding: 6px; background: var(--fg); color: var(--ink); border-radius: 18px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
+    .kit-menu button { min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; border: none; border-radius: 12px; color: var(--ink); font-size: 15px; font-weight: 700; text-align: left; }
+    .kit-menu button:hover { background: color-mix(in srgb, var(--ink) 10%, transparent) !important; }
+    .kit-name { display: flex; align-items: baseline; gap: 8px; }
+    .kit-name small { font-size: 12px; font-weight: 600; opacity: 0.6; }
     .info-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 19px; }
     .info-btn:hover { background: var(--fg); color: var(--ink); }
     .theme-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; }
@@ -675,7 +728,8 @@ export class CueApp extends LitElement {
     .tempo { flex: none; display: flex; align-items: center; gap: 4px; }
     .round { width: 44px; height: 44px; padding: 0; border: 2px solid var(--line); border-radius: 50%; background: transparent; color: var(--fg); font-size: 20px; }
     .bpm { min-width: 56px; display: flex; flex-direction: column; align-items: center; line-height: 1; }
-    .bpm > span { font-family: 'Tilt Warp', sans-serif; font-size: 24px; }
+    .bpm input { width: 58px; height: 30px; padding: 0; border: none; border-bottom: 2px dashed var(--line); border-radius: 0; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 24px; text-align: center; outline: none; }
+    .bpm input:focus { border-bottom: 2px solid var(--acc); }
     .bpm small { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: var(--mute2); }
 
     .overlay { position: absolute; inset: 0; z-index: 10; background: var(--fg); color: var(--ink); display: flex; flex-direction: column; }

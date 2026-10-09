@@ -2,7 +2,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import { chainOf, DEVS, INST, LIB, partData } from '../src/cue/data/library.ts';
 import { drawDevice } from '../src/cue/data/drawings.ts';
-import { derive, initState, selectPattern, tick, toggleBeat, type State } from '../src/cue/model.ts';
+import { commitTempo, derive, initState, selectPattern, tick, toggleBeat, type State } from '../src/cue/model.ts';
+import { KITS, kitFor } from '../src/cue/engine/audio.ts';
 
 const state = (patch: Partial<State> = {}): State => ({ ...initState('aubergine'), device: DEVS[0].id, ...patch });
 
@@ -104,5 +105,33 @@ describe('Cue model', () => {
     const parts: string[] = [];
     for (let i = 0; i < 16 * 4 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) parts.push(s.part); }
     assert.deepStrictEqual(parts, ['MAIN', 'MAIN', 'VAR', 'FILL', 'MAIN']);
+  });
+
+  it('starts each beat on the kit that suits its genre, and remembers a picked one', () => {
+    const genreKit = (genre: string) => kitFor({ ...LIB[0], genre }).id;
+    assert.strictEqual(genreKit('Trap'), '808');
+    assert.strictEqual(genreKit('House'), '909');
+    assert.strictEqual(genreKit('Lo-Fi'), 'dusty');
+    assert.strictEqual(genreKit('Reggaeton'), 'dancehall');
+    assert.strictEqual(genreKit('Funk'), 'acoustic');
+    const s = state({ selectedId: 'amen' });
+    assert.strictEqual(derive(s).kit.id, kitFor(derive(s).base).id);
+    assert.strictEqual(derive({ ...s, kit: '808' }).kit.id, '808');
+    assert.strictEqual(KITS.length, 5);
+  });
+
+  it('picking a pattern goes back to its own tempo and kit', () => {
+    const p = selectPattern('amen');
+    assert.strictEqual(p.tempo, null);
+    assert.strictEqual(p.kit, null);
+    assert.strictEqual(p.tempoDraft, null);
+    assert.strictEqual(p.kitMenu, false);
+  });
+
+  it('typed tempo is clamped to 40–220, and junk keeps the current tempo', () => {
+    assert.deepStrictEqual(commitTempo('140'), { tempo: 140, tempoDraft: null });
+    assert.deepStrictEqual(commitTempo('999'), { tempo: 220, tempoDraft: null });
+    assert.deepStrictEqual(commitTempo('5'), { tempo: 40, tempoDraft: null });
+    assert.deepStrictEqual(commitTempo(''), { tempoDraft: null });
   });
 });
