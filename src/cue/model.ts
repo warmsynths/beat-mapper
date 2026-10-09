@@ -5,6 +5,8 @@ export type Mode = 'program' | 'play';
 
 export interface State {
   selectedId: string; query: string; genre: string;
+  /** Browse: genre pills expanded. */
+  genreOpen: boolean;
   search: boolean; rack: boolean; rackQ: string; themes: boolean; theme: string;
   info: boolean;
   device: string; mode: Mode; layer: LaneKey;
@@ -27,7 +29,7 @@ const DEVICE_KEY = 'beatmapper.device';
 const ls = (k: string, d: string) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
 
 export const initState = (theme: string): State => ({
-  selectedId: 'apache', query: '', genre: 'ALL', search: false, rack: false, rackQ: '', themes: false, theme,
+  selectedId: 'apache', query: '', genre: 'ALL', genreOpen: false, search: false, rack: false, rackQ: '', themes: false, theme,
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
   part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false, zoom: true
