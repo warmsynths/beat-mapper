@@ -30,6 +30,7 @@ const laneColor = (k: LaneKey) => k === 'h' ? ACC : k === 's' ? 'var(--snareL)' 
 const VERB: Record<string, string> = { sp: 'Hold pad', tr: 'Press', po: 'Hold', ct: 'Pick track', dt: 'Pick track' };
 const SUB = ['', 'e', '&', 'a'];
 const ORD = ['First', 'Then', 'Then', 'Last'];
+const LEVELS = ['Beginner', 'Intermediate', 'Advanced'] as const;
 const PART_LABEL: Record<PartId, [string, string]> = { MAIN: ['Main', 'Main groove'], VAR: ['Var', 'Variation bar'], FILL: ['Fill', 'Fill bar'] };
 const PANEL_THEME: PanelTheme = { stroke: mix(CREAM, 55), faint: mix(CREAM, 25), off: 'transparent', ink: CREAM, mute: mix(CREAM, 75), screen: INK, screenFg: CREAM, onFg: INK, ring: ACC };
 
@@ -193,7 +194,7 @@ export class CueApp extends LitElement {
           @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false, info: false })}>
           ${compact ? x.dev.short : x.dev.id} <span class="caret">▾</span>
         </button>
-        <button class="info-btn" style="width:${hb}px;height:${hb}px;" title="Beat notes & finger drumming guide" aria-label="Beat notes"
+        <button class="info-btn" style="width:${hb}px;height:${hb}px;" title="About this beat" aria-label="About this beat"
           @click=${() => this.set({ info: !s.info, search: false, rack: false, themes: false })}>i</button>
         <button class="theme-btn" style="width:${hb}px;height:${hb}px;" title="Change theme" aria-label="Change theme"
           @click=${() => this.set({ themes: !s.themes, search: false, rack: false, info: false })}><span class="swatch"></span></button>
@@ -485,61 +486,54 @@ export class CueApp extends LitElement {
     `;
   }
 
+  /** Beat notes: title + level meter, "The sound" / "Try this", which hand per drum, tags. */
   private renderInfo(x: Derived, compact: boolean) {
-    const p = x.base;
-    const close = () => this.set({ info: false });
+    const p = x.base, close = () => this.set({ info: false });
+    const lvl = Math.max(0, LEVELS.indexOf(p.difficulty ?? (p.bpm > 150 ? 'Intermediate' : 'Beginner')));
+    const bar = (n: number) => html`<i style="background:${lvl >= n ? ACC : 'var(--line)'};"></i>`;
+    const hands = INST.filter(i => p.hands?.[i.key]).map(i => [i.key, p.hands![i.key]!] as const);
+    if (!hands.length) hands.push(['k', 'L'], ['s', 'R'], ['h', /x{6}/i.test(p.h) ? 'L+R' : 'R']);
     return html`
       <div class="scrim" @click=${close}></div>
-      <section class="sheet-up info-sheet" style="padding:${compact ? '18px 20px calc(24px + env(safe-area-inset-bottom))' : '28px 40px 36px'};">
-        <div class="ov-bar">
+      <section class="sheet-up info-sheet" style="padding:${compact ? '18px 20px calc(20px + env(safe-area-inset-bottom))' : '24px 40px 32px'};">
+        <div class="info-wrap">
           <div class="info-head">
-            <span class="sheet-title">${p.name}</span>
-            ${p.difficulty ? html`<span class="diff-tag diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>` : nothing}
+            <div class="info-title-col">
+              <span class="info-title" style="font-size:${compact ? 30 : 40}px;">${p.name}</span>
+              <div class="info-meta">
+                <span>${p.artist}</span><span>${p.genre}</span><span>${p.bpm} BPM</span>
+                <span class="level"><span class="bars">${bar(0)}${bar(1)}${bar(2)}</span>${LEVELS[lvl]}</span>
+              </div>
+            </div>
+            <button class="ov-close ov-close-dark" @click=${close}>Done</button>
           </div>
-          <button class="ov-close ov-close-dark" @click=${close}>Done</button>
-        </div>
-
-        <div class="info-meta">
-          <span>${p.artist}</span>
-          <span>·</span>
-          <span>${p.genre}</span>
-          <span>·</span>
-          <span>${p.bpm} BPM</span>
-        </div>
-
-        ${p.gear ? html`
-          <div class="info-section">
-            <span class="info-label">Original Gear & Sound History</span>
-            <p class="info-body">${p.gear}</p>
-          </div>` : nothing}
-
-        ${p.tip ? html`
-          <div class="info-section">
-            <span class="info-label">Finger Drumming & Programming Tip</span>
-            <p class="info-body tip-body">${p.tip}</p>
-          </div>` : nothing}
-
-        ${p.hands ? html`
-          <div class="info-section">
-            <span class="info-label">Recommended Finger Drumming Hands</span>
-            <div class="hands-grid">
-              ${Object.entries(p.hands).map(([k, hand]) => {
-                const inst = INST.find(i => i.key === k);
-                return html`
-                  <div class="hand-item">
-                    <span class="hand-inst">${inst ? inst.label : k.toUpperCase()}</span>
-                    <span class="hand-val">${hand}</span>
-                  </div>`;
+          <div class="info-cols">
+            <div class="info-section">
+              <span class="info-label">The sound</span>
+              <p class="info-sound">${p.gear || p.artist + '.'}</p>
+            </div>
+            <div class="info-section">
+              <span class="info-label">Try this</span>
+              <p class="info-tip">${p.tip || 'Program the kick and snare first, then layer the hats on top.'}</p>
+            </div>
+          </div>
+          <div class="info-section info-rule">
+            <span class="info-label">Which hand</span>
+            <div class="hands">
+              ${hands.map(([k, hand]) => {
+                const S = SHP[k];
+                return html`<div class="hand">
+                  <i class="shape" style="width:16px;height:16px;background:${k === 'h' ? CREAM : laneColor(k)};border-radius:${k === 's' ? '3px' : S.r};clip-path:${S.clip};"></i>
+                  <span class="hand-inst">${INST.find(i => i.key === k)!.label}</span>
+                  <span class="hand-val">${hand}</span>
+                </div>`;
               })}
             </div>
-          </div>` : nothing}
-
-        ${p.tags && p.tags.length ? html`
-          <div class="info-section">
-            <div class="info-tags">
-              ${p.tags.map(t => html`<span class="info-tag">#${t}</span>`)}
-            </div>
-          </div>` : nothing}
+          </div>
+          <div class="info-tags">
+            ${(p.tags?.length ? p.tags : [p.genre.toLowerCase()]).map(t => html`<span>#${t.replace(/ /g, '')}</span>`)}
+          </div>
+        </div>
       </section>
     `;
   }
@@ -614,7 +608,7 @@ export class CueApp extends LitElement {
     .device-pill { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 18px; border: 2px solid var(--fg); border-radius: 999px; background: transparent; color: var(--fg); font-size: 14px; font-weight: 700; white-space: nowrap; }
     .device-pill:hover { background: var(--fg); color: var(--ink); }
     .caret { font-size: 11px; }
-    .info-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 17px; font-weight: 700; }
+    .info-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 19px; }
     .info-btn:hover { background: var(--fg); color: var(--ink); }
     .theme-btn { flex: none; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--fg); border-radius: 50%; background: transparent; }
     .swatch { width: 22px; height: 22px; border-radius: 50%; background: conic-gradient(var(--acc) 0 25%, var(--kick) 0 50%, var(--fg) 0 75%, var(--snareL) 0); }
@@ -723,19 +717,27 @@ export class CueApp extends LitElement {
     .scrim { position: absolute; inset: 0; z-index: 11; background: color-mix(in srgb, var(--ink) 60%, transparent); }
     .sheet-up { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; max-height: 85%; overflow-y: auto; background: var(--bg); border-top: 2px solid var(--fg); box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; }
     .sheet-title { font-family: 'Tilt Warp', sans-serif; font-size: 26px; font-weight: 400; }
-    .info-sheet { max-width: 680px; margin: 0 auto; border-radius: 24px 24px 0 0; }
-    .info-head { display: flex; align-items: center; gap: 12px; }
-    .info-meta { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--mute); font-weight: 600; margin-top: -6px; }
-    .info-section { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-    .info-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--acc); text-transform: uppercase; }
-    .info-body { margin: 0; font-size: 15px; line-height: 1.5; color: var(--fg); }
-    .tip-body { padding: 12px 16px; border-radius: 12px; background: color-mix(in srgb, var(--fg) 8%, transparent); border-left: 3px solid var(--acc); }
-    .hands-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-    .hand-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 12px; border-radius: 10px; background: color-mix(in srgb, var(--fg) 7%, transparent); font-size: 13px; }
-    .hand-inst { font-weight: 700; color: var(--mute); font-family: 'Tilt Warp', sans-serif; font-size: 12px; }
-    .hand-val { font-weight: 800; color: var(--fg); }
-    .info-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-    .info-tag { font-size: 12px; color: var(--mute); padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 7%, transparent); }
+    .info-sheet { max-height: 86%; display: block; }
+    .info-wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+    .info-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .info-head .ov-close { flex: none; }
+    .info-title-col { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .info-title { font-family: 'Tilt Warp', sans-serif; line-height: 1.02; letter-spacing: -0.01em; text-wrap: balance; }
+    .info-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 14px; font-weight: 600; color: var(--mute); }
+    .level { display: flex; align-items: center; gap: 6px; color: var(--fg); }
+    .bars { display: flex; gap: 3px; }
+    .bars i { width: 6px; height: 14px; border-radius: 2px; }
+    .info-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 22px 40px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .info-section { display: flex; flex-direction: column; gap: 8px; }
+    .info-rule { gap: 12px; padding-top: 20px; border-top: 1px solid var(--line); }
+    .info-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: var(--acc); text-transform: uppercase; }
+    .info-sound { margin: 0; font-size: 19px; line-height: 1.4; text-wrap: pretty; }
+    .info-tip { margin: 0; font-size: 17px; line-height: 1.45; color: var(--mute); text-wrap: pretty; }
+    .hands { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hand { display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 14px; border-radius: 999px; background: var(--panel); }
+    .hand-inst { min-width: 52px; font-size: 14px; font-weight: 700; }
+    .hand-val { height: 32px; min-width: 32px; padding: 0 8px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: var(--fg); color: var(--ink); font-family: 'Tilt Warp', sans-serif; font-size: 15px; }
+    .info-tags { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; font-weight: 600; color: var(--mute2); }
 
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
     .theme-card { display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 2px solid; border-radius: 18px; text-align: left; }
