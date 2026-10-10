@@ -113,3 +113,11 @@ export function preview(kit: Kit): void {
   setTimeout(() => hit('s', 'normal', kit), 220);
   setTimeout(() => hit('h', 'normal', kit), 330);
 }
+
+/** Count-in click: higher on the first beat of the bar. */
+export function click(high: boolean): void {
+  const c = audio(), t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+  o.type = 'square'; o.frequency.value = high ? 1760 : 1175;
+  g.gain.setValueAtTime(0.16, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+  o.connect(g); g.connect(master!); o.start(t); o.stop(t + 0.06);
+}

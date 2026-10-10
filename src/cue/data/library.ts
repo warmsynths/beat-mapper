@@ -17,6 +17,10 @@ export interface Pattern extends Lanes {
   var?: Lanes; fill?: Lanes;
   /** Main bars 2, 3, 4… (bar 1 is the pattern itself). */
   bars?: Lanes[];
+  /** Swing %: 50 = straight, 66 = triplet. */
+  sw: number;
+  /** A recorded performance reduced to the 16-step grid. */
+  simp: boolean;
 }
 
 export type Family = 'sp' | 'po' | 'ct' | 'tr' | 'dt';
@@ -37,7 +41,7 @@ export const INST: Inst[] = (
 const XK = INST.filter(i => !i.core).map(i => i.key);
 export const E = '................';
 
-type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill' | 'bars'> & Partial<Lanes> & { var?: Partial<Lanes>; fill?: Partial<Lanes> };
+type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill' | 'bars' | 'sw' | 'simp'> & Partial<Lanes> & { var?: Partial<Lanes>; fill?: Partial<Lanes> };
 
 const RAW: RawPattern[] = [
   {
@@ -3696,10 +3700,26 @@ const norm = (o: Partial<Lanes>): Lanes => { INST.forEach(i => { if (!o[i.key]) 
 const inherit = (part: Partial<Lanes>, main: Partial<Lanes>): Lanes =>
   norm(Object.assign(part, Object.fromEntries(XK.map(k => [k, part[k] || main[k]]))));
 
+// Swing % (50 = straight, 66 = triplet). Approximate, by ear; beats not listed are straight.
+const SW: Record<string, number> = {
+  amen: 54, funky: 58, levee: 60, impeach: 54, apache: 54, boombap: 58, onedrop: 62, twostep: 64,
+  coldsweat: 54, think: 54, cissy: 56, afrobeat: 52, jungle: 52,
+  purdie: 60, statikswing: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
+};
+// Recorded performances reduced to a 16-step grid.
+const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop'];
+
+/** Busy hat lines (12+ hits, no marked dynamics) get ghosted off-beats so the 16ths breathe. */
+const ghostHats = (l: Partial<Lanes>) => {
+  const h = l.h;
+  if (h && (h.match(/x/g) || []).length >= 12 && !/[Xg]/.test(h)) l.h = h.split('').map((c, i) => c === 'x' && i % 2 ? 'g' : c).join('');
+};
+
 export const LIB: Pattern[] = RAW.map(r => {
-  const p = Object.assign(r, PERC[r.id] || {});
+  const p = Object.assign(r, PERC[r.id] || {}, { sw: SW[r.id] || 50, simp: SIMP.includes(r.id) });
   norm(p);
-  if (p.var) inherit(p.var, p);
+  ghostHats(p);
+  if (p.var) { inherit(p.var, p); ghostHats(p.var); }
   if (p.fill) inherit(p.fill, p);
   return p as Pattern;
 });

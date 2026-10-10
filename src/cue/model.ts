@@ -25,21 +25,43 @@ export interface State {
   peek: boolean; rackPrev: string | null;
   /** Phone footer pop-ups: the Main / Var / Fill / Chain pill and the volume slider (only one open at a time). */
   partsOpen: boolean; volOpen: boolean;
+  /** Play practice tools (remembered): four clicks before the beat, and a tempo ramp from 70%. `swingOn` false = hear it straight. */
+  ciOn: boolean; ramp: boolean; swingOn: boolean;
+  /** Count-in beat showing (1–4) or null; the ramp's current tempo, 0 when not ramping. */
+  countIn: number | null; rampBpm: number;
+  /** Beat finder order, and the ids of beats marked learned (remembered). */
+  sort: 'level' | 'az'; learned: string[];
 }
 
-const DEVICE_KEY = 'beatmapper.device', PEEK_KEY = 'beatmapper.peek';
+const DEVICE_KEY = 'beatmapper.device', PEEK_KEY = 'beatmapper.peek', LEARNED_KEY = 'beatmapper.learned';
+export const COUNTIN_KEY = 'beatmapper.countin', RAMP_KEY = 'beatmapper.ramp';
 const ls = (k: string, d: string) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
+const learnedIds = (): string[] => { try { const v = JSON.parse(ls(LEARNED_KEY, '[]')); return Array.isArray(v) ? v : []; } catch { return []; } };
 
 export const initState = (theme: string): State => ({
   selectedId: 'apache', query: '', genre: 'ALL', genreOpen: false, search: false, rack: false, rackQ: '', themes: false, theme,
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
   part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false,
-  peek: ls(PEEK_KEY, '') === '1', rackPrev: null, partsOpen: false, volOpen: false
+  peek: ls(PEEK_KEY, '') === '1', rackPrev: null, partsOpen: false, volOpen: false,
+  ciOn: ls(COUNTIN_KEY, '') === '1', ramp: ls(RAMP_KEY, '') === '1', swingOn: true, countIn: null, rampBpm: 0,
+  sort: 'level', learned: learnedIds()
 });
 
 export const saveDevice = (id: string) => { try { localStorage.setItem(DEVICE_KEY, id); } catch { /* storage unavailable */ } };
-export const savePeek = (on: boolean) => { try { localStorage.setItem(PEEK_KEY, on ? '1' : ''); } catch { /* storage unavailable */ } };
+export const savePeek = (on: boolean) => saveFlag(PEEK_KEY, on);
+export const saveFlag = (k: string, on: boolean) => { try { localStorage.setItem(k, on ? '1' : ''); } catch { /* storage unavailable */ } };
+
+/** Adds or removes a beat from the learned list and remembers it. */
+export function toggleLearned(cur: string[], id: string): string[] {
+  const next = cur.includes(id) ? cur.filter(x => x !== id) : cur.concat(id);
+  try { localStorage.setItem(LEARNED_KEY, JSON.stringify(next)); } catch { /* storage unavailable */ }
+  return next;
+}
+
+export const LEVELS = ['Beginner', 'Intermediate', 'Advanced'] as const;
+/** 0–2 difficulty; beats without one count as intermediate above 150 BPM. */
+export const levelOf = (p: Pattern) => Math.max(0, LEVELS.indexOf(p.difficulty ?? (p.bpm > 150 ? 'Intermediate' : 'Beginner')));
 
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 export const titleCase = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
@@ -54,7 +76,10 @@ export interface Derived {
   extraN: number; parts: PartId[];
   /** Bars in the current part, and bars in a full chain. */
   barsN: number; chainN: number;
-  list: Pattern[]; genres: string[]; makers: { maker: string; items: Device[] }[];
+  list: Pattern[];
+  /** The finder's sections: by level (slowest first within each), or one untitled A–Z group. */
+  groups: { title: string; learned: number; items: Pattern[] }[];
+  genres: string[]; makers: { maker: string; items: Device[] }[];
   step: number; bpm: number; allBeats: boolean;
   kit: Kit; suits: Kit;
   hits: (k: LaneKey) => number[];
@@ -86,9 +111,15 @@ export function derive(s: State): Derived {
     });
   }
   list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+  const groups = s.sort === 'level'
+    ? LEVELS.map((title, lv) => {
+      const items = list.filter(p => levelOf(p) === lv).sort((a, b) => a.bpm - b.bpm || a.name.localeCompare(b.name));
+      return { title, learned: items.filter(p => s.learned.includes(p.id)).length, items };
+    }).filter(g => g.items.length)
+    : [{ title: '', learned: 0, items: list }];
   const rq = s.rackQ.trim().toLowerCase(), dl = DEVS.filter(d => !rq || (d.maker + ' ' + d.id).toLowerCase().includes(rq));
   return {
-    base, sel, dev, lanes, layer, li, last: li >= lanes.length - 1, extraN, parts, list,
+    base, sel, dev, lanes, layer, li, last: li >= lanes.length - 1, extraN, parts, list, groups,
     barsN: barsOf(base, s.part), chainN: chainOf(base).length,
     genres: [...new Set(LIB.map(p => p.genre))].sort(),
     makers: [...new Set(dl.map(d => d.maker))].map(m => ({ maker: m, items: dl.filter(d => d.maker === m) })),
@@ -103,7 +134,7 @@ export function derive(s: State): Derived {
 export function selectPattern(id: string): Partial<State> {
   const p = LIB.find(x => x.id === id) || LIB[0];
   const first = INST.find(i => /[xXg]/.test(p[i.key]));
-  return { selectedId: p.id, part: 'MAIN', bar: 0, pg: 0, perc: false, tempo: null, tempoDraft: null, kit: null, kitMenu: false, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
+  return { selectedId: p.id, swingOn: true, part: 'MAIN', bar: 0, pg: 0, perc: false, tempo: null, tempoDraft: null, kit: null, kitMenu: false, step: -1, search: false, info: false, beats: [0, 1, 2, 3], done: {}, layer: first ? first.key : 'k' };
 }
 
 /**
@@ -132,6 +163,16 @@ export function tick(s: State): { step: number; part: PartId; bar: number; pg: n
   }
   return { step, part, bar, pg };
 }
+
+/** Milliseconds until the step after `step`: swing stretches each even 16th and shortens the odd one after it. */
+export function stepMs(bpm: number, step: number, swing: number): number {
+  const s = swing / 100;
+  return 60000 / bpm / 4 * 2 * (step % 2 ? 1 - s : s);
+}
+
+/** Tempo ramp: starts at 70% (never under 40 BPM), +2 BPM per loop, 0 once it reaches the target. */
+export const rampStart = (bpm: number) => Math.max(40, Math.round(bpm * 0.7));
+export const rampNext = (cur: number, target: number) => cur + 2 >= target ? 0 : cur + 2;
 
 /** Commits a typed tempo: digits only, clamped to 40–220; anything unparseable keeps the current tempo. */
 export function commitTempo(draft: string | null): Partial<State> {

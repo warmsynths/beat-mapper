@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import { barsOf, chainOf, DEVS, INST, LIB, partData } from '../src/cue/data/library.ts';
 import { drawDevice } from '../src/cue/data/drawings.ts';
-import { commitTempo, derive, initState, selectPattern, tick, toggleBeat, type State } from '../src/cue/model.ts';
+import { commitTempo, derive, initState, levelOf, rampNext, rampStart, selectPattern, stepMs, tick, toggleBeat, toggleLearned, type State } from '../src/cue/model.ts';
 import { KITS, kitFor } from '../src/cue/engine/audio.ts';
 
 const state = (patch: Partial<State> = {}): State => ({ ...initState('aubergine'), device: DEVS[0].id, ...patch });
@@ -189,5 +189,51 @@ describe('Cue model', () => {
     assert.deepStrictEqual(commitTempo('999'), { tempo: 220, tempoDraft: null });
     assert.deepStrictEqual(commitTempo('5'), { tempo: 40, tempoDraft: null });
     assert.deepStrictEqual(commitTempo(''), { tempoDraft: null });
+  });
+});
+
+describe('Cue v4 practice and learning', () => {
+  it('swing lengthens the even 16th and shortens the odd one, keeping each pair the same length', () => {
+    const straight = stepMs(120, 0, 50);
+    assert.strictEqual(straight, 125);
+    assert.ok(stepMs(120, 0, 60) > straight && stepMs(120, 1, 60) < straight);
+    assert.strictEqual(stepMs(120, 0, 60) + stepMs(120, 1, 60), 2 * straight);
+  });
+
+  it('every beat has a swing between straight and triplet, and swung or simplified beats exist', () => {
+    for (const p of LIB) assert.ok(p.sw >= 50 && p.sw <= 66, `${p.id} swing ${p.sw}`);
+    assert.ok(LIB.some(p => p.sw > 50));
+    assert.ok(LIB.find(p => p.id === 'amen')!.simp);
+  });
+
+  it('busy hat lines ghost their off-beats unless they already carry dynamics', () => {
+    for (const p of LIB) {
+      if ((p.h.match(/[xXg]/g) || []).length < 12) continue;
+      assert.ok(/[Xg]/.test(p.h), `${p.id} hats have no dynamics`);
+    }
+  });
+
+  it('the tempo ramp starts at 70% and stops at the target', () => {
+    assert.strictEqual(rampStart(100), 70);
+    assert.strictEqual(rampStart(50), 40);
+    assert.strictEqual(rampNext(70, 100), 72);
+    assert.strictEqual(rampNext(99, 100), 0);
+  });
+
+  it('groups the finder by level, slowest first, and counts learned beats', () => {
+    const learned = toggleLearned([], LIB[0].id);
+    assert.deepStrictEqual(toggleLearned(learned, LIB[0].id), []);
+    const x = derive(state({ sort: 'level', learned }));
+    assert.deepStrictEqual(x.groups.map(g => g.title), ['Beginner', 'Intermediate', 'Advanced']);
+    for (const g of x.groups) for (let i = 1; i < g.items.length; i++) assert.ok(g.items[i - 1].bpm <= g.items[i].bpm);
+    assert.strictEqual(x.groups.reduce((n, g) => n + g.items.length, 0), LIB.length);
+    assert.strictEqual(x.groups[levelOf(LIB[0])].learned, 1);
+    const az = derive(state({ sort: 'az' }));
+    assert.strictEqual(az.groups.length, 1);
+    assert.strictEqual(az.groups[0].items.length, LIB.length);
+  });
+
+  it('picking a beat turns swing back on', () => {
+    assert.strictEqual(selectPattern('amen').swingOn, true);
   });
 });
