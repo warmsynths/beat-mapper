@@ -28,6 +28,10 @@ describe('Cue library data', () => {
     }
   });
 
+  it('every fill differs from its main groove', () => {
+    for (const p of LIB) assert.ok((['k', 's', 'h', 'o'] as const).some(k => p.fill![k] !== p[k]), `${p.id} fill is the main groove`);
+  });
+
   it('has comprehensive catalogue with rich metadata and hands', () => {
     assert.ok(LIB.length >= 130, `Catalogue has ${LIB.length} patterns`);
     for (const p of LIB) {

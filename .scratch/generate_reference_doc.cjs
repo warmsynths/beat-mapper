@@ -1,121 +1,67 @@
+// Builds BEAT_AUDIT_REFERENCE.md from the library and the reference metadata in audit_builder.cjs.
+// Writes the repo-root copy and public/ (Vite copies public/ into docs/ on build; docs/ itself is emptied).
+// Run from the repo root: node .scratch/generate_reference_doc.cjs
 const fs = require('fs');
 const { AUDIT_DATA } = require('./audit_builder.cjs');
+const { noteOf } = require('./apply_fills.cjs');
 
 const libContent = fs.readFileSync('src/cue/data/library.ts', 'utf8');
 const rawMatch = libContent.match(/const RAW: RawPattern\[\] = (\[[\s\S]*?\n\];)/);
 const patterns = eval(rawMatch[1]);
 
 const genreOrder = [
-  "Breakbeat",
-  "Funk",
-  "Rock",
-  "Jazz & Soul",
-  "Pop",
-  "Krautrock",
-  "Latin",
-  "Reggaeton",
-  "Afrobeat",
-  "Reggae",
-  "Hip-Hop",
-  "Lo-Fi",
-  "Electro",
-  "Electronic",
-  "House",
-  "Techno",
-  "UK Garage",
-  "Jungle",
-  "Drum & Bass",
-  "Dubstep",
-  "Grime",
-  "Trap",
-  "Drills"
+  'Breakbeat', 'Funk', 'Rock', 'Jazz & Soul', 'Pop', 'Krautrock', 'Latin', 'Reggaeton', 'Afrobeat', 'Reggae',
+  'Hip-Hop', 'Lo-Fi', 'Electro', 'Electronic', 'House', 'Techno', 'UK Garage', 'Jungle', 'Drum & Bass',
+  'Dubstep', 'Grime', 'Trap', 'Drills'
 ];
 
-let doc = `# Master Reference Audit: Beat & Drum Fill Compendium
+let doc = `# Beat Reference
 
-This document provides the canonical real-world reference audit for all **135 patterns** in Beat Mapper / Cue.
-
----
-
-## 1. Audit Overview & Motivation
-
-In previous versions of Cue, beats without an explicit \`fill\` property defaulted to an algorithmic fallback generator (\`makeFillCore\`). That generator mapped patterns across broad genre categories (\`build\`, \`house\`, \`trap\`, \`roll\`), resulting in **identical 4-step snare rolls** across completely different drummers, tracks, and eras.
-
-This comprehensive audit resolves that limitation:
-1. **100% Explicit Authentic Fills**: Every single one of the 135 beats in the library now features a bespoke, hand-crafted drum fill transcribed directly from original recordings or designed to reinforce specific technical rudiments.
-2. **Real-World Reference Validation**: Main grooves, variations, ghost notes, and swing feels were cross-referenced against master vinyl pressings, multitrack stems, and published drum transcriptions (*The Breakbeat Bible*, *Modern Drummer*, *Give the Drummers Some!*).
-3. **Turnaround Phrasing**: Follows authentic drumming practice — establishing the groove pocket across beats 1–2 (steps 0–7) and executing the drum fill across beats 3–4 (steps 8–15), or a full-measure fill where the recorded track featured a full-bar break.
-4. **Dynamic Nuance**: Incorporates full dynamic notation:
-   - \`X\` = Accented strike (velocity ~1.45×)
-   - \`x\` = Standard strike (velocity 1.0×)
-   - \`g\` = Feathered ghost note (velocity ~0.32×)
-   - \`.\` = Rest
+What each of the ${patterns.length} patterns in Beat Mapper / Cue is based on, with its main groove and fill.
 
 ---
 
-## 2. Reference Audit Directory (135 Beats)
+## How to read this
+
+- **Main grooves** are written from memory of the records and common charts. They have not been checked against the recordings, and recorded breaks are simplified to a 16-step grid.
+- **Fills are written, not transcribed.** Each fill is built from the beat's own main groove in a style that suits its genre: a funk turnaround, a house build, a hat roll and so on. Songs whose records don't have a fill, such as sample loops and steady sequenced grooves, get a light variation of the groove instead. The Amen break uses its commonly charted fourth bar, and the practice drills use fills written as exercises.
+- **References** name the record, or the style when there is no single record, and the drummer or producer where one is known. Credits marked "as commonly credited" or "uncredited" are uncertain. Years are left out for styles.
+- **Notation:** \`X\` accent · \`x\` hit · \`g\` ghost note · \`.\` rest. Steps run 1–16 as 1 e & a, 2 e & a…
+
+---
+
+## Beats
 
 `;
 
 const byGenre = {};
-patterns.forEach(p => {
-  (byGenre[p.genre] = byGenre[p.genre] || []).push(p);
-});
+patterns.forEach(p => { (byGenre[p.genre] = byGenre[p.genre] || []).push(p); });
+const missing = Object.keys(byGenre).filter(g => !genreOrder.includes(g));
+if (missing.length) throw new Error('Genres missing from genreOrder: ' + missing.join(', '));
 
-let globalIdx = 1;
-
+let n = 1;
 for (const g of genreOrder) {
   const items = byGenre[g];
   if (!items || !items.length) continue;
-
-  doc += `### ${g} (${items.length} Beats)\n\n`;
-
+  doc += `### ${g} (${items.length})\n\n`;
   for (const p of items) {
-    const audit = AUDIT_DATA[p.id];
-    const fill = audit ? audit.fill : { k: '................', s: '................', h: '................', o: '................' };
-
-    doc += `#### ${globalIdx}. ${p.name} (\`${p.id}\`)\n`;
-    doc += `- **Artist / Producer**: ${p.artist}\n`;
-    doc += `- **Drummer / Programmer**: ${audit.refDrummer}\n`;
-    doc += `- **Reference Track**: *${audit.refSong}* (${audit.refYear})\n`;
-    doc += `- **Reference Timecode / Section**: ${audit.refTime}\n`;
-    doc += `- **Tempo & Difficulty**: ${p.bpm} BPM · ${p.difficulty || 'Intermediate'}\n`;
-    doc += `- **Historical Gear**: ${p.gear || 'Acoustic Kit'}\n\n`;
-
-    doc += `**Drum Transcription:**\n\n`;
-    doc += `\`\`\`text\n`;
-    doc += `Step:     01 02 03 04  05 06 07 08  09 10 11 12  13 14 15 16\n`;
-    doc += `Beat:     1  e  &  a   2  e  &  a   3  e  &  a   4  e  &  a\n`;
-    doc += `------------------------------------------------------------\n`;
-    doc += `[MAIN]\n`;
-    doc += `Kick (k): ${p.k}\n`;
-    doc += `Snar (s): ${p.s}\n`;
-    doc += `Hat  (h): ${p.h}\n`;
-    doc += `Open (o): ${p.o}\n`;
-    doc += `\n[FILL (Audited Turnaround)]\n`;
-    doc += `Kick (k): ${fill.k}\n`;
-    doc += `Snar (s): ${fill.s}\n`;
-    doc += `Hat  (h): ${fill.h}\n`;
-    doc += `Open (o): ${fill.o}\n`;
-    doc += `\`\`\`\n\n`;
-
-    doc += `**Audit Notes & Drumming Rationale:**\n`;
-    doc += `${audit.notes}\n\n`;
-    doc += `---\n\n`;
-
-    globalIdx++;
+    const a = AUDIT_DATA[p.id];
+    if (!a) throw new Error('No reference for ' + p.id);
+    if (!p.fill) throw new Error('No fill for ' + p.id);
+    doc += `#### ${n++}. ${p.name} (\`${p.id}\`)\n`;
+    doc += `- **Artist**: ${p.artist}\n`;
+    doc += `- **Reference**: *${a.refSong}*${a.refYear ? ` (${a.refYear})` : ''}\n`;
+    doc += `- **Drummer / producer**: ${a.refDrummer}\n`;
+    doc += `- **Tempo & level**: ${p.bpm} BPM · ${p.difficulty || 'Intermediate'}\n\n`;
+    doc += '```text\n';
+    doc += 'Beat:     1e&a2e&a3e&a4e&a\n';
+    doc += `[MAIN]\nKick (k): ${p.k}\nSnar (s): ${p.s}\nHat  (h): ${p.h}\nOpen (o): ${p.o}\n`;
+    doc += `[FILL]\nKick (k): ${p.fill.k}\nSnar (s): ${p.fill.s}\nHat  (h): ${p.fill.h}\nOpen (o): ${p.fill.o}\n`;
+    doc += '```\n\n';
+    doc += `**Fill:** ${noteOf(p)}\n\n---\n\n`;
   }
 }
 
-doc += `## 3. Verification & Compliance Checklist
-
-- [x] All 135 beats in \`src/cue/data/library.ts\` audited against authentic real-world references.
-- [x] Zero patterns rely on generic \`makeFillCore\` fallback logic.
-- [x] All 135 patterns feature explicit, validated 16-step strings (\`k\`, \`s\`, \`h\`, \`o\`) for both Main and Fill parts.
-- [x] All dynamic symbols adhere strictly to \`[xXg.]\` format.
-- [x] Full test suite (\`npm test\`) verified passing.
-`;
-
 fs.writeFileSync('BEAT_AUDIT_REFERENCE.md', doc);
-fs.writeFileSync('docs/BEAT_AUDIT_REFERENCE.md', doc);
-console.log('Successfully generated BEAT_AUDIT_REFERENCE.md with all 135 beats!');
+fs.writeFileSync('public/BEAT_AUDIT_REFERENCE.md', doc);
+console.log(`Wrote reference for ${n - 1} beats.`);
