@@ -2,10 +2,10 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { live } from 'lit/directives/live.js';
 import { ref } from 'lit/directives/ref.js';
-import { FAM, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
+import { DEVS, FAM, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
 import { audio, hit, kitById, kitFor, KITS, preview } from './engine/audio.ts';
-import { layoutPanel, type PanelTheme } from './engine/panel.ts';
-import { bpmOf, clamp, commitTempo, derive, initState, saveDevice, selectPattern, selected, tick, titleCase, toggleBeat, type Derived, type Mode, type State } from './model.ts';
+import { peekDraw } from './engine/peek.ts';
+import { bpmOf, clamp, commitTempo, derive, initState, saveDevice, savePeek, selectPattern, selected, tick, titleCase, toggleBeat, type Derived, type Mode, type State } from './model.ts';
 import { applyTheme, storedTheme, THEMES } from './themes.ts';
 
 const CREAM = 'var(--fg)', INK = 'var(--ink)', ACC = 'var(--acc)', MUTED = 'var(--mute)';
@@ -37,7 +37,9 @@ const levelOf = (p: Pattern) => Math.max(0, LEVELS.indexOf(p.difficulty ?? (p.bp
 const PART_LABEL:Record<PartId, [string, string]> = { MAIN: ['Main', 'Main groove'], VAR: ['Var', 'Variation bar'], FILL: ['Fill', 'Fill bar'] };
 /** Small down-chevron after the kit and machine names. */
 const caret = html`<svg class="caret" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"></path></svg>`;
-const PANEL_THEME: PanelTheme = { stroke: mix(CREAM, 55), faint: mix(CREAM, 25), off: 'transparent', ink: CREAM, mute: mix(CREAM, 75), screen: INK, screenFg: CREAM, onFg: INK, ring: ACC };
+/** Kit (a drum) and machine (a pad box) icons for the phone header. */
+const KIT_ICO = html`<svg class="hd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="8" rx="8" ry="3"></ellipse><path d="M4 8v8c0 1.7 3.6 3 8 3s8-1.3 8-3V8"></path><path d="M4 12.5c2 1.2 4.8 1.8 8 1.8s6-.6 8-1.8"></path></svg>`;
+const MACHINE_ICO = html`<svg class="hd-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"></rect><rect x="7" y="11" width="3.5" height="3.5" rx="0.8"></rect><rect x="13.5" y="11" width="3.5" height="3.5" rx="0.8"></rect><path d="M7 7.5h10"></path></svg>`;
 
 type Box = { w: number; h: number };
 type BoxName = 'stage' | 'sheet' | 'draw';
@@ -147,7 +149,9 @@ export class CueApp extends LitElement {
   private setPart(id: PartId) { this.set({ part: id, chain: false, bar: 0, pg: 0, done: {} }); }
   private toggleChain() { this.set({ chain: !this.s.chain, part: 'MAIN', bar: 0, pg: 0, done: {} }, true); }
   private setPage(n: number) { this.set({ pg: n, chain: false, bar: 0, done: {} }); }
-  private pickDevice(id: string) { saveDevice(id); this.set({ device: id, rack: false, done: {} }); }
+  private pickDevice(id: string) { saveDevice(id); this.set({ device: id, rack: false, rackPrev: null, done: {} }); }
+  private toggleRack() { this.set({ rack: !this.s.rack, rackQ: '', rackPrev: null, search: false, themes: false, info: false, kitMenu: false }); }
+  private togglePeek() { savePeek(!this.s.peek); this.set({ peek: !this.s.peek, rackPrev: null }); }
   private pickTheme(id: string) { applyTheme(id, true); this.set({ theme: id }); }
   private nudgeTempo(d: number) { this.set({ tempo: clamp(bpmOf(this.s) + d, 40, 220), tempoDraft: null }, true); }
   private commitTempo() { if (this.s.tempoDraft !== null) this.set(commitTempo(this.s.tempoDraft), true); }
@@ -192,7 +196,7 @@ export class CueApp extends LitElement {
           ${this.renderFooter(x, compact, prog)}
           ${s.search ? this.renderSearch(x, compact) : nothing}
           ${s.themes ? this.renderThemes(compact) : nothing}
-          ${s.rack ? this.renderRack(x, compact) : nothing}
+          ${s.rack ? this.renderRack(x, compact, W, H) : nothing}
           ${s.info ? this.renderInfo(x, compact) : nothing}
         </div>
       </div>
@@ -201,15 +205,15 @@ export class CueApp extends LitElement {
 
   /**
    * Desktop: title, then kit / machine pills and the info + theme buttons, with the part, bar, chain
-   * and percussion controls on a full-width row below. Phones: title with soft info + theme buttons
-   * beside it, then "Kit … Machine …" as plain text; parts and chain move into the nav row.
+   * and percussion controls on a full-width row below. Phones: one row — the title with "808 kit · SP-404"
+   * under it, then round kit, machine, info and theme buttons; parts and chain move into the footer.
    */
   private renderHeader(x: Derived, compact: boolean, H: number) {
     const s = this.s, ico = compact ? 36 : 46;
     const pill = (on: boolean) => `background:${on ? CREAM : 'transparent'};color:${on ? INK : CREAM};border-color:${on ? CREAM : mix(CREAM, 30)};`;
     return html`
       <header class=${compact ? 'compact' : ''} style="gap:${compact ? '6px' : H < 700 ? '8px' : '12px'} ${compact ? 8 : 14}px;padding:${compact ? '12px 20px 8px' : H < 700 ? '18px 40px 12px' : '28px 40px 18px'};">
-        <div class="title-col" style="flex:${compact ? '1 1 0' : '1'};">
+        <div class="title-col">
           <button class="title" title="Find a beat" @click=${() => this.openSearch()}>
             <span class="name-row" style="font-size:${compact ? 24 : H < 700 ? 40 : 56}px;">
               <span class="name">${x.base.name}</span>
@@ -217,17 +221,20 @@ export class CueApp extends LitElement {
             </span>
             ${compact || H < 640 ? nothing : html`<span class="artist">${x.base.artist} — <u>find another beat</u></span>`}
           </button>
+          ${compact ? html`<span class="sub-line">${x.kit.name} kit · ${x.dev.id}</span>` : nothing}
         </div>
-        <div class="km" style="flex:${compact ? '1 0 100%' : 'none'};gap:${compact ? 22 : 14}px;">
+        <div class="km" style="order:${compact ? 1 : 2};gap:${compact ? 8 : 14}px;">
           <div class="kit-wrap">
-            <button class="hd-pill" title="Change drum kit" aria-haspopup="menu" aria-expanded=${s.kitMenu ? 'true' : 'false'}
-              style="padding:0 ${compact ? 0 : 16}px;${!compact && s.kitMenu ? `background:${CREAM};color:${INK};` : ''}"
-              @click=${() => this.toggleKitMenu()}>
-              <span class="hd-lbl">Kit</span>${x.kit.name}${caret}
-            </button>
+            ${compact ? html`
+              <button class="ico-btn" title="Change drum kit (${x.kit.name})" aria-label="Change drum kit" aria-haspopup="menu" aria-expanded=${s.kitMenu ? 'true' : 'false'}
+                style="${s.kitMenu ? `background:${CREAM};color:${INK};` : ''}" @click=${() => this.toggleKitMenu()}>${KIT_ICO}</button>` : html`
+              <button class="hd-pill" title="Change drum kit" aria-haspopup="menu" aria-expanded=${s.kitMenu ? 'true' : 'false'}
+                style="padding:0 16px;${s.kitMenu ? `background:${CREAM};color:${INK};` : ''}" @click=${() => this.toggleKitMenu()}>
+                <span class="hd-lbl">Kit</span>${x.kit.name}${caret}
+              </button>`}
             ${s.kitMenu ? html`
               <div class="kit-scrim" @click=${() => this.toggleKitMenu()}></div>
-              <div class="kit-menu" role="menu" style="${compact ? 'left:0;' : 'right:0;'}">
+              <div class="kit-menu" role="menu" style="right:0;">
                 ${KITS.map(k => {
                   const on = k.id === x.kit.id;
                   return html`<button role="menuitemradio" aria-checked=${on ? 'true' : 'false'} style="background:${on ? mix(INK, 8) : 'transparent'};" @click=${() => this.pickKit(k.id)}>
@@ -237,10 +244,9 @@ export class CueApp extends LitElement {
                 })}
               </div>` : nothing}
           </div>
-          <button class="hd-pill device-pill" style="padding:0 ${compact ? 0 : 18}px;" title="Choose your machine"
-            @click=${() => this.set({ rack: !s.rack, rackQ: '', search: false, themes: false, info: false, kitMenu: false })}>
-            ${compact ? html`<span class="hd-lbl">Machine</span>` : nothing}${x.dev.id}${caret}
-          </button>
+          ${compact
+            ? html`<button class="ico-btn" title="Choose your machine (${x.dev.id})" aria-label="Choose your machine" @click=${() => this.toggleRack()}>${MACHINE_ICO}</button>`
+            : html`<button class="hd-pill device-pill" style="padding:0 18px;" title="Choose your machine" @click=${() => this.toggleRack()}>${x.dev.id}${caret}</button>`}
         </div>
         <div class="icons" style="order:${compact ? 1 : 3};gap:${compact ? 8 : 14}px;">
           <button class="info-btn" style="width:${ico}px;height:${ico}px;font-size:${compact ? 17 : 19}px;" title="About this beat" aria-label="About this beat"
@@ -248,9 +254,7 @@ export class CueApp extends LitElement {
           <button class="theme-btn" style="width:${ico}px;height:${ico}px;" title="Change theme" aria-label="Change theme"
             @click=${() => this.set({ themes: !s.themes, search: false, rack: false, info: false, kitMenu: false })}><span class="swatch" style="width:${compact ? 18 : 22}px;height:${compact ? 18 : 22}px;"></span></button>
         </div>
-        ${compact
-          ? x.base.bars ? html`<div class="controls"><span class="bars-lbl">Bar</span>${this.barTabs(x, true)}</div>` : nothing
-          : html`
+        ${compact ? nothing : html`
             <div class="controls">
               <div class="seg">
                 ${x.parts.map(id => {
@@ -277,7 +281,7 @@ export class CueApp extends LitElement {
 
   /**
    * Bar 1 2 3 4 for multi-bar beats. Stays in place, dimmed and inert, on Var, Fill or Chain so the
-   * content below doesn't jump. On phones it sits on its own row with the "Bar" label outside.
+   * content below doesn't jump. On phones it sits at the right of the Program / Play row, labelled outside.
    */
   private barTabs(x: Derived, compact: boolean) {
     const s = this.s, live = x.barsN > 1 && !s.chain, n = x.base.bars!.length + 1;
@@ -287,7 +291,7 @@ export class CueApp extends LitElement {
         ${Array.from({ length: n }, (_, i) => {
           const on = live && s.pg === i;
           return html`<button title="Bar ${i + 1} of ${n}" tabindex=${live ? 0 : -1} @click=${() => this.setPage(i)}
-            style="${compact ? 'width:28px;height:32px;padding:0;' : 'height:30px;min-width:30px;padding:0 6px;'}background:${on ? CREAM : 'transparent'};color:${on ? INK : CREAM};">${i + 1}</button>`;
+            style="${compact ? 'width:28px;height:28px;padding:0;' : 'height:30px;min-width:30px;padding:0 6px;'}background:${on ? CREAM : 'transparent'};color:${on ? INK : CREAM};">${i + 1}</button>`;
         })}
       </div>
     `;
@@ -303,24 +307,16 @@ export class CueApp extends LitElement {
     return tabs;
   }
 
-  /** Program / Play tabs. Phones put Main · Var · Fill · Chain on the right as dotted text tabs. */
+  /** Program / Play tabs. On phones, multi-bar beats put the bar selector on the right. */
   private renderNav(x: Derived, compact: boolean, prog: boolean) {
     const s = this.s;
-    const parts = [
-      ...x.parts.map(id => ({ label: PART_LABEL[id][0], title: PART_LABEL[id][1], on: !s.chain && s.part === id, click: () => this.setPart(id) })),
-      { label: 'Chain', title: 'Loop all bars, variation and fill', on: s.chain, click: () => this.toggleChain() }
-    ];
     return html`
       <nav style="gap:${compact ? 16 : 32}px;padding:${compact ? '0 20px' : '0 40px'};">
         ${([['program', 'Program'], ['play', 'Play']] as [Mode, string][]).map(([m, label]) => html`
           <button class="mode" @click=${() => this.setMode(m)}
             style="height:${compact ? 40 : 60}px;font-size:${compact ? 19 : 30}px;border-bottom-color:${s.mode === m ? ACC : 'transparent'};color:${s.mode === m ? CREAM : MUTED};">${label}</button>`)}
         <span class="spacer"></span>
-        ${compact ? html`
-          <div class="part-tabs" style="gap:${x.parts.length > 2 ? 10 : 14}px;">
-            ${parts.map(p => html`<button title=${p.title} aria-pressed=${p.on ? 'true' : 'false'} @click=${p.click} style="color:${p.on ? CREAM : 'var(--mute2)'};">
-              <i class="dot" style="background:${p.on ? ACC : 'transparent'};"></i>${p.label}</button>`)}
-          </div>` : nothing}
+        ${compact && x.base.bars ? html`<div class="nav-bars"><span class="bars-lbl">Bar</span>${this.barTabs(x, true)}</div>` : nothing}
         ${!prog && !compact ? html`
           <div class="beat-tabs">
             ${this.beatTabs(x).map(b => html`<button class="beat" title=${b.title} @click=${b.click}
@@ -417,17 +413,6 @@ export class CueApp extends LitElement {
     `;
   }
 
-  /** The whole machine, drawn in line-art with the lane's steps lit. */
-  private machine(x: Derived, compact: boolean) {
-    const dw = this.box.draw || { w: 300, h: 200 };
-    const pv = layoutPanel({ dev: x.dev, layer: x.layer, pat: x.sel, step: x.step, th: PANEL_THEME, w: dw.w - 2, h: dw.h - 2, color: laneColor(x.layer.key), maxK: compact ? 10 : 8 });
-    return html`
-      <div class="panel" style="width:${pv.vw};height:${pv.vh};border-radius:${pv.cropR};">
-        ${pv.parts.map(p => html`<span style="left:${p.l};top:${p.t};width:${p.w};height:${p.h};border:${p.bd};border-radius:${p.r};background:${p.bg};box-shadow:${p.ring};color:${p.fg};font-size:${p.fs};font-weight:${p.fw};align-items:${p.ai};justify-content:${p.jc};padding:${p.pad};">${p.text}</span>`)}
-      </div>
-    `;
-  }
-
   private drumPills(x: Derived, desktop: boolean) {
     const s = this.s;
     return x.lanes.map(l => {
@@ -443,8 +428,9 @@ export class CueApp extends LitElement {
     });
   }
 
+  /** Phones: drum selector, the key grid filling the rest, and one line naming the pad to hold. */
   private renderProgramMobile(x: Derived) {
-    const s = this.s, key = x.dev.map[x.layer.key], first = x.li <= 0;
+    const s = this.s, key = x.dev.map[x.layer.key];
     // One even row for up to four drums; with percussion showing, two rows of equal columns.
     const n = x.lanes.length + (x.extraN > 0 ? 1 : 0), cols = n <= 4 ? n : Math.ceil(n / 2);
     return html`
@@ -454,20 +440,11 @@ export class CueApp extends LitElement {
           ${x.extraN > 0 ? html`<button class="perc-m" title=${s.perc ? 'Hide extra percussion' : `Show ${x.extraN} extra percussion`}
             @click=${() => this.set({ perc: !s.perc })}>${s.perc ? 'Less' : '+' + x.extraN}</button>` : nothing}
         </div>
-        <div class="draw" ${ref(this.track('draw'))}>
-          ${s.zoom ? this.keyGrid(x, true, false) : this.machine(x, true)}
-        </div>
+        <div class="draw" ${ref(this.track('draw'))}>${this.keyGrid(x, true, false)}</div>
         <div class="prog-m-foot">
-          <button class="arrow" title="Previous drum" aria-label="Previous drum" ?disabled=${first}
-            @click=${() => { if (!first) this.set({ layer: x.lanes[x.li - 1].key }); }}>←</button>
-          <div class="hint">
-            ${key
-              ? html`<span class="ellip">${VERB[x.dev.fam] || 'Pick'} <b>${key}</b>, then tap the lit keys</span>`
-              : html`<span class="ellip"><b>${titleCase(x.layer.label)}</b> isn't on your ${x.dev.short}. Skip it or sample one.</span>`}
-            <button class="link" @click=${() => this.set({ zoom: !s.zoom })}>${s.zoom ? 'Show whole machine' : 'Back to keys'}</button>
-          </div>
-          <button class="arrow" title="Next drum" aria-label="Next drum" ?disabled=${x.last}
-            @click=${() => { if (!x.last) this.set({ done: { ...s.done, [x.layer.key]: true }, layer: x.lanes[x.li + 1].key }); }}>→</button>
+          ${key
+            ? html`<span class="hold">${VERB[x.dev.fam] || 'Pick'}<span class="hold-key">${key}</span></span>`
+            : html`<span class="ellip">Not on your ${x.dev.short}</span>`}
         </div>
       </div>
     `;
@@ -500,13 +477,10 @@ export class CueApp extends LitElement {
         </div>
         <div class="draw-col">
           <div class="draw" ${ref(this.track('draw'))}>
-            ${s.zoom
-              ? html`<div class="keys-wrap" style="gap:${capOn ? 14 : 0}px;">${this.keyGrid(x, false, capOn)}${capOn ? html`<span class="caption">${keysCap}</span>` : nothing}</div>`
-              : this.machine(x, false)}
+            <div class="keys-wrap" style="gap:${capOn ? 14 : 0}px;">${this.keyGrid(x, false, capOn)}${capOn ? html`<span class="caption">${keysCap}</span>` : nothing}</div>
           </div>
           <div class="draw-foot">
             <span class="method">${x.dev.id} · ${x.dev.method.toLowerCase()}${x.dev.guess ? ' · suggested mapping' : ''}</span>
-            <button class="outline" @click=${() => this.set({ zoom: !s.zoom })}>${s.zoom ? 'Show whole machine' : 'Back to keys'}</button>
           </div>
         </div>
       </div>
@@ -515,14 +489,25 @@ export class CueApp extends LitElement {
 
   // ---- footer + overlays -----------------------------------------------
 
+  /** Play, then tempo. Phones: a round icon-only Play, with Main · Var · Fill · Chain between it and the tempo. */
   private renderFooter(x: Derived, compact: boolean, prog: boolean) {
     const s = this.s;
     const sub = s.playing ? `${x.step + 1} / 16` : prog ? 'hear it' : x.allBeats ? 'whole bar' : 'beat ' + s.beats.map(b => b + 1).join('+');
+    const parts = [
+      ...x.parts.map(id => ({ label: PART_LABEL[id][0], title: PART_LABEL[id][1], on: !s.chain && s.part === id, click: () => this.setPart(id) })),
+      { label: 'Chain', title: 'Loop all bars, variation and fill', on: s.chain, click: () => this.toggleChain() }
+    ];
     return html`
-      <footer class=${compact ? 'compact' : ''} style="padding:${compact ? '8px 16px calc(8px + env(safe-area-inset-bottom))' : '14px 40px'};">
-        <button class="play" title="Play / stop (space)" style="background:${s.playing ? CREAM : ACC};" @click=${() => this.toggle()}>
-          <i class=${s.playing ? 'ico-stop' : 'ico-play'}></i>${s.playing ? 'Stop' : 'Play'}<span class="spacer"></span>${compact ? nothing : html`<span class="play-sub">${sub}</span>`}
+      <footer class=${compact ? 'compact' : ''} style="gap:${compact ? 8 : 12}px;padding:${compact ? '8px 16px calc(8px + env(safe-area-inset-bottom))' : '14px 40px'};">
+        <button class="play" title="Play / stop (space)" aria-label=${s.playing ? 'Stop' : 'Play'} style="background:${s.playing ? CREAM : ACC};" @click=${() => this.toggle()}>
+          <i class=${s.playing ? 'ico-stop' : 'ico-play'}></i>
+          ${compact ? nothing : html`${s.playing ? 'Stop' : 'Play'}<span class="spacer"></span><span class="play-sub">${sub}</span>`}
         </button>
+        ${compact ? html`
+          <div class="seg foot-parts">
+            ${parts.map(p => html`<button title=${p.title} aria-pressed=${p.on ? 'true' : 'false'} @click=${p.click}
+              style="background:${p.on ? CREAM : 'transparent'};color:${p.on ? INK : MUTED};">${p.label}</button>`)}
+          </div>` : nothing}
         <div class="tempo">
           <button class="round" title="Slower" aria-label="Slower" @click=${() => this.nudgeTempo(-2)}>−</button>
           <span class="bpm">
@@ -657,13 +642,45 @@ export class CueApp extends LitElement {
     `;
   }
 
-  private renderRack(x: Derived, compact: boolean) {
-    const s = this.s;
+  /**
+   * Machine chooser. Peek (the checkered button, remembered) adds a card with a dithered drawing of the
+   * machine; with it on, tapping (or hovering, on desktop) previews a machine and "Use this" picks it.
+   */
+  private renderRack(x: Derived, compact: boolean, W: number, H: number) {
+    const s = this.s, short = H < 700;
+    const rd = (s.rackPrev && DEVS.find(d => d.id === s.rackPrev)) || x.dev, isCur = rd.id === x.dev.id;
+    const inner = Math.min(W, 980) - (compact ? 40 : 80) - (compact ? 28 : 48);
+    const pw = Math.round(inner * (compact ? 0.56 : 0.62)), ph = Math.round(compact ? clamp(H * 0.19, 100, 160) : clamp(H * 0.3, 110, 260));
+    const pk = { dev: rd, lk: x.layer.key, pat: x.sel, step: x.step, w: pw, h: ph, theme: s.theme };
     return html`
       <section class="overlay">
         <div class="ov-head" style="max-width:980px;padding:${compact ? '16px 20px 8px' : '36px 40px 12px'};">
-          <div class="ov-bar"><span>What are you playing on?</span><button class="ov-close" @click=${() => this.set({ rack: false })}>Close</button></div>
-          <input .value=${s.rackQ} placeholder="Search machines" autocomplete="off" style="height:${compact ? 60 : 92}px;font-size:${compact ? 38 : 68}px;"
+          <div class="ov-bar">
+            <span>What are you playing on?</span>
+            <div class="ov-actions">
+              <button class="peek-btn" title="Peek at the hardware" aria-label="Peek at the hardware" aria-pressed=${s.peek ? 'true' : 'false'}
+                style="background:${s.peek ? INK : 'transparent'};" @click=${() => this.togglePeek()}>
+                <span style="background:repeating-conic-gradient(${s.peek ? CREAM : INK} 0 25%,transparent 0 50%) 0 0/4px 4px;"></span>
+              </button>
+              <button class="ov-close" @click=${() => this.toggleRack()}>Close</button>
+            </div>
+          </div>
+          ${s.peek ? html`
+            <div class="peek" style="gap:${compact ? 14 : 28}px;padding:${compact ? '14px' : '20px 24px'};">
+              <div class="peek-info">
+                <div class="peek-name">
+                  <span class="peek-maker">${rd.maker} · ${FAM[rd.fam].toLowerCase()}</span>
+                  <span class="peek-id" style="font-size:${compact ? 22 : 34}px;">${rd.id}</span>
+                </div>
+                ${isCur
+                  ? html`<span class="in-use"><i></i>In use</span>`
+                  : html`<button class="use" @click=${() => this.pickDevice(rd.id)}>Use this</button>`}
+              </div>
+              <div class="peek-art" style="width:${pw}px;height:${ph}px;">
+                <canvas ${ref(el => { if (el) peekDraw(el as HTMLCanvasElement, pk); })}></canvas>
+              </div>
+            </div>` : nothing}
+          <input .value=${s.rackQ} placeholder="Search machines" autocomplete="off" style="height:${compact || short ? 48 : 72}px;font-size:${compact || short ? 26 : 44}px;"
             @input=${(e: InputEvent) => this.set({ rackQ: (e.target as HTMLInputElement).value })}>
         </div>
         <div class="ov-scroll">
@@ -672,8 +689,10 @@ export class CueApp extends LitElement {
               <div class="maker">
                 <span>${gr.maker}</span>
                 ${gr.items.map(d => {
-                  const on = d.id === x.dev.id;
-                  return html`<button class="machine" style="background:${on ? INK : 'transparent'};color:${on ? CREAM : INK};" @click=${() => this.pickDevice(d.id)}>${d.id}<small>${FAM[d.fam].toLowerCase()}</small></button>`;
+                  const on = d.id === x.dev.id, shown = s.peek && d.id === rd.id;
+                  return html`<button class="machine" style="background:${on ? INK : 'transparent'};color:${on ? CREAM : INK};border-color:${on || shown ? INK : CREAM};"
+                    @click=${() => s.peek ? this.set({ rackPrev: d.id }) : this.pickDevice(d.id)}
+                    @mouseenter=${() => { if (s.peek && !compact) this.set({ rackPrev: d.id }); }}>${d.id}<small>${FAM[d.fam].toLowerCase()}</small></button>`;
                 })}
               </div>`)}
           </div>
@@ -697,22 +716,22 @@ export class CueApp extends LitElement {
     .shell { position: relative; background: var(--bg); display: flex; flex-direction: column; overflow: hidden; }
 
     header { flex: none; display: flex; flex-wrap: wrap; align-items: flex-start; }
-    .title-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+    .title-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; }
+    .sub-line { max-width: 100%; margin-top: 3px; font-size: 12px; font-weight: 600; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .title { max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border: none; background: transparent; padding: 0; text-align: left; color: var(--fg); }
     .title .name-row { max-width: 100%; display: flex; align-items: center; gap: 0.3em; }
     .title .name { min-width: 0; font-family: 'Tilt Warp', sans-serif; line-height: 1.12; padding-bottom: 0.04em; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chev { flex: none; width: 0.42em; height: 0.28em; margin-top: 0.08em; color: var(--mute); }
     .title .artist { max-width: 100%; font-size: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .title u { text-underline-offset: 3px; }
-    .km { order: 2; min-width: 0; display: flex; align-items: center; }
+    .km { min-width: 0; display: flex; align-items: center; }
+    .ico-btn { flex: none; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0; border: none; border-radius: 50%; background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg); }
+    .hd-ico { width: 19px; height: 19px; }
     .icons { flex: none; display: flex; align-items: center; }
     .hd-pill { flex: none; height: 46px; display: flex; align-items: center; gap: 6px; border: 2px solid var(--fg); border-radius: 999px; background: transparent; color: var(--fg); font-size: 14px; font-weight: 700; white-space: nowrap; }
     .device-pill:hover { background: var(--fg); color: var(--ink); }
     .caret { flex: none; width: 9px; height: 6px; }
     .hd-lbl { font-weight: 600; }
-    .compact .hd-pill { height: 30px; border-color: transparent; }
-    .compact .device-pill:hover { background: transparent; color: var(--fg); }
-    .compact .hd-lbl, .compact .caret { color: var(--mute); }
     .kit-wrap { position: relative; flex: none; }
     .kit-scrim { position: fixed; inset: 0; z-index: 20; }
     .kit-menu { position: absolute; top: calc(100% + 8px); z-index: 21; min-width: 220px; display: flex; flex-direction: column; padding: 6px; background: var(--fg); color: var(--ink); border-radius: 18px; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); }
@@ -735,9 +754,8 @@ export class CueApp extends LitElement {
 
     nav { flex: none; display: flex; align-items: flex-end; border-bottom: 2px solid color-mix(in srgb, var(--fg) 20%, transparent); }
     .mode { display: flex; align-items: baseline; border: none; border-bottom: 6px solid; margin-bottom: -2px; background: transparent; padding: 0; font-family: 'Tilt Warp', sans-serif; white-space: nowrap; }
-    .part-tabs { align-self: stretch; min-width: 0; display: flex; align-items: center; padding-bottom: 8px; }
-    .part-tabs button { height: 32px; display: flex; align-items: center; gap: 6px; padding: 0; border: none; background: transparent; font-size: 14px; font-weight: 700; white-space: nowrap; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .nav-bars { align-self: stretch; display: flex; align-items: center; gap: 8px; padding-bottom: 6px; }
+    .nav-bars .seg { flex: none; }
     .beat-tabs { display: flex; align-items: center; gap: 6px; padding-bottom: 10px; }
     .beat { padding: 0 8px; border: 2px solid var(--fg); border-radius: 999px; font-family: 'Tilt Warp', sans-serif; }
 
@@ -754,8 +772,6 @@ export class CueApp extends LitElement {
     .draw { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
     .keys { display: grid; }
     .key { display: flex; align-items: center; justify-content: center; border: 2px solid; box-sizing: border-box; font-family: 'Tilt Warp', sans-serif; }
-    .panel { position: relative; flex: none; overflow: hidden; background: var(--panel); }
-    .panel > span { position: absolute; display: flex; box-sizing: border-box; white-space: nowrap; overflow: hidden; line-height: 1.1; }
     .drum { min-width: 0; display: flex; align-items: center; justify-content: center; font-family: 'Tilt Warp', sans-serif; }
     .drum .mark { flex: none; font-family: 'Host Grotesk', sans-serif; font-weight: 700; }
 
@@ -764,12 +780,9 @@ export class CueApp extends LitElement {
     .drum-m { height: 36px; gap: 5px; padding: 0 6px; border: none; border-radius: 999px; font-size: 15px; }
     .drum-m .mark { font-size: 11px; }
     .perc-m { min-width: 0; height: 36px; padding: 0 8px; border: none; border-radius: 999px; background: transparent; color: var(--mute); font-size: 13px; font-weight: 700; white-space: nowrap; }
-    .prog-m-foot { flex: none; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--mute); }
-    .hint { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 3px; }
-    .hint b { color: var(--acc); font-weight: 600; }
-    .link { border: none; background: transparent; padding: 0; color: var(--fg); font-size: 12px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-    .arrow { flex: none; width: 44px; height: 44px; padding: 0; border: none; border-radius: 50%; background: color-mix(in srgb, var(--fg) 9%, transparent); color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 18px; }
-    .arrow:disabled { opacity: 0.3; }
+    .prog-m-foot { flex: none; min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 600; color: var(--mute); }
+    .hold { min-width: 0; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .hold-key { height: 28px; display: flex; align-items: center; padding: 0 10px; border-radius: 999px; background: var(--acc); color: var(--ink); font-family: 'Tilt Warp', sans-serif; font-size: 15px; }
 
     .prog-d { flex: 1; min-height: 0; display: flex; gap: 48px; }
     .sentence-col { flex: 1.25 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: safe center; }
@@ -789,16 +802,22 @@ export class CueApp extends LitElement {
     .caption { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--mute); }
     .draw-foot { flex: none; display: flex; align-items: center; gap: 10px; }
     .method { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; line-height: 17px; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .outline { flex: none; height: 36px; padding: 0 16px; border: 2px solid var(--fg); border-radius: 999px; background: transparent; color: var(--fg); font-size: 13px; font-weight: 700; white-space: nowrap; }
 
-    footer { flex: none; display: flex; align-items: center; gap: 12px; background: var(--ink); color: var(--fg); }
+    footer { flex: none; display: flex; align-items: center; background: var(--ink); color: var(--fg); }
     .play { flex: 1; min-width: 0; height: 52px; display: flex; align-items: center; gap: 14px; padding: 0 22px; border: none; border-radius: 999px; color: var(--ink); font-family: 'Tilt Warp', sans-serif; font-size: 20px; }
     .ico-play { width: 15px; height: 17px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
     .ico-stop { width: 14px; height: 14px; background: currentColor; }
     .play-sub { font-family: 'Host Grotesk', sans-serif; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .compact .play { flex: none; width: 52px; justify-content: center; padding: 0; }
+    .compact .ico-play { margin-left: 3px; }
+    .foot-parts { flex: 1; min-width: 0; padding: 3px; background: color-mix(in srgb, var(--fg) 10%, transparent); }
+    .foot-parts button { flex: 1; min-width: 0; height: 40px; padding: 0 2px; overflow: hidden; text-overflow: ellipsis; }
     .tempo { flex: none; display: flex; align-items: center; gap: 4px; }
     .round { width: 44px; height: 44px; padding: 0; border: 2px solid var(--line); border-radius: 50%; background: transparent; color: var(--fg); font-size: 20px; }
-    .compact .round { border: none; background: color-mix(in srgb, var(--fg) 9%, transparent); }
+    .compact .tempo { gap: 0; }
+    .compact .round { width: 30px; border: none; background: color-mix(in srgb, var(--fg) 9%, transparent); }
+    .compact .bpm { min-width: 42px; }
+    .compact .bpm input { width: 42px; font-size: 20px; }
     .bpm { min-width: 56px; display: flex; flex-direction: column; align-items: center; line-height: 1; }
     .bpm input { width: 58px; height: 30px; padding: 0; border: none; border-bottom: 2px dashed var(--line); border-radius: 0; background: transparent; color: var(--fg); font-family: 'Tilt Warp', sans-serif; font-size: 24px; text-align: center; outline: none; }
     .bpm input:focus { border-bottom: 2px solid var(--acc); }
@@ -809,6 +828,19 @@ export class CueApp extends LitElement {
     .ov-bar { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 700; }
     .ov-close { height: 44px; padding: 0 18px; border: 2px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); font-size: 14px; font-weight: 700; }
     .ov-close-dark { border-color: var(--fg); color: var(--fg); }
+    .ov-actions { display: flex; align-items: center; gap: 8px; }
+    .peek-btn { flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; padding: 0; border: 2px solid var(--ink); border-radius: 50%; }
+    .peek-btn span { width: 16px; height: 16px; border-radius: 3px; }
+    .peek { display: flex; align-items: center; border-radius: 22px; background: var(--ink); color: var(--fg); }
+    .peek-info { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+    .peek-name { max-width: 100%; display: flex; flex-direction: column; gap: 4px; }
+    .peek-maker { font-size: 12px; font-weight: 700; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .peek-id { font-family: 'Tilt Warp', sans-serif; line-height: 1.05; text-wrap: balance; overflow-wrap: anywhere; }
+    .in-use { height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 999px; background: color-mix(in srgb, var(--fg) 10%, transparent); font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .in-use i { width: 7px; height: 7px; border-radius: 50%; background: var(--acc); }
+    .use { height: 40px; padding: 0 16px; border: none; border-radius: 999px; background: var(--acc); color: var(--ink); font-family: 'Tilt Warp', sans-serif; font-size: 15px; white-space: nowrap; }
+    .peek-art { flex: none; display: flex; align-items: center; justify-content: center; }
+    .peek-art canvas { display: block; image-rendering: pixelated; }
     .overlay input { border: none; border-bottom: 3px solid var(--bg); background: transparent; padding: 0; font-family: 'Tilt Warp', sans-serif; color: var(--bg); outline: none; min-width: 0; }
     .genre-bar { display: flex; align-items: center; gap: 10px; }
     .genre-btn { height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 2px solid var(--ink); border-radius: 999px; font-size: 14px; font-weight: 700; }

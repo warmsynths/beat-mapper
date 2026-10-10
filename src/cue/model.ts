@@ -21,21 +21,23 @@ export interface State {
   tempoDraft: string | null;
   /** Chosen kit id; null = the one that suits the beat's genre. */
   kit: string | null; kitMenu: boolean;
-  /** Program: true = big key grid, false = whole machine drawing. */
-  zoom: boolean;
+  /** Machine chooser: Peek shows a dithered drawing of the machine; `rackPrev` = the one being previewed (null = yours). */
+  peek: boolean; rackPrev: string | null;
 }
 
-const DEVICE_KEY = 'beatmapper.device';
+const DEVICE_KEY = 'beatmapper.device', PEEK_KEY = 'beatmapper.peek';
 const ls = (k: string, d: string) => { try { return localStorage.getItem(k) || d; } catch { return d; } };
 
 export const initState = (theme: string): State => ({
   selectedId: 'apache', query: '', genre: 'ALL', genreOpen: false, search: false, rack: false, rackQ: '', themes: false, theme,
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
-  part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false, zoom: true
+  part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false,
+  peek: ls(PEEK_KEY, '') === '1', rackPrev: null
 });
 
 export const saveDevice = (id: string) => { try { localStorage.setItem(DEVICE_KEY, id); } catch { /* storage unavailable */ } };
+export const savePeek = (on: boolean) => { try { localStorage.setItem(PEEK_KEY, on ? '1' : ''); } catch { /* storage unavailable */ } };
 
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 export const titleCase = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
