@@ -116,5 +116,6 @@ doc += `## 3. Verification & Compliance Checklist
 - [x] Full test suite (\`npm test\`) verified passing.
 `;
 
+fs.writeFileSync('BEAT_AUDIT_REFERENCE.md', doc);
 fs.writeFileSync('docs/BEAT_AUDIT_REFERENCE.md', doc);
-console.log('Successfully generated docs/BEAT_AUDIT_REFERENCE.md with all 135 beats!');
+console.log('Successfully generated BEAT_AUDIT_REFERENCE.md with all 135 beats!');
