@@ -76,4 +76,5 @@ The pattern library as a two-job app: **Program** (enter a pattern into your mac
 - **Volume**: a master level (remembered, default 80%) from the speaker button in the footer; the gain is squared so the slider fades evenly, and Mute remembers the level to return to.
 - **Hat dynamics**: busy hat lines (12+ hits) with no marked dynamics get ghosted off-beats.
 - **Accent / Ghost key**: shown under the score, keys or caption only when a shown lane has accents or ghosts. Accents get an accent-colour ring, ghosts a faded cell and smaller mark; they play at about 1.45× and a third of normal level.
+- **Inspired by**: beats taken from real records (`inspired()`; everything except pure styles and the drills) say "Inspired by <artist>" wherever the artist shows, an asterisk on the title where it doesn't (phones, short windows), and a not-affiliated note in the finder and beat info.
 - `?view=mobile` pins the layout to a phone frame for previewing on desktop.

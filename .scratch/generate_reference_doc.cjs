@@ -9,6 +9,10 @@ const libContent = fs.readFileSync('src/cue/data/library.ts', 'utf8');
 const rawMatch = libContent.match(/const RAW: RawPattern\[\] = (\[[\s\S]*?\n\];)/);
 const patterns = eval(rawMatch[1]);
 
+// Same list as STYLE_ONLY in src/cue/data/library.ts: styles with no artist or record behind them.
+const STYLE_ONLY = new Set(['sonclave', 'rumbaclave', 'cumbia', 'tambor', 'rock', 'twostep', 'jungle', 'dnb', 'drill']);
+const inspired = p => p.genre !== 'Drills' && !STYLE_ONLY.has(p.id);
+
 const genreOrder = [
   'Breakbeat', 'Funk', 'Rock', 'Jazz & Soul', 'Pop', 'Krautrock', 'Latin', 'Reggaeton', 'Afrobeat', 'Reggae',
   'Hip-Hop', 'Lo-Fi', 'Electro', 'Electronic', 'House', 'Techno', 'UK Garage', 'Jungle', 'Drum & Bass',
@@ -19,11 +23,13 @@ let doc = `# Beat Reference
 
 What each of the ${patterns.length} patterns in Beat Mapper / Cue is based on, with its main groove and fill.
 
+> Patterns are simplified interpretations written for practice, inspired by the records and artists named. They are not transcriptions of the recordings, and Beat Mapper is not affiliated with or endorsed by the artists or rights holders.
+
 ---
 
 ## How to read this
 
-- **Main grooves** are written from memory of the records and common charts. They have not been checked against the recordings, and recorded breaks are simplified to a 16-step grid.
+- **Main grooves** are approximations based on common charts and written descriptions of the records, not on listening to them. They have not been checked against the recordings, and recorded breaks are simplified to a 16-step grid.
 - **Fills are written, not transcribed.** Each fill is built from the beat's own main groove in a style that suits its genre: a funk turnaround, a house build, a hat roll and so on. Songs whose records don't have a fill, such as sample loops and steady sequenced grooves, get a light variation of the groove instead. The Amen break uses its commonly charted fourth bar, and the practice drills use fills written as exercises.
 - **References** name the record, or the style when there is no single record, and the drummer or producer where one is known. Credits marked "as commonly credited" or "uncredited" are uncertain. Years are left out for styles.
 - **Notation:** \`X\` accent · \`x\` hit · \`g\` ghost note · \`.\` rest. Steps run 1–16 as 1 e & a, 2 e & a…
@@ -49,8 +55,9 @@ for (const g of genreOrder) {
     if (!a) throw new Error('No reference for ' + p.id);
     if (!p.fill) throw new Error('No fill for ' + p.id);
     doc += `#### ${n++}. ${p.name} (\`${p.id}\`)\n`;
-    doc += `- **Artist**: ${p.artist}\n`;
-    doc += `- **Reference**: *${a.refSong}*${a.refYear ? ` (${a.refYear})` : ''}\n`;
+    doc += inspired(p)
+      ? `- **Inspired by**: *${a.refSong}*${a.refYear ? ` (${a.refYear})` : ''} · ${p.artist}\n`
+      : `- **Style**: ${p.artist}\n`;
     doc += `- **Drummer / producer**: ${a.refDrummer}\n`;
     doc += `- **Tempo & level**: ${p.bpm} BPM · ${p.difficulty || 'Intermediate'}\n\n`;
     doc += '```text\n';

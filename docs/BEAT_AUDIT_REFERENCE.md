@@ -2,11 +2,13 @@
 
 What each of the 135 patterns in Beat Mapper / Cue is based on, with its main groove and fill.
 
+> Patterns are simplified interpretations written for practice, inspired by the records and artists named. They are not transcriptions of the recordings, and Beat Mapper is not affiliated with or endorsed by the artists or rights holders.
+
 ---
 
 ## How to read this
 
-- **Main grooves** are written from memory of the records and common charts. They have not been checked against the recordings, and recorded breaks are simplified to a 16-step grid.
+- **Main grooves** are approximations based on common charts and written descriptions of the records, not on listening to them. They have not been checked against the recordings, and recorded breaks are simplified to a 16-step grid.
 - **Fills are written, not transcribed.** Each fill is built from the beat's own main groove in a style that suits its genre: a funk turnaround, a house build, a hat roll and so on. Songs whose records don't have a fill, such as sample loops and steady sequenced grooves, get a light variation of the groove instead. The Amen break uses its commonly charted fourth bar, and the practice drills use fills written as exercises.
 - **References** name the record, or the style when there is no single record, and the drummer or producer where one is known. Credits marked "as commonly credited" or "uncredited" are uncertain. Years are left out for styles.
 - **Notation:** `X` accent · `x` hit · `g` ghost note · `.` rest. Steps run 1–16 as 1 e & a, 2 e & a…
@@ -18,8 +20,7 @@ What each of the 135 patterns in Beat Mapper / Cue is based on, with its main gr
 ### Breakbeat (27)
 
 #### 1. Amen Break (`amen`)
-- **Artist**: The Winstons
-- **Reference**: *Amen, Brother* (1969)
+- **Inspired by**: *Amen, Brother* (1969) · The Winstons
 - **Drummer / producer**: G.C. Coleman
 - **Tempo & level**: 136 BPM · Advanced
 
@@ -42,8 +43,7 @@ Open (o): ..........x.....
 ---
 
 #### 2. Apache (`apache`)
-- **Artist**: Incredible Bongo Band
-- **Reference**: *Apache* (1973)
+- **Inspired by**: *Apache* (1973) · Incredible Bongo Band
 - **Drummer / producer**: Jim Gordon / King Errisson (bongos)
 - **Tempo & level**: 118 BPM · Intermediate
 
@@ -66,8 +66,7 @@ Open (o): ................
 ---
 
 #### 3. Impeach the President (`impeach`)
-- **Artist**: The Honey Drippers
-- **Reference**: *Impeach the President* (1973)
+- **Inspired by**: *Impeach the President* (1973) · The Honey Drippers
 - **Drummer / producer**: Uncredited (produced by Roy C. Hammond)
 - **Tempo & level**: 96 BPM · Intermediate
 
@@ -90,8 +89,7 @@ Open (o): ................
 ---
 
 #### 4. It's A New Day (`skullsnaps`)
-- **Artist**: Skull Snaps
-- **Reference**: *It's A New Day* (1973)
+- **Inspired by**: *It's A New Day* (1973) · Skull Snaps
 - **Drummer / producer**: George Bragg
 - **Tempo & level**: 95 BPM · Intermediate
 
@@ -114,8 +112,7 @@ Open (o): ................
 ---
 
 #### 5. Ashley's Roachclip (`ashley`)
-- **Artist**: The Soul Searchers
-- **Reference**: *Ashley's Roachclip* (1974)
+- **Inspired by**: *Ashley's Roachclip* (1974) · The Soul Searchers
 - **Drummer / producer**: Kenneth Scoggins
 - **Tempo & level**: 106 BPM · Intermediate
 
@@ -138,8 +135,7 @@ Open (o): ......x.........
 ---
 
 #### 6. Take Me to the Mardi Gras (`mardigras`)
-- **Artist**: Bob James
-- **Reference**: *Take Me to the Mardi Gras* (1975)
+- **Inspired by**: *Take Me to the Mardi Gras* (1975) · Bob James
 - **Drummer / producer**: Steve Gadd / Ralph MacDonald (bells)
 - **Tempo & level**: 105 BPM · Intermediate
 
@@ -162,8 +158,7 @@ Open (o): ................
 ---
 
 #### 7. Synthetic Substitution (`synthetic`)
-- **Artist**: Melvin Bliss
-- **Reference**: *Synthetic Substitution* (1973)
+- **Inspired by**: *Synthetic Substitution* (1973) · Melvin Bliss
 - **Drummer / producer**: Bernard Purdie
 - **Tempo & level**: 98 BPM · Intermediate
 
@@ -186,8 +181,7 @@ Open (o): .......x........
 ---
 
 #### 8. God Make Me Funky (`godmake`)
-- **Artist**: The Headhunters / Mike Clark
-- **Reference**: *God Make Me Funky* (1975)
+- **Inspired by**: *God Make Me Funky* (1975) · The Headhunters / Mike Clark
 - **Drummer / producer**: Mike Clark
 - **Tempo & level**: 90 BPM · Advanced
 
@@ -210,8 +204,7 @@ Open (o): .......x........
 ---
 
 #### 9. Different Strokes (`differentstrokes`)
-- **Artist**: Syl Johnson
-- **Reference**: *Different Strokes* (1967)
+- **Inspired by**: *Different Strokes* (1967) · Syl Johnson
 - **Drummer / producer**: Morris Jennings (as commonly credited)
 - **Tempo & level**: 102 BPM · Intermediate
 
@@ -234,8 +227,7 @@ Open (o): ................
 ---
 
 #### 10. Sing a Simple Song (`singasong`)
-- **Artist**: Sly & the Family Stone
-- **Reference**: *Sing a Simple Song* (1968)
+- **Inspired by**: *Sing a Simple Song* (1968) · Sly & the Family Stone
 - **Drummer / producer**: Greg Errico
 - **Tempo & level**: 98 BPM · Intermediate
 
@@ -258,8 +250,7 @@ Open (o): ................
 ---
 
 #### 11. Just Kissed My Baby (`justkissed`)
-- **Artist**: The Meters
-- **Reference**: *Just Kissed My Baby* (1974)
+- **Inspired by**: *Just Kissed My Baby* (1974) · The Meters
 - **Drummer / producer**: Joseph 'Zigaboo' Modeliste
 - **Tempo & level**: 86 BPM · Advanced
 
@@ -282,8 +273,7 @@ Open (o): ................
 ---
 
 #### 12. N.T. (`ntbreak`)
-- **Artist**: Kool & The Gang
-- **Reference**: *N.T. (Do It to the Funky Beat)* (1971)
+- **Inspired by**: *N.T. (Do It to the Funky Beat)* (1971) · Kool & The Gang
 - **Drummer / producer**: George 'Funky' Brown
 - **Tempo & level**: 101 BPM · Intermediate
 
@@ -306,8 +296,7 @@ Open (o): ......x.........
 ---
 
 #### 13. I'm Glad You're Mine (`imglad`)
-- **Artist**: Al Green / Al Jackson Jr.
-- **Reference**: *I'm Glad You're Mine* (1972)
+- **Inspired by**: *I'm Glad You're Mine* (1972) · Al Green / Al Jackson Jr.
 - **Drummer / producer**: Al Jackson Jr.
 - **Tempo & level**: 74 BPM · Beginner
 
@@ -330,8 +319,7 @@ Open (o): ................
 ---
 
 #### 14. Ode to Billie Joe (`odebillie`)
-- **Artist**: Lou Donaldson / Idris Muhammad
-- **Reference**: *Ode to Billie Joe* (1967)
+- **Inspired by**: *Ode to Billie Joe* (1967) · Lou Donaldson / Idris Muhammad
 - **Drummer / producer**: Idris Muhammad
 - **Tempo & level**: 89 BPM · Intermediate
 
@@ -354,8 +342,7 @@ Open (o): ................
 ---
 
 #### 15. Tramp (`tramp`)
-- **Artist**: Lowell Fulsom
-- **Reference**: *Tramp* (1967)
+- **Inspired by**: *Tramp* (1967) · Lowell Fulsom
 - **Drummer / producer**: Chuck Blackwell / Earl Palmer
 - **Tempo & level**: 104 BPM · Beginner
 
@@ -378,8 +365,7 @@ Open (o): ................
 ---
 
 #### 16. The Champ (`thechamp`)
-- **Artist**: The Mohawks
-- **Reference**: *The Champ* (1968)
+- **Inspired by**: *The Champ* (1968) · The Mohawks
 - **Drummer / producer**: Uncredited session drummer (Alan Hawkshaw's band; "Harry Palmer" is the writing credit)
 - **Tempo & level**: 104 BPM · Intermediate
 
@@ -402,8 +388,7 @@ Open (o): ................
 ---
 
 #### 17. Long Red (`longred`)
-- **Artist**: Mountain
-- **Reference**: *Long Red* (1969)
+- **Inspired by**: *Long Red* (1969) · Mountain
 - **Drummer / producer**: N.D. Smart II
 - **Tempo & level**: 80 BPM · Beginner
 
@@ -426,8 +411,7 @@ Open (o): ................
 ---
 
 #### 18. Scorpio (`scorpio`)
-- **Artist**: Dennis Coffey
-- **Reference**: *Scorpio* (1971)
+- **Inspired by**: *Scorpio* (1971) · Dennis Coffey
 - **Drummer / producer**: Richard 'Pistol' Allen / Uriel Jones
 - **Tempo & level**: 112 BPM · Intermediate
 
@@ -450,8 +434,7 @@ Open (o): ................
 ---
 
 #### 19. Blind Alley (`blindalley`)
-- **Artist**: The Emotions
-- **Reference**: *Blind Alley* (1971)
+- **Inspired by**: *Blind Alley* (1971) · The Emotions
 - **Drummer / producer**: Al Jackson Jr.
 - **Tempo & level**: 94 BPM · Intermediate
 
@@ -474,8 +457,7 @@ Open (o): .......x........
 ---
 
 #### 20. Give It Up or Turnit a Loose (`giveitup`)
-- **Artist**: James Brown
-- **Reference**: *Give It Up or Turnit a Loose* (1970)
+- **Inspired by**: *Give It Up or Turnit a Loose* (1970) · James Brown
 - **Drummer / producer**: Clyde Stubblefield
 - **Tempo & level**: 116 BPM · Advanced
 
@@ -498,8 +480,7 @@ Open (o): ................
 ---
 
 #### 21. Hot Pants (I'm Coming) (`hotpants`)
-- **Artist**: Bobby Byrd
-- **Reference**: *Hot Pants (I'm Coming)* (1971)
+- **Inspired by**: *Hot Pants (I'm Coming)* (1971) · Bobby Byrd
 - **Drummer / producer**: John 'Jabo' Starks
 - **Tempo & level**: 98 BPM · Intermediate
 
@@ -522,8 +503,7 @@ Open (o): ................
 ---
 
 #### 22. The Grunt (`thegrunt`)
-- **Artist**: The J.B.'s
-- **Reference**: *The Grunt* (1970)
+- **Inspired by**: *The Grunt* (1970) · The J.B.'s
 - **Drummer / producer**: Jabo Starks / Clyde Stubblefield
 - **Tempo & level**: 100 BPM · Beginner
 
@@ -546,8 +526,7 @@ Open (o): ................
 ---
 
 #### 23. Papa Was, Too (`papawas`)
-- **Artist**: Joe Tex
-- **Reference**: *Papa Was, Too* (1966)
+- **Inspired by**: *Papa Was, Too* (1966) · Joe Tex
 - **Drummer / producer**: Clyde Stubblefield
 - **Tempo & level**: 96 BPM · Intermediate
 
@@ -570,8 +549,7 @@ Open (o): .......x........
 ---
 
 #### 24. Do the Funky Penguin (`funkypenguin`)
-- **Artist**: Rufus Thomas
-- **Reference**: *Do the Funky Penguin* (1971)
+- **Inspired by**: *Do the Funky Penguin* (1971) · Rufus Thomas
 - **Drummer / producer**: Willie Hall
 - **Tempo & level**: 112 BPM · Intermediate
 
@@ -594,8 +572,7 @@ Open (o): ................
 ---
 
 #### 25. UFO (`ufo`)
-- **Artist**: ESG
-- **Reference**: *UFO* (1981)
+- **Inspired by**: *UFO* (1981) · ESG
 - **Drummer / producer**: Valerie Scroggins
 - **Tempo & level**: 112 BPM · Beginner
 
@@ -618,8 +595,7 @@ Open (o): ................
 ---
 
 #### 26. Darkest Light (`darkestlight`)
-- **Artist**: Lafayette Afro Rock Band
-- **Reference**: *Darkest Light* (1974)
+- **Inspired by**: *Darkest Light* (1974) · Lafayette Afro Rock Band
 - **Drummer / producer**: Ernest 'Donny' Donable
 - **Tempo & level**: 96 BPM · Intermediate
 
@@ -642,8 +618,7 @@ Open (o): .......x........
 ---
 
 #### 27. Hihache (`hihache`)
-- **Artist**: Lafayette Afro Rock Band
-- **Reference**: *Hihache* (1973)
+- **Inspired by**: *Hihache* (1973) · Lafayette Afro Rock Band
 - **Drummer / producer**: Ernest 'Donny' Donable
 - **Tempo & level**: 106 BPM · Intermediate
 
@@ -668,8 +643,7 @@ Open (o): ................
 ### Funk (4)
 
 #### 28. Funky Drummer (`funky`)
-- **Artist**: James Brown
-- **Reference**: *Funky Drummer* (1970)
+- **Inspired by**: *Funky Drummer* (1970) · James Brown
 - **Drummer / producer**: Clyde Stubblefield
 - **Tempo & level**: 100 BPM · Advanced
 
@@ -692,8 +666,7 @@ Open (o): .......x........
 ---
 
 #### 29. Think (About It) (`think`)
-- **Artist**: Lyn Collins
-- **Reference**: *Think (About It)* (1972)
+- **Inspired by**: *Think (About It)* (1972) · Lyn Collins
 - **Drummer / producer**: John 'Jabo' Starks
 - **Tempo & level**: 112 BPM · Advanced
 
@@ -716,8 +689,7 @@ Open (o): ................
 ---
 
 #### 30. Cold Sweat (`coldsweat`)
-- **Artist**: James Brown
-- **Reference**: *Cold Sweat* (1967)
+- **Inspired by**: *Cold Sweat* (1967) · James Brown
 - **Drummer / producer**: Clyde Stubblefield
 - **Tempo & level**: 112 BPM · Intermediate
 
@@ -740,8 +712,7 @@ Open (o): ......x.........
 ---
 
 #### 31. Cissy Strut (`cissy`)
-- **Artist**: The Meters
-- **Reference**: *Cissy Strut* (1969)
+- **Inspired by**: *Cissy Strut* (1969) · The Meters
 - **Drummer / producer**: Joseph 'Zigaboo' Modeliste
 - **Tempo & level**: 88 BPM · Intermediate
 
@@ -766,8 +737,7 @@ Open (o): ................
 ### Rock (6)
 
 #### 32. When the Levee Breaks (`levee`)
-- **Artist**: Led Zeppelin
-- **Reference**: *When the Levee Breaks* (1971)
+- **Inspired by**: *When the Levee Breaks* (1971) · Led Zeppelin
 - **Drummer / producer**: John Bonham
 - **Tempo & level**: 72 BPM · Intermediate
 
@@ -790,8 +760,7 @@ Open (o): ................
 ---
 
 #### 33. The Big Beat (`bigbeat`)
-- **Artist**: Billy Squier
-- **Reference**: *The Big Beat* (1980)
+- **Inspired by**: *The Big Beat* (1980) · Billy Squier
 - **Drummer / producer**: Bobby Chouinard
 - **Tempo & level**: 84 BPM · Beginner
 
@@ -814,8 +783,7 @@ Open (o): ................
 ---
 
 #### 34. Walk This Way (`walkthisway`)
-- **Artist**: Aerosmith
-- **Reference**: *Walk This Way* (1975)
+- **Inspired by**: *Walk This Way* (1975) · Aerosmith
 - **Drummer / producer**: Joey Kramer
 - **Tempo & level**: 106 BPM · Intermediate
 
@@ -838,8 +806,7 @@ Open (o): .......x........
 ---
 
 #### 35. Straight Eighths (`rock`)
-- **Artist**: Rock standard
-- **Reference**: *Straight Eighths Rock Standard*
+- **Style**: Rock standard
 - **Drummer / producer**: Phil Rudd style
 - **Tempo & level**: 120 BPM · Beginner
 
@@ -862,8 +829,7 @@ Open (o): ................
 ---
 
 #### 36. Smells Like Teen Spirit (`teenspirit`)
-- **Artist**: Nirvana / Dave Grohl
-- **Reference**: *Smells Like Teen Spirit* (1991)
+- **Inspired by**: *Smells Like Teen Spirit* (1991) · Nirvana / Dave Grohl
 - **Drummer / producer**: Dave Grohl
 - **Tempo & level**: 116 BPM · Intermediate
 
@@ -886,8 +852,7 @@ Open (o): .......x........
 ---
 
 #### 37. D-Beat Hardcore (`dbeat`)
-- **Artist**: Discharge / Punk standard
-- **Reference**: *Hear Nothing See Nothing Say Nothing* (1982)
+- **Inspired by**: *Hear Nothing See Nothing Say Nothing* (1982) · Discharge / Punk standard
 - **Drummer / producer**: Garry Maloney
 - **Tempo & level**: 160 BPM · Intermediate
 
@@ -912,8 +877,7 @@ Open (o): ................
 ### Jazz & Soul (2)
 
 #### 38. Purdie Shuffle (`purdie`)
-- **Artist**: Steely Dan / Bernard Purdie
-- **Reference**: *Babylon Sisters / Home at Last* (1977)
+- **Inspired by**: *Babylon Sisters / Home at Last* (1977) · Steely Dan / Bernard Purdie
 - **Drummer / producer**: Bernard Purdie
 - **Tempo & level**: 118 BPM · Advanced
 
@@ -936,8 +900,7 @@ Open (o): ................
 ---
 
 #### 39. Sexual Healing (`sexualhealing`)
-- **Artist**: Marvin Gaye
-- **Reference**: *Sexual Healing* (1982)
+- **Inspired by**: *Sexual Healing* (1982) · Marvin Gaye
 - **Drummer / producer**: Marvin Gaye (Roland TR-808)
 - **Tempo & level**: 95 BPM · Beginner
 
@@ -962,8 +925,7 @@ Open (o): ......x.........
 ### Pop (2)
 
 #### 40. Billie Jean (`billie`)
-- **Artist**: Michael Jackson
-- **Reference**: *Billie Jean* (1982)
+- **Inspired by**: *Billie Jean* (1982) · Michael Jackson
 - **Drummer / producer**: Leon 'Ndugu' Chancler
 - **Tempo & level**: 117 BPM · Beginner
 
@@ -986,8 +948,7 @@ Open (o): ................
 ---
 
 #### 41. Motown Four-Snare (`motown`)
-- **Artist**: The Supremes / Pistol Allen
-- **Reference**: *You Can't Hurry Love / Dancing in the Street* (1966)
+- **Inspired by**: *You Can't Hurry Love / Dancing in the Street* (1966) · The Supremes / Pistol Allen
 - **Drummer / producer**: Pistol Allen & Benny Benjamin
 - **Tempo & level**: 126 BPM · Beginner
 
@@ -1012,8 +973,7 @@ Open (o): ................
 ### Krautrock (1)
 
 #### 42. Motorik (`motorik`)
-- **Artist**: NEU! / Klaus Dinger
-- **Reference**: *Hallogallo* (1972)
+- **Inspired by**: *Hallogallo* (1972) · NEU! / Klaus Dinger
 - **Drummer / producer**: Klaus Dinger
 - **Tempo & level**: 130 BPM · Beginner
 
@@ -1038,8 +998,7 @@ Open (o): ................
 ### Latin (7)
 
 #### 43. Bossa Nova (`bossa`)
-- **Artist**: Rio de Janeiro / João Gilberto
-- **Reference**: *The Girl from Ipanema* (1964)
+- **Inspired by**: *The Girl from Ipanema* (1964) · Rio de Janeiro / João Gilberto
 - **Drummer / producer**: Milton Banana
 - **Tempo & level**: 140 BPM · Intermediate
 
@@ -1062,8 +1021,7 @@ Open (o): ................
 ---
 
 #### 44. Son Clave 3:2 (`sonclave`)
-- **Artist**: Traditional Afro-Cuban
-- **Reference**: *Son Clave 3:2 Traditional*
+- **Style**: Traditional Afro-Cuban
 - **Drummer / producer**: Changuito / Traditional
 - **Tempo & level**: 120 BPM · Intermediate
 
@@ -1086,8 +1044,7 @@ Open (o): ................
 ---
 
 #### 45. Rumba Clave 3:2 (`rumbaclave`)
-- **Artist**: Afro-Cuban Rumba
-- **Reference**: *Rumba Clave 3:2 Traditional*
+- **Style**: Afro-Cuban Rumba
 - **Drummer / producer**: Guaguancó rhythm section
 - **Tempo & level**: 120 BPM · Advanced
 
@@ -1110,8 +1067,7 @@ Open (o): ................
 ---
 
 #### 46. Tamborzão (`tambor`)
-- **Artist**: Baile funk / Rio favela
-- **Reference**: *Tamborzão (Baile Funk)* (1998)
+- **Style**: Baile funk / Rio favela
 - **Drummer / producer**: Rio Favela Producers
 - **Tempo & level**: 130 BPM · Intermediate
 
@@ -1134,8 +1090,7 @@ Open (o): ................
 ---
 
 #### 47. Songo (`songo`)
-- **Artist**: Changuito / Los Van Van
-- **Reference**: *Sandunguera* (1984)
+- **Inspired by**: *Sandunguera* (1984) · Changuito / Los Van Van
 - **Drummer / producer**: José Luis Quintana 'Changuito'
 - **Tempo & level**: 120 BPM · Advanced
 
@@ -1158,8 +1113,7 @@ Open (o): ................
 ---
 
 #### 48. Baion (`baion`)
-- **Artist**: Luiz Gonzaga / Brazilian Northeast
-- **Reference**: *Asa Branca* (1947)
+- **Inspired by**: *Asa Branca* (1947) · Luiz Gonzaga / Brazilian Northeast
 - **Drummer / producer**: Traditional Zabumba Section
 - **Tempo & level**: 110 BPM · Beginner
 
@@ -1182,8 +1136,7 @@ Open (o): ................
 ---
 
 #### 49. Cumbia (`cumbia`)
-- **Artist**: Colombian standard
-- **Reference**: *Cumbia (traditional style)*
+- **Style**: Colombian standard
 - **Drummer / producer**: Traditional tambora section
 - **Tempo & level**: 96 BPM · Beginner
 
@@ -1208,8 +1161,7 @@ Open (o): ................
 ### Reggaeton (1)
 
 #### 50. Dem Bow (`dembow`)
-- **Artist**: Shabba Ranks / Steely & Clevie
-- **Reference**: *Dem Bow* (1990)
+- **Inspired by**: *Dem Bow* (1990) · Shabba Ranks / Steely & Clevie
 - **Drummer / producer**: Steely & Clevie
 - **Tempo & level**: 95 BPM · Beginner
 
@@ -1234,8 +1186,7 @@ Open (o): ................
 ### Afrobeat (1)
 
 #### 51. Afrobeat (`afrobeat`)
-- **Artist**: Tony Allen / Fela Kuti
-- **Reference**: *Zombie / Expensive Shit* (1975)
+- **Inspired by**: *Zombie / Expensive Shit* (1975) · Tony Allen / Fela Kuti
 - **Drummer / producer**: Tony Allen
 - **Tempo & level**: 110 BPM · Advanced
 
@@ -1260,8 +1211,7 @@ Open (o): ..........x.....
 ### Reggae (4)
 
 #### 52. One Drop (`onedrop`)
-- **Artist**: Bob Marley & The Wailers / Carlton Barrett
-- **Reference**: *One Drop* (1979)
+- **Inspired by**: *One Drop* (1979) · Bob Marley & The Wailers / Carlton Barrett
 - **Drummer / producer**: Carlton Barrett
 - **Tempo & level**: 76 BPM · Beginner
 
@@ -1284,8 +1234,7 @@ Open (o): ................
 ---
 
 #### 53. Steppers Reggae (`steppers`)
-- **Artist**: Sly & Robbie / UK Dub
-- **Reference**: *Sponji Reggae* (1981)
+- **Inspired by**: *Sponji Reggae* (1981) · Sly & Robbie / UK Dub
 - **Drummer / producer**: Sly Dunbar
 - **Tempo & level**: 138 BPM · Intermediate
 
@@ -1308,8 +1257,7 @@ Open (o): ................
 ---
 
 #### 54. Rockers Reggae (`rockers`)
-- **Artist**: Third World / Channel One
-- **Reference**: *Rockers (style)*
+- **Inspired by**: *Rockers (style)* · Third World / Channel One
 - **Drummer / producer**: Sly Dunbar
 - **Tempo & level**: 78 BPM · Intermediate
 
@@ -1332,8 +1280,7 @@ Open (o): ................
 ---
 
 #### 55. Ska Upbeat (`ska`)
-- **Artist**: The Skatalites / Lloyd Knibb
-- **Reference**: *Guns of Navarone* (1965)
+- **Inspired by**: *Guns of Navarone* (1965) · The Skatalites / Lloyd Knibb
 - **Drummer / producer**: Lloyd Knibb
 - **Tempo & level**: 130 BPM · Intermediate
 
@@ -1358,8 +1305,7 @@ Open (o): ..x...x...x.....
 ### Hip-Hop (23)
 
 #### 56. Boom Bap Standard (`boombap`)
-- **Artist**: Golden-era standard / DJ Premier
-- **Reference**: *Boom Bap Standard*
+- **Inspired by**: *Boom Bap Standard* · Golden-era standard / DJ Premier
 - **Drummer / producer**: Sampled breaks / DJ Premier
 - **Tempo & level**: 90 BPM · Beginner
 
@@ -1382,8 +1328,7 @@ Open (o): ................
 ---
 
 #### 57. Boom Bap 2-Bar Loop (`boombap2bar`)
-- **Artist**: Pete Rock / Marley Marl standard
-- **Reference**: *Boom Bap 2-Bar Loop*
+- **Inspired by**: *Boom Bap 2-Bar Loop* · Pete Rock / Marley Marl standard
 - **Drummer / producer**: Sampled funk breaks
 - **Tempo & level**: 92 BPM · Intermediate
 
@@ -1406,8 +1351,7 @@ Open (o): ................
 ---
 
 #### 58. Mass Appeal (`massappeal`)
-- **Artist**: Gang Starr / DJ Premier
-- **Reference**: *Mass Appeal* (1994)
+- **Inspired by**: *Mass Appeal* (1994) · Gang Starr / DJ Premier
 - **Drummer / producer**: DJ Premier (Vic Juris sample)
 - **Tempo & level**: 102 BPM · Intermediate
 
@@ -1430,8 +1374,7 @@ Open (o): .......x........
 ---
 
 #### 59. They Reminisce Over You (`troy`)
-- **Artist**: Pete Rock & CL Smooth
-- **Reference**: *They Reminisce Over You (T.R.O.Y.)* (1992)
+- **Inspired by**: *They Reminisce Over You (T.R.O.Y.)* (1992) · Pete Rock & CL Smooth
 - **Drummer / producer**: Pete Rock (Tom Scott sample)
 - **Tempo & level**: 102 BPM · Intermediate
 
@@ -1454,8 +1397,7 @@ Open (o): ................
 ---
 
 #### 60. N.Y. State of Mind (`nystate`)
-- **Artist**: Nas / DJ Premier
-- **Reference**: *N.Y. State of Mind* (1994)
+- **Inspired by**: *N.Y. State of Mind* (1994) · Nas / DJ Premier
 - **Drummer / producer**: DJ Premier (Joe Chambers sample)
 - **Tempo & level**: 84 BPM · Intermediate
 
@@ -1478,8 +1420,7 @@ Open (o): .......x........
 ---
 
 #### 61. Shook Ones Pt. II (`shookones`)
-- **Artist**: Mobb Deep / Havoc
-- **Reference**: *Shook Ones Pt. II* (1995)
+- **Inspired by**: *Shook Ones Pt. II* (1995) · Mobb Deep / Havoc
 - **Drummer / producer**: Havoc (Quincy Jones sample)
 - **Tempo & level**: 94 BPM · Intermediate
 
@@ -1502,8 +1443,7 @@ Open (o): ................
 ---
 
 #### 62. C.R.E.A.M. (`cream`)
-- **Artist**: Wu-Tang Clan / RZA
-- **Reference**: *C.R.E.A.M.* (1993)
+- **Inspired by**: *C.R.E.A.M.* (1993) · Wu-Tang Clan / RZA
 - **Drummer / producer**: RZA (The Charmels sample)
 - **Tempo & level**: 90 BPM · Beginner
 
@@ -1526,8 +1466,7 @@ Open (o): ................
 ---
 
 #### 63. Electric Relaxation (`electricrelaxation`)
-- **Artist**: A Tribe Called Quest / Q-Tip
-- **Reference**: *Electric Relaxation* (1993)
+- **Inspired by**: *Electric Relaxation* (1993) · A Tribe Called Quest / Q-Tip
 - **Drummer / producer**: Q-Tip (Ronnie Foster "Mystic Brew" sample)
 - **Tempo & level**: 98 BPM · Intermediate
 
@@ -1550,8 +1489,7 @@ Open (o): ......x.........
 ---
 
 #### 64. Come Clean (`comeclean`)
-- **Artist**: Jeru the Damaja / DJ Premier
-- **Reference**: *Come Clean* (1993)
+- **Inspired by**: *Come Clean* (1993) · Jeru the Damaja / DJ Premier
 - **Drummer / producer**: DJ Premier (Shelly Manne sample)
 - **Tempo & level**: 94 BPM · Beginner
 
@@ -1574,8 +1512,7 @@ Open (o): ................
 ---
 
 #### 65. Halftime (`halftime`)
-- **Artist**: Nas / Large Professor
-- **Reference**: *Halftime* (1992)
+- **Inspired by**: *Halftime* (1992) · Nas / Large Professor
 - **Drummer / producer**: Large Professor (Gary Byrd sample)
 - **Tempo & level**: 92 BPM · Intermediate
 
@@ -1598,8 +1535,7 @@ Open (o): ................
 ---
 
 #### 66. Scenario (`scenario`)
-- **Artist**: A Tribe Called Quest / Leaders of the New School
-- **Reference**: *Scenario* (1991)
+- **Inspired by**: *Scenario* (1991) · A Tribe Called Quest / Leaders of the New School
 - **Drummer / producer**: Ali Shaheed & Q-Tip (Brother Jack McDuff sample)
 - **Tempo & level**: 102 BPM · Beginner
 
@@ -1622,8 +1558,7 @@ Open (o): ................
 ---
 
 #### 67. Survival of the Fittest (`survival`)
-- **Artist**: Mobb Deep / Havoc
-- **Reference**: *Survival of the Fittest* (1995)
+- **Inspired by**: *Survival of the Fittest* (1995) · Mobb Deep / Havoc
 - **Drummer / producer**: Havoc (Barry Harris sample)
 - **Tempo & level**: 94 BPM · Intermediate
 
@@ -1646,8 +1581,7 @@ Open (o): .......x........
 ---
 
 #### 68. Time's Up (`timesup`)
-- **Artist**: O.C. / Buckwild
-- **Reference**: *Time's Up* (1994)
+- **Inspired by**: *Time's Up* (1994) · O.C. / Buckwild
 - **Drummer / producer**: Buckwild (Les McCann sample)
 - **Tempo & level**: 92 BPM · Intermediate
 
@@ -1670,8 +1604,7 @@ Open (o): .......x........
 ---
 
 #### 69. Hip 2 Da Game (`hip2dagame`)
-- **Artist**: Lord Finesse
-- **Reference**: *Hip 2 Da Game* (1995)
+- **Inspired by**: *Hip 2 Da Game* (1995) · Lord Finesse
 - **Drummer / producer**: Lord Finesse (Oscar Peterson sample)
 - **Tempo & level**: 90 BPM · Intermediate
 
@@ -1694,8 +1627,7 @@ Open (o): ................
 ---
 
 #### 70. Protect Ya Neck (`protectyaneck`)
-- **Artist**: Wu-Tang Clan / RZA
-- **Reference**: *Protect Ya Neck* (1992)
+- **Inspired by**: *Protect Ya Neck* (1992) · Wu-Tang Clan / RZA
 - **Drummer / producer**: RZA (The Grunt sample)
 - **Tempo & level**: 102 BPM · Intermediate
 
@@ -1718,8 +1650,7 @@ Open (o): ................
 ---
 
 #### 71. Worst Comes to Worst (`worstcomes`)
-- **Artist**: Dilated Peoples / The Alchemist
-- **Reference**: *Worst Comes to Worst* (2001)
+- **Inspired by**: *Worst Comes to Worst* (2001) · Dilated Peoples / The Alchemist
 - **Drummer / producer**: The Alchemist (William Bell sample)
 - **Tempo & level**: 94 BPM · Intermediate
 
@@ -1742,8 +1673,7 @@ Open (o): ......x.........
 ---
 
 #### 72. Who Got Da Props (`whogotdaprops`)
-- **Artist**: Black Moon / Da Beatminerz
-- **Reference**: *Who Got Da Props* (1992)
+- **Inspired by**: *Who Got Da Props* (1992) · Black Moon / Da Beatminerz
 - **Drummer / producer**: Da Beatminerz (Ronnie Laws sample)
 - **Tempo & level**: 92 BPM · Intermediate
 
@@ -1766,8 +1696,7 @@ Open (o): ................
 ---
 
 #### 73. Best Kept Secret (`bestkeptsecret`)
-- **Artist**: Diamond D
-- **Reference**: *Best Kept Secret* (1992)
+- **Inspired by**: *Best Kept Secret* (1992) · Diamond D
 - **Drummer / producer**: Diamond D (Al Green sample)
 - **Tempo & level**: 95 BPM · Intermediate
 
@@ -1790,8 +1719,7 @@ Open (o): .......x........
 ---
 
 #### 74. Party and Bullshit (`partyandbull`)
-- **Artist**: The Notorious B.I.G. / Easy Mo Bee
-- **Reference**: *Party and Bullshit* (1993)
+- **Inspired by**: *Party and Bullshit* (1993) · The Notorious B.I.G. / Easy Mo Bee
 - **Drummer / producer**: Easy Mo Bee (Johnny Pate sample)
 - **Tempo & level**: 98 BPM · Intermediate
 
@@ -1814,8 +1742,7 @@ Open (o): ................
 ---
 
 #### 75. East Coast Boom Bap Swing (`statikswing`)
-- **Artist**: Statik Selektah standard
-- **Reference**: *East Coast Boom Bap Swing*
+- **Inspired by**: *East Coast Boom Bap Swing* · Statik Selektah standard
 - **Drummer / producer**: MPC swung boom bap
 - **Tempo & level**: 90 BPM · Intermediate
 
@@ -1838,8 +1765,7 @@ Open (o): .......x........
 ---
 
 #### 76. Dilla Drunk Swing (`dilla`)
-- **Artist**: J Dilla / Slum Village ("Fall In Love")
-- **Reference**: *Fall In Love* (2000)
+- **Inspired by**: *Fall In Love* (2000) · J Dilla / Slum Village ("Fall In Love")
 - **Drummer / producer**: J Dilla (Gap Mangione sample)
 - **Tempo & level**: 86 BPM · Advanced
 
@@ -1862,8 +1788,7 @@ Open (o): ................
 ---
 
 #### 77. West Coast G-Funk (`gfunk`)
-- **Artist**: Dr. Dre / Snoop Dogg
-- **Reference**: *Nuthin' but a 'G' Thang* (1992)
+- **Inspired by**: *Nuthin' but a 'G' Thang* (1992) · Dr. Dre / Snoop Dogg
 - **Drummer / producer**: Dr. Dre (Leon Haywood sample)
 - **Tempo & level**: 94 BPM · Beginner
 
@@ -1886,8 +1811,7 @@ Open (o): ......x.........
 ---
 
 #### 78. Timbaland Bounce (`timbaland`)
-- **Artist**: Timbaland / Aaliyah ("Try Again")
-- **Reference**: *Try Again* (2000)
+- **Inspired by**: *Try Again* (2000) · Timbaland / Aaliyah ("Try Again")
 - **Drummer / producer**: Timbaland (mouth percussion & Ensoniq ASR-10)
 - **Tempo & level**: 92 BPM · Advanced
 
@@ -1912,8 +1836,7 @@ Open (o): ................
 ### Lo-Fi (16)
 
 #### 79. Aruarian Dance (`aruarian`)
-- **Artist**: Nujabes
-- **Reference**: *Aruarian Dance* (2004)
+- **Inspired by**: *Aruarian Dance* (2004) · Nujabes
 - **Drummer / producer**: Nujabes (Laurindo Almeida sample)
 - **Tempo & level**: 88 BPM · Beginner
 
@@ -1936,8 +1859,7 @@ Open (o): .......x........
 ---
 
 #### 80. Feather (`feather`)
-- **Artist**: Nujabes / Cise Starr
-- **Reference**: *Feather* (2005)
+- **Inspired by**: *Feather* (2005) · Nujabes / Cise Starr
 - **Drummer / producer**: Nujabes (Yusef Lateef sample)
 - **Tempo & level**: 98 BPM · Beginner
 
@@ -1960,8 +1882,7 @@ Open (o): ................
 ---
 
 #### 81. Time: The Donut of the Heart (`donuttime`)
-- **Artist**: J Dilla
-- **Reference**: *Time: The Donut of the Heart* (2006)
+- **Inspired by**: *Time: The Donut of the Heart* (2006) · J Dilla
 - **Drummer / producer**: J Dilla (Jackson 5 sample)
 - **Tempo & level**: 87 BPM · Advanced
 
@@ -1984,8 +1905,7 @@ Open (o): ................
 ---
 
 #### 82. So Far to Go (`sofar`)
-- **Artist**: J Dilla / Common & D'Angelo
-- **Reference**: *So Far to Go* (2006)
+- **Inspired by**: *So Far to Go* (2006) · J Dilla / Common & D'Angelo
 - **Drummer / producer**: J Dilla (Isley Brothers sample)
 - **Tempo & level**: 85 BPM · Advanced
 
@@ -2008,8 +1928,7 @@ Open (o): ................
 ---
 
 #### 83. Workinonit (`workinonit`)
-- **Artist**: J Dilla
-- **Reference**: *Workinonit* (2006)
+- **Inspired by**: *Workinonit* (2006) · J Dilla
 - **Drummer / producer**: J Dilla (10cc sample)
 - **Tempo & level**: 88 BPM · Intermediate
 
@@ -2032,8 +1951,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 84. Accordion (`accordion`)
-- **Artist**: Madvillain (Madlib & MF DOOM)
-- **Reference**: *Accordion* (2004)
+- **Inspired by**: *Accordion* (2004) · Madvillain (Madlib & MF DOOM)
 - **Drummer / producer**: Madlib (Daedelus sample)
 - **Tempo & level**: 96 BPM · Beginner
 
@@ -2056,8 +1974,7 @@ Open (o): ................
 ---
 
 #### 85. All Caps (`allcaps`)
-- **Artist**: Madvillain (Madlib & MF DOOM)
-- **Reference**: *All Caps* (2004)
+- **Inspired by**: *All Caps* (2004) · Madvillain (Madlib & MF DOOM)
 - **Drummer / producer**: Madlib (Ironside sample)
 - **Tempo & level**: 91 BPM · Intermediate
 
@@ -2080,8 +1997,7 @@ Open (o): ................
 ---
 
 #### 86. Low Class Conspiracy (`lowclass`)
-- **Artist**: Quasimoto / Madlib
-- **Reference**: *Low Class Conspiracy* (2000)
+- **Inspired by**: *Low Class Conspiracy* (2000) · Quasimoto / Madlib
 - **Drummer / producer**: Madlib (SP-1200)
 - **Tempo & level**: 89 BPM · Beginner
 
@@ -2104,8 +2020,7 @@ Open (o): .......x........
 ---
 
 #### 87. Klipsh (`klipsh`)
-- **Artist**: Knxwledge
-- **Reference**: *Klipsh* (2015)
+- **Inspired by**: *Klipsh* (2015) · Knxwledge
 - **Drummer / producer**: Knxwledge (Roland SP-404)
 - **Tempo & level**: 84 BPM · Advanced
 
@@ -2128,8 +2043,7 @@ Open (o): ................
 ---
 
 #### 88. Coffee Shop Study Beat (`lofigirl`)
-- **Artist**: Lofi Girl Standard
-- **Reference**: *Coffee Shop Study Beat*
+- **Inspired by**: *Coffee Shop Study Beat* · Lofi Girl Standard
 - **Drummer / producer**: Lofi Girl Production Team
 - **Tempo & level**: 80 BPM · Beginner
 
@@ -2152,8 +2066,7 @@ Open (o): ................
 ---
 
 #### 89. What a Day (`whataday`)
-- **Artist**: Kiefer
-- **Reference**: *What a Day* (2018)
+- **Inspired by**: *What a Day* (2018) · Kiefer
 - **Drummer / producer**: Kiefer (piano and live feel drums)
 - **Tempo & level**: 86 BPM · Advanced
 
@@ -2176,8 +2089,7 @@ Open (o): ................
 ---
 
 #### 90. Sakura Trees (`sakuratrees`)
-- **Artist**: Saib
-- **Reference**: *Sakura Trees* (2017)
+- **Inspired by**: *Sakura Trees* (2017) · Saib
 - **Drummer / producer**: Saib (koto and chillhop drums)
 - **Tempo & level**: 84 BPM · Intermediate
 
@@ -2200,8 +2112,7 @@ Open (o): ................
 ---
 
 #### 91. Far Away (`faraway`)
-- **Artist**: Tomppabeats
-- **Reference**: *Far Away* (2016)
+- **Inspired by**: *Far Away* (2016) · Tomppabeats
 - **Drummer / producer**: Tomppabeats (tape cassette loop)
 - **Tempo & level**: 78 BPM · Beginner
 
@@ -2224,8 +2135,7 @@ Open (o): ................
 ---
 
 #### 92. Cookin Soul Dope Beat (`cookinsoul`)
-- **Artist**: Cookin Soul
-- **Reference**: *Cookin Soul Dope Beat* (2018)
+- **Inspired by**: *Cookin Soul Dope Beat* (2018) · Cookin Soul
 - **Drummer / producer**: Cookin Soul (SP-1200 / MPC 2000XL)
 - **Tempo & level**: 92 BPM · Intermediate
 
@@ -2248,8 +2158,7 @@ Open (o): .......x........
 ---
 
 #### 93. Sweet Talk (`vanilla`)
-- **Artist**: Vanilla
-- **Reference**: *Sweet Talk* (2014)
+- **Inspired by**: *Sweet Talk* (2014) · Vanilla
 - **Drummer / producer**: Vanilla (soul sample chop)
 - **Tempo & level**: 88 BPM · Intermediate
 
@@ -2272,8 +2181,7 @@ Open (o): ......x.........
 ---
 
 #### 94. Rio (`wuntwo`)
-- **Artist**: Wun Two
-- **Reference**: *Rio* (2013)
+- **Inspired by**: *Rio* (2013) · Wun Two
 - **Drummer / producer**: Wun Two (SP-404 vinyl flutter)
 - **Tempo & level**: 76 BPM · Beginner
 
@@ -2298,8 +2206,7 @@ Open (o): ................
 ### Electro (2)
 
 #### 95. Planet Rock (`planetrock`)
-- **Artist**: Afrika Bambaataa
-- **Reference**: *Planet Rock* (1982)
+- **Inspired by**: *Planet Rock* (1982) · Afrika Bambaataa
 - **Drummer / producer**: Arthur Baker & John Robie (TR-808)
 - **Tempo & level**: 128 BPM · Intermediate
 
@@ -2322,8 +2229,7 @@ Open (o): ................
 ---
 
 #### 96. Clear (`clear`)
-- **Artist**: Cybotron
-- **Reference**: *Clear* (1983)
+- **Inspired by**: *Clear* (1983) · Cybotron
 - **Drummer / producer**: Juan Atkins & Richard Davis (TR-808)
 - **Tempo & level**: 128 BPM · Intermediate
 
@@ -2348,8 +2254,7 @@ Open (o): ................
 ### Electronic (5)
 
 #### 97. Blue Monday (`bluemonday`)
-- **Artist**: New Order
-- **Reference**: *Blue Monday* (1983)
+- **Inspired by**: *Blue Monday* (1983) · New Order
 - **Drummer / producer**: Stephen Morris (Oberheim DMX)
 - **Tempo & level**: 130 BPM · Intermediate
 
@@ -2372,8 +2277,7 @@ Open (o): ..............X.
 ---
 
 #### 98. Numbers (`numbers`)
-- **Artist**: Kraftwerk
-- **Reference**: *Numbers* (1981)
+- **Inspired by**: *Numbers* (1981) · Kraftwerk
 - **Drummer / producer**: Electronic drum sequencing
 - **Tempo & level**: 126 BPM · Beginner
 
@@ -2396,8 +2300,7 @@ Open (o): ................
 ---
 
 #### 99. Trans-Europe Express (`trans-europe`)
-- **Artist**: Kraftwerk
-- **Reference**: *Trans-Europe Express* (1977)
+- **Inspired by**: *Trans-Europe Express* (1977) · Kraftwerk
 - **Drummer / producer**: Electronic drum sequencing
 - **Tempo & level**: 108 BPM · Beginner
 
@@ -2420,8 +2323,7 @@ Open (o): ................
 ---
 
 #### 100. Closer (`closer`)
-- **Artist**: Nine Inch Nails
-- **Reference**: *Closer* (1994)
+- **Inspired by**: *Closer* (1994) · Nine Inch Nails
 - **Drummer / producer**: Trent Reznor (Iggy Pop 'Nightclubbing' kick)
 - **Tempo & level**: 90 BPM · Intermediate
 
@@ -2444,8 +2346,7 @@ Open (o): ................
 ---
 
 #### 101. Tour de France (`tourdefrance`)
-- **Artist**: Kraftwerk
-- **Reference**: *Tour de France* (1983)
+- **Inspired by**: *Tour de France* (1983) · Kraftwerk
 - **Drummer / producer**: Electronic drum sequencing
 - **Tempo & level**: 128 BPM · Beginner
 
@@ -2470,8 +2371,7 @@ Open (o): ................
 ### House (7)
 
 #### 102. Pump Up The Volume (`pumpup`)
-- **Artist**: M|A|R|R|S
-- **Reference**: *Pump Up The Volume* (1987)
+- **Inspired by**: *Pump Up The Volume* (1987) · M|A|R|R|S
 - **Drummer / producer**: Sampled 909 & breakbeat collage
 - **Tempo & level**: 114 BPM · Intermediate
 
@@ -2494,8 +2394,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 103. Voodoo Ray (`voodooray`)
-- **Artist**: A Guy Called Gerald
-- **Reference**: *Voodoo Ray* (1988)
+- **Inspired by**: *Voodoo Ray* (1988) · A Guy Called Gerald
 - **Drummer / producer**: Gerald Simpson (TR-808)
 - **Tempo & level**: 124 BPM · Intermediate
 
@@ -2518,8 +2417,7 @@ Open (o): ................
 ---
 
 #### 104. Around The World (`aroundtheworld`)
-- **Artist**: Daft Punk
-- **Reference**: *Around The World* (1997)
+- **Inspired by**: *Around The World* (1997) · Daft Punk
 - **Drummer / producer**: Thomas Bangalter & Guy-Manuel (TR-909)
 - **Tempo & level**: 121 BPM · Beginner
 
@@ -2542,8 +2440,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 105. Acid House 303 (`acid303`)
-- **Artist**: Phuture / Chicago 1987
-- **Reference**: *Acid House 303 (Acid Tracks)* (1987)
+- **Inspired by**: *Acid House 303 (Acid Tracks)* (1987) · Phuture / Chicago 1987
 - **Drummer / producer**: DJ Pierre & Spanky (TR-707)
 - **Tempo & level**: 122 BPM · Beginner
 
@@ -2566,8 +2463,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 106. Four on the Floor (`four`)
-- **Artist**: Disco / Chicago house
-- **Reference**: *Four on the Floor*
+- **Inspired by**: *Four on the Floor* · Disco / Chicago house
 - **Drummer / producer**: TR-909 / Acoustic kit
 - **Tempo & level**: 124 BPM · Beginner
 
@@ -2590,8 +2486,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 107. Deep House (`deephouse`)
-- **Artist**: Larry Heard / Chicago
-- **Reference**: *Deep House (Can You Feel It)* (1986)
+- **Inspired by**: *Deep House (Can You Feel It)* (1986) · Larry Heard / Chicago
 - **Drummer / producer**: Larry Heard (TR-909)
 - **Tempo & level**: 120 BPM · Intermediate
 
@@ -2614,8 +2509,7 @@ Open (o): ..x...x...x.....
 ---
 
 #### 108. Jackin' House (`jackinhouse`)
-- **Artist**: DJ Sneak / Derrick Carter
-- **Reference**: *Jackin' House* (1995)
+- **Inspired by**: *Jackin' House* (1995) · DJ Sneak / Derrick Carter
 - **Drummer / producer**: Chicago Jackin' Producers (TR-909)
 - **Tempo & level**: 126 BPM · Intermediate
 
@@ -2640,8 +2534,7 @@ Open (o): ..x...x...x.....
 ### Techno (5)
 
 #### 109. Detroit Techno (`detroittechno`)
-- **Artist**: Underground Resistance / Model 500
-- **Reference**: *Detroit Techno* (1990)
+- **Inspired by**: *Detroit Techno* (1990) · Underground Resistance / Model 500
 - **Drummer / producer**: Juan Atkins / UR (TR-909)
 - **Tempo & level**: 132 BPM · Intermediate
 
@@ -2664,8 +2557,7 @@ Open (o): ..x...x...x...x.
 ---
 
 #### 110. Berlin Rumble Techno (`berlinrumble`)
-- **Artist**: Berghain / Industrial Standard
-- **Reference**: *Berlin Rumble Techno*
+- **Inspired by**: *Berlin Rumble Techno* · Berghain / Industrial Standard
 - **Drummer / producer**: Industrial techno producers
 - **Tempo & level**: 134 BPM · Intermediate
 
@@ -2688,8 +2580,7 @@ Open (o): ..x...x...x...x.
 ---
 
 #### 111. Minimal Techno (`minimaltechno`)
-- **Artist**: Robert Hood
-- **Reference**: *Minimal Techno (Minimal Nation)* (1994)
+- **Inspired by**: *Minimal Techno (Minimal Nation)* (1994) · Robert Hood
 - **Drummer / producer**: Robert Hood (TR-909)
 - **Tempo & level**: 128 BPM · Beginner
 
@@ -2712,8 +2603,7 @@ Open (o): ................
 ---
 
 #### 112. Dub Techno (`dubtechno`)
-- **Artist**: Basic Channel / Rhythm & Sound
-- **Reference**: *Dub Techno (Quadrant Dub)* (1993)
+- **Inspired by**: *Dub Techno (Quadrant Dub)* (1993) · Basic Channel / Rhythm & Sound
 - **Drummer / producer**: Moritz von Oswald & Mark Ernestus
 - **Tempo & level**: 125 BPM · Intermediate
 
@@ -2736,8 +2626,7 @@ Open (o): ................
 ---
 
 #### 113. Acid Techno (`acidtechno`)
-- **Artist**: London Acid City / Stay Up Forever
-- **Reference**: *Acid Techno* (1996)
+- **Inspired by**: *Acid Techno* (1996) · London Acid City / Stay Up Forever
 - **Drummer / producer**: Chris Liberator / D.A.V.E. The Drummer
 - **Tempo & level**: 138 BPM · Intermediate
 
@@ -2762,8 +2651,7 @@ Open (o): ..x...x...x...x.
 ### UK Garage (2)
 
 #### 114. Two-Step (`twostep`)
-- **Artist**: UK garage standard
-- **Reference**: *Two-Step*
+- **Style**: UK garage standard
 - **Drummer / producer**: UK Garage Producers
 - **Tempo & level**: 132 BPM · Intermediate
 
@@ -2786,8 +2674,7 @@ Open (o): ................
 ---
 
 #### 115. Speed Garage (`speedgarage`)
-- **Artist**: 187 Lockdown / Armand Van Helden
-- **Reference**: *Speed Garage (Gunman)* (1997)
+- **Inspired by**: *Speed Garage (Gunman)* (1997) · 187 Lockdown / Armand Van Helden
 - **Drummer / producer**: Speed Garage Producers
 - **Tempo & level**: 130 BPM · Intermediate
 
@@ -2812,8 +2699,7 @@ Open (o): ..x...x...x...x.
 ### Jungle (1)
 
 #### 116. Chopped Amen (`jungle`)
-- **Artist**: Jungle standard
-- **Reference**: *Chopped Amen (Jungle)*
+- **Style**: Jungle standard
 - **Drummer / producer**: Tim Reaper / Dillinja / Goldie style
 - **Tempo & level**: 170 BPM · Advanced
 
@@ -2838,8 +2724,7 @@ Open (o): ................
 ### Drum & Bass (2)
 
 #### 117. Two-Step D&B (`dnb`)
-- **Artist**: Drum & bass standard
-- **Reference**: *Two-Step D&B*
+- **Style**: Drum & bass standard
 - **Drummer / producer**: D&B rhythm section
 - **Tempo & level**: 174 BPM · Intermediate
 
@@ -2862,8 +2747,7 @@ Open (o): ................
 ---
 
 #### 118. Rolling D&B (`dnbrolling`)
-- **Artist**: Hospital Records / Liquid standard
-- **Reference**: *Rolling D&B*
+- **Inspired by**: *Rolling D&B* · Hospital Records / Liquid standard
 - **Drummer / producer**: Liquid D&B Producers
 - **Tempo & level**: 174 BPM · Advanced
 
@@ -2888,8 +2772,7 @@ Open (o): ................
 ### Dubstep (1)
 
 #### 119. Dubstep Half-Time (`dubstep`)
-- **Artist**: Digital Mystikz / Skream
-- **Reference**: *Dubstep Half-Time* (2006)
+- **Inspired by**: *Dubstep Half-Time* (2006) · Digital Mystikz / Skream
 - **Drummer / producer**: DMZ / FWD>> Producers
 - **Tempo & level**: 140 BPM · Beginner
 
@@ -2914,8 +2797,7 @@ Open (o): ................
 ### Grime (1)
 
 #### 120. Grime 140 (`grime`)
-- **Artist**: Wiley / Dizzee Rascal ("I Luv U")
-- **Reference**: *Grime 140 (Eskibeat / I Luv U)* (2003)
+- **Inspired by**: *Grime 140 (Eskibeat / I Luv U)* (2003) · Wiley / Dizzee Rascal ("I Luv U")
 - **Drummer / producer**: Wiley (Eskibeat) / Dizzee Rascal (I Luv U)
 - **Tempo & level**: 140 BPM · Intermediate
 
@@ -2940,8 +2822,7 @@ Open (o): ................
 ### Trap (5)
 
 #### 121. Half-Time Trap (`trap`)
-- **Artist**: Atlanta standard / Metro Boomin
-- **Reference**: *Half-Time Trap*
+- **Inspired by**: *Half-Time Trap* · Atlanta standard / Metro Boomin
 - **Drummer / producer**: Metro Boomin / Southside
 - **Tempo & level**: 140 BPM · Beginner
 
@@ -2964,8 +2845,7 @@ Open (o): ................
 ---
 
 #### 122. 808 Bounce Trap (`trapbounce`)
-- **Artist**: Southside / Lex Luger
-- **Reference**: *808 Bounce Trap* (2011)
+- **Inspired by**: *808 Bounce Trap* (2011) · Southside / Lex Luger
 - **Drummer / producer**: Lex Luger / 808 Mafia
 - **Tempo & level**: 144 BPM · Intermediate
 
@@ -2988,8 +2868,7 @@ Open (o): ................
 ---
 
 #### 123. UK Drill (`drill`)
-- **Artist**: London standard
-- **Reference**: *UK Drill*
+- **Style**: London standard
 - **Drummer / producer**: Carns Hill / MKThePlug
 - **Tempo & level**: 142 BPM · Intermediate
 
@@ -3012,8 +2891,7 @@ Open (o): ................
 ---
 
 #### 124. Brooklyn Drill (`brooklyndrill`)
-- **Artist**: Pop Smoke / 808Melo
-- **Reference**: *Brooklyn Drill (Welcome to the Party)* (2019)
+- **Inspired by**: *Brooklyn Drill (Welcome to the Party)* (2019) · Pop Smoke / 808Melo
 - **Drummer / producer**: 808Melo
 - **Tempo & level**: 140 BPM · Intermediate
 
@@ -3036,8 +2914,7 @@ Open (o): ................
 ---
 
 #### 125. Southern Crunk (`crunk`)
-- **Artist**: Lil Jon / Three 6 Mafia
-- **Reference**: *Southern Crunk (Get Low)* (2003)
+- **Inspired by**: *Southern Crunk (Get Low)* (2003) · Lil Jon / Three 6 Mafia
 - **Drummer / producer**: Lil Jon (TR-808)
 - **Tempo & level**: 150 BPM · Beginner
 
@@ -3062,8 +2939,7 @@ Open (o): ................
 ### Drills (10)
 
 #### 126. Drill: 8th-Note Foundation (`drill-8th`)
-- **Artist**: Finger Drumming Level 1
-- **Reference**: *Drill: 8th-Note Foundation*
+- **Style**: Finger Drumming Level 1
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 85 BPM · Beginner
 
@@ -3086,8 +2962,7 @@ Open (o): ..............X.
 ---
 
 #### 127. Drill: 4-on-the-Floor Coordination (`drill-four`)
-- **Artist**: Finger Drumming Level 1
-- **Reference**: *Drill: 4-on-the-Floor Coordination*
+- **Style**: Finger Drumming Level 1
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 120 BPM · Beginner
 
@@ -3110,8 +2985,7 @@ Open (o): ..............X.
 ---
 
 #### 128. Drill: Kick Syncopation & Pushes (`drill-sync`)
-- **Artist**: Finger Drumming Level 1
-- **Reference**: *Drill: Kick Syncopation & Pushes*
+- **Style**: Finger Drumming Level 1
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 90 BPM · Beginner
 
@@ -3134,8 +3008,7 @@ Open (o): ..............X.
 ---
 
 #### 129. Drill: Ghost Note Pocket (`drill-ghost`)
-- **Artist**: Finger Drumming Level 2
-- **Reference**: *Drill: Ghost Note Pocket*
+- **Style**: Finger Drumming Level 2
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 95 BPM · Intermediate
 
@@ -3158,8 +3031,7 @@ Open (o): ..............x.
 ---
 
 #### 130. Drill: Linear Drumming 1 (`drill-linear`)
-- **Artist**: Finger Drumming Level 2
-- **Reference**: *Drill: Linear Drumming 1*
+- **Style**: Finger Drumming Level 2
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 100 BPM · Intermediate
 
@@ -3182,8 +3054,7 @@ Open (o): ..............x.
 ---
 
 #### 131. Drill: Hand Alternation (R L R L) (`drill-alt`)
-- **Artist**: Finger Drumming Level 2
-- **Reference**: *Drill: Hand Alternation (R L R L)*
+- **Style**: Finger Drumming Level 2
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 110 BPM · Intermediate
 
@@ -3206,8 +3077,7 @@ Open (o): ..............X.
 ---
 
 #### 132. Drill: Paradiddle Pad Groove (`drill-paradiddle`)
-- **Artist**: Finger Drumming Level 3
-- **Reference**: *Drill: Paradiddle Pad Groove*
+- **Style**: Finger Drumming Level 3
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 100 BPM · Advanced
 
@@ -3230,8 +3100,7 @@ Open (o): ..............X.
 ---
 
 #### 133. Drill: 16th Hat Roll Flow (`drill-rolls`)
-- **Artist**: Finger Drumming Level 3
-- **Reference**: *Drill: 16th Hat Roll Flow*
+- **Style**: Finger Drumming Level 3
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 135 BPM · Advanced
 
@@ -3254,8 +3123,7 @@ Open (o): ..............X.
 ---
 
 #### 134. Drill: Polyrhythm 3-Over-4 (`drill-poly`)
-- **Artist**: Finger Drumming Level 3
-- **Reference**: *Drill: Polyrhythm 3-Over-4*
+- **Style**: Finger Drumming Level 3
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 115 BPM · Advanced
 
@@ -3278,8 +3146,7 @@ Open (o): ..............X.
 ---
 
 #### 135. Drill: Finger Independence Master (`drill-master`)
-- **Artist**: Finger Drumming Level 3
-- **Reference**: *Drill: Finger Independence Master*
+- **Style**: Finger Drumming Level 3
 - **Drummer / producer**: Pedagogical Exercise
 - **Tempo & level**: 92 BPM · Advanced
 

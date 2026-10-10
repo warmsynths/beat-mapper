@@ -4479,6 +4479,11 @@ LIB.forEach(p => {
   const extra = BARS[p.id];
   if (extra) p.bars = extra.map(b => Object.fromEntries(INST.map(i => [i.key, b[i.key] ? keepDynamics(b[i.key]!, p[i.key]) : p[i.key]])) as Lanes);
 });
+// Beats named after a style with no artist or record behind them; every other beat is inspired by a real record or artist.
+const STYLE_ONLY = new Set(['sonclave', 'rumbaclave', 'cumbia', 'tambor', 'rock', 'twostep', 'jungle', 'dnb', 'drill']);
+/** True when the beat is inspired by a real record or artist (shown as "Inspired by …" or with an asterisk). */
+export const inspired = (p: Pattern) => p.genre !== 'Drills' && !STYLE_ONLY.has(p.id);
+
 /** How many bars a part has: Main can have several, Var and Fill are one bar each. */
 export const barsOf = (p: Pattern, id: PartId) => id === 'MAIN' && p.bars ? p.bars.length + 1 : 1;
 

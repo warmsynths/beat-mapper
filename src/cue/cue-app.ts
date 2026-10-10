@@ -2,7 +2,7 @@ import { LitElement, css, html, nothing, svg } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { live } from 'lit/directives/live.js';
 import { ref } from 'lit/directives/ref.js';
-import { DEVS, FAM, INST, LIB, partData, type LaneKey, type PartId } from './data/library.ts';
+import { DEVS, FAM, inspired, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
 import { audio, click, getVolume, hit, kitById, kitFor, KITS, preview, setVolume } from './engine/audio.ts';
 import { peekDraw } from './engine/peek.ts';
 import { bpmOf, clamp, commitTempo, COUNTIN_KEY, derive, initState, LEVELS, levelOf, RAMP_KEY, rampNext, rampStart, saveDevice, saveFlag, savePeek, selectPattern, selected, stepMs, tick, titleCase, toggleBeat, toggleLearned, type Derived, type Mode, type State } from './model.ts';
@@ -30,6 +30,9 @@ const SHP: Record<LaneKey, { c: string; r: string; clip: string }> = {
 const laneColor = (k: LaneKey) => k === 'h' ? ACC : k === 's' ? 'var(--snareL)' : SHP[k].c;
 const VERB: Record<string, string> = { sp: 'Hold pad', tr: 'Press', po: 'Hold', ct: 'Pick track', dt: 'Pick track' };
 const SUB = ['', 'e', '&', 'a'];
+/** Copyright cover: beats taken from real records are labelled as inspired by them. */
+const byLine = (p: Pattern) => (inspired(p) ? 'Inspired by ' : '') + p.artist;
+const NOT_AFFILIATED = 'Patterns are simplified interpretations written for practice, inspired by the records and artists named. Not affiliated with or endorsed by the artists or rights holders.';
 /** The setup line under the keys, in plain words per machine family. */
 const PLAIN: Record<string, string> = { sp: 'step record: pads are steps 1–16', tr: 'step mode: pick the drum, then press steps 1–16', po: 'write mode: one sound per pass', ct: 'the top 16 pads are steps 1–16', dt: 'grid recording: trig keys are steps 1–16' };
 const ORD = ['First', 'Then', 'Then', 'Last'];
@@ -254,9 +257,10 @@ export class CueApp extends LitElement {
           <button class="title" title="Find a beat" @click=${() => this.openSearch()}>
             <span class="name-row" style="font-size:${compact ? 24 : H < 700 ? 40 : 56}px;">
               <span class="name">${x.base.name}</span>
+              ${inspired(x.base) && (compact || H < 640) ? html`<span class="ast" title=${byLine(x.base)}>*</span>` : nothing}
               <svg class="chev" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"></path></svg>
             </span>
-            ${compact || H < 640 ? nothing : html`<span class="artist">${x.base.artist}${x.base.simp ? ' · simplified' : ''} — <u>find another beat</u></span>`}
+            ${compact || H < 640 ? nothing : html`<span class="artist">${byLine(x.base)}${x.base.simp ? ' · simplified' : ''} — <u>find another beat</u></span>`}
           </button>
           ${compact ? html`<span class="sub-line">${x.kit.name} kit · ${x.dev.id}${x.base.simp ? ' · simplified' : ''}</span>` : nothing}
         </div>
@@ -694,9 +698,10 @@ export class CueApp extends LitElement {
                 <button class="item" @click=${() => this.select(p.id)}>
                   <span class="item-name-row"><span class="item-name" style="font-size:${compact ? 24 : 30}px;">${p.name}</span>${s.learned.includes(p.id) ? html`<span class="learned-tag">✓ Learned</span>` : nothing}</span>
                   <span class="item-bpm">${p.bpm}<small> BPM</small></span>
-                  <span class="item-artist">${p.artist}</span>
+                  <span class="item-artist">${byLine(p)}</span>
                   <span class="item-genre">${gr.title ? '' : LEVELS[levelOf(p)] + ' · '}${p.genre}${p.simp ? ' · simplified' : ''}</span>
                 </button>`)}`)}
+            ${x.list.length ? html`<p class="legal">${NOT_AFFILIATED}</p>` : nothing}
             ${x.list.length ? nothing : html`<span class="empty">Nothing matches. Try an artist or a genre.</span>`}
           </div>
         </div>
@@ -717,7 +722,7 @@ export class CueApp extends LitElement {
             <div class="info-title-col">
               <span class="info-title" style="font-size:${compact ? 30 : 40}px;">${p.name}</span>
               <div class="info-meta">
-                <span>${p.artist}</span><span>${p.genre}</span><span>${p.bpm} BPM</span>
+                <span>${byLine(p)}</span><span>${p.genre}</span><span>${p.bpm} BPM</span>
                 <span class="level"><span class="bars">${bar(0)}${bar(1)}${bar(2)}</span>${LEVELS[lvl]}</span>
               </div>
             </div>
@@ -748,6 +753,7 @@ export class CueApp extends LitElement {
             <button aria-pressed=${learned ? 'true' : 'false'} style="background:${learned ? ACC : CREAM};" @click=${() => this.toggleLearned(p.id)}>${learned ? '✓ Learned' : 'Mark as learned'}</button>
             <span>${this.s.learned.length} of ${LIB.length} beats learned</span>
           </div>
+          ${inspired(p) ? html`<p class="legal">* ${NOT_AFFILIATED}</p>` : nothing}
         </div>
       </section>
     `;
@@ -854,6 +860,7 @@ export class CueApp extends LitElement {
     .title { max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; border: none; background: transparent; padding: 0; text-align: left; color: var(--fg); }
     .title .name-row { max-width: 100%; display: flex; align-items: center; gap: 0.3em; }
     .title .name { min-width: 0; font-family: 'Tilt Warp', sans-serif; line-height: 1.12; padding-bottom: 0.04em; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ast { flex: none; align-self: flex-start; font-size: 0.6em; line-height: 1.3; color: var(--mute); }
     .chev { flex: none; width: 0.42em; height: 0.28em; margin-top: 0.08em; color: var(--mute); }
     .title .artist { max-width: 100%; font-size: 14px; font-weight: 600; color: var(--mute); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .title u { text-underline-offset: 3px; }
@@ -1031,6 +1038,8 @@ export class CueApp extends LitElement {
     .item-bpm small, .machine small { font-family: 'Host Grotesk', sans-serif; font-size: 11px; font-weight: 700; }
     .item-artist { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .item-genre { font-size: 12px; font-weight: 700; text-align: right; white-space: nowrap; }
+    .legal { margin: 20px 0 0; font-size: 12px; font-weight: 500; line-height: 1.45; color: color-mix(in srgb, var(--ink) 70%, var(--fg)); text-wrap: pretty; }
+    .info-wrap .legal { margin: 0; color: var(--mute2); }
     .empty { display: block; padding: 24px 0; font-size: 16px; font-weight: 500; }
     .rack-grid { max-width: 980px; margin: 0 auto; box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 24px 32px; }
     .maker { display: flex; flex-direction: column; gap: 6px; }
