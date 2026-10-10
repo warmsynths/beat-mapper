@@ -54,32 +54,32 @@ const RAW: RawPattern[] = [
     "gear": "1960s Ludwig kit / Spencer Dryden & G.C. Coleman",
     "tip": "Feather the ghost snares softly with your left hand on the \"e\" and \"a\" subdivisions; only pop the backbeats.",
     "tags": [
-      "holy grail",
-      "jungle",
-      "breakbeat",
-      "ghost notes"
+          "holy grail",
+          "jungle",
+          "breakbeat",
+          "ghost notes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.x.......XX....",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.x.......X.....",
-      "s": "....X..g.g....X.",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "..........x....."
+          "k": "X.x.......X.....",
+          "s": "....X..g.g....X.",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "..........x....."
     },
     "fill": {
-      "k": "..XX......X.....",
-      "s": ".g..X..g.g....X.",
-      "h": "x.x.x.x.x...x.x.",
-      "o": "..........x....."
+          "k": "..XX......X.....",
+          "s": ".g..X..g.g....X.",
+          "h": "x.x.x.x.x...x.x.",
+          "o": "..........x....."
     }
   },
   {
@@ -92,26 +92,32 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig Downbeat kit / Clyde Stubblefield",
     "tip": "The defining breakbeat of hip-hop. Keep continuous 16th hats going with right hand while left hand ghosts between 2 and 4.",
     "tags": [
-      "holy grail",
-      "funk",
-      "hip-hop",
-      "ghost notes"
+          "holy grail",
+          "funk",
+          "hip-hop",
+          "ghost notes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.x.......x..x..",
     "s": "....X..g.g.XXg.g",
     "h": "xxxxxxx.xxxxxxxx",
     "o": ".......x........",
     "var": {
-      "k": "X.x.......x..x..",
-      "s": "....X..g.g.X.g.X",
-      "h": "xxxxxxx.xxxxxxx.",
-      "o": ".......x.......x"
+          "k": "X.x.......x..x..",
+          "s": "....X..g.g.X.g.X",
+          "h": "xxxxxxx.xxxxxxx.",
+          "o": ".......x.......x"
+    },
+    "fill": {
+          "k": "X.x.......X.X...",
+          "s": "....X..g.g..X.XX",
+          "h": "xxxxxxx.xxxx....",
+          "o": ".......x.......X"
     }
   },
   {
@@ -124,22 +130,28 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit + Bongos / Jim Gordon",
     "tip": "Notice the double kick pickup into beat 3. The galloping bongo percussion creates the iconic b-boy break energy.",
     "tags": [
-      "b-boy",
-      "breakbeat",
-      "hip-hop",
-      "bongos"
+          "b-boy",
+          "breakbeat",
+          "hip-hop",
+          "bongos"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L",
-      "t": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L",
+          "t": "R"
     },
     "k": "X......XX.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X......XX.x.....",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "levee",
@@ -151,21 +163,27 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig Green Sparkle 26\" bass drum / John Bonham",
     "tip": "Huge slow pocket. The flamming double kick at the start of beat 1 and beat 3 requires relaxed timing and heavy accents.",
     "tags": [
-      "rock",
-      "heavy",
-      "breakbeat",
-      "bonham"
+          "rock",
+          "heavy",
+          "breakbeat",
+          "bonham"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "XX.....x..XX....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "XX.....x..X...XX",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "impeach",
@@ -177,21 +195,27 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit recorded at The Hit Factory",
     "tip": "Crucial open hi-hat sizzle on step 15 right before the downbeat. The kick syncopation on step 11 drives the bounce.",
     "tags": [
-      "boom bap",
-      "sample classic",
-      "golden era",
-      "holy grail"
+          "boom bap",
+          "sample classic",
+          "golden era",
+          "holy grail"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x...",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X......x..x.....",
+          "s": "....X.......X.X.",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "think",
@@ -203,21 +227,27 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig Downbeat kit / John \"Jabo\" Starks",
     "tip": "The \"Woo! Yeah!\" source break. Ghost notes on steps 7, 9, and 15 cradle the driving 8th-note hat groove.",
     "tags": [
-      "holy grail",
-      "funk",
-      "breakbeat",
-      "ghost notes"
+          "holy grail",
+          "funk",
+          "breakbeat",
+          "ghost notes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..x.x...",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x...",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X......x..x.....",
+          "s": "....X..g.g.gXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": ".......x......X."
+    }
   },
   {
     "id": "coldsweat",
@@ -229,25 +259,31 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig kit / Clyde Stubblefield",
     "tip": "Often cited as the very first true funk record (1967). Open hat on the upbeat of 2 gives it that buoyant lift.",
     "tags": [
-      "funk",
-      "james brown",
-      "syncopation"
+          "funk",
+          "james brown",
+          "syncopation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "......x.........",
     "var": {
-      "k": "X.x.......x..x..",
-      "s": "....X..g.g..X.g.",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "......x........."
+          "k": "X.x.......x..x..",
+          "s": "....X..g.g..X.g.",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "......x........."
+    },
+    "fill": {
+          "k": "X.x.....X.x...x.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
     }
   },
   {
@@ -260,25 +296,31 @@ const RAW: RawPattern[] = [
     "gear": "Gretsch Broadkaster kit / Zigaboo Modeliste",
     "tip": "New Orleans second-line syncopation. The kick plays a 3-3-2 tresillo cadence while the snare interlocks around beat 2 and 3.",
     "tags": [
-      "new orleans",
-      "second line",
-      "funk"
+          "new orleans",
+          "second line",
+          "funk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "x..x..x...x..x..",
     "s": "....X..g.X..g...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "x..x..x...x.....",
-      "s": "....X..g.X..g.XX",
-      "h": "x.x.x.x.x.x.x...",
-      "o": "..............x."
+          "k": "x..x..x...x.....",
+          "s": "....X..g.X..g.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    },
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X.....g.X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..x.......x...x."
     }
   },
   {
@@ -291,25 +333,31 @@ const RAW: RawPattern[] = [
     "gear": "Sonor kit / Bernard Purdie (\"Babylon Sisters\" / \"Home At Last\")",
     "tip": "The holy grail half-time shuffle. Keep ghost snares feather-light on the \"e\" and \"a\" of every beat between the backbeat clacks.",
     "tags": [
-      "shuffle",
-      "ghost notes",
-      "half-time",
-      "holy grail"
+          "shuffle",
+          "ghost notes",
+          "half-time",
+          "holy grail"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.......",
     "s": "..g.X.g...g.X.g.",
     "h": "x.xxx.xxx.xxx.xx",
     "o": "................",
     "var": {
-      "k": "X.....x.X.......",
-      "s": "..g.X.g...g.X.g.",
-      "h": "x.xxx.xxx.xxx.xx",
-      "o": "................"
+          "k": "X.....x.X.......",
+          "s": "..g.X.g...g.X.g.",
+          "h": "x.xxx.xxx.xxx.xx",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X.....x...X.....",
+          "s": "..g.X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
     }
   },
   {
@@ -322,20 +370,26 @@ const RAW: RawPattern[] = [
     "gear": "Rogers kit / George Clinton & Skull Snaps",
     "tip": "Sampled by Gang Starr, The Prodigy, and Ol Dirty Bastard. Crisp, tight open hat on step 15 and punchy ghost notes.",
     "tags": [
-      "holy grail",
-      "boom bap",
-      "breakbeat"
+          "holy grail",
+          "boom bap",
+          "breakbeat"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..X.....",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X......x..X.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "ashley",
@@ -347,20 +401,26 @@ const RAW: RawPattern[] = [
     "gear": "Custom acoustic kit / Kenneth Scoggins",
     "tip": "The rhythm behind Eric B. & Rakim (\"Paid in Full\") and PM Dawn. The syncopated kick hitch on step 8 into 9 is the hook.",
     "tags": [
-      "golden era",
-      "breakbeat",
-      "funk"
+          "golden era",
+          "breakbeat",
+          "funk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......xX.X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x........."
+    "o": "......x.........",
+    "fill": {
+          "k": "X......xX.X...x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "......x........."
+    }
   },
   {
     "id": "mardigras",
@@ -372,20 +432,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit + Agogo bells / Steve Gadd",
     "tip": "Sampled by Run-DMC (\"Peter Piper\") and Missy Elliott. Gadd’s agogo bells dance over a syncopated kick pattern.",
     "tags": [
-      "breakbeat",
-      "bell",
-      "hip-hop"
+          "breakbeat",
+          "bell",
+          "hip-hop"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "w": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "w": "R"
     },
     "k": "X..x....X..x....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X..x....",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "synthetic",
@@ -397,20 +463,26 @@ const RAW: RawPattern[] = [
     "gear": "Bernard Purdie on drums",
     "tip": "Sampled by Wu-Tang Clan, De La Soul, and Ultramagnetic MCs. Heavy, dry, dragging kick and open hat sizzle on the upbeat of 2.",
     "tags": [
-      "wu-tang",
-      "holy grail",
-      "breakbeat"
+          "wu-tang",
+          "holy grail",
+          "breakbeat"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.....x.X.....x.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": ".......x......x."
+    }
   },
   {
     "id": "bigbeat",
@@ -422,20 +494,26 @@ const RAW: RawPattern[] = [
     "gear": "Bobby Chouinard on oversized Slingerland kit",
     "tip": "The thunderous boom-boom-clack sampled on Jay-Z (\"99 Problems\") and Alicia Keys. Heavy, simple, monumental dynamics.",
     "tags": [
-      "rock",
-      "stomp",
-      "hip-hop"
+          "rock",
+          "stomp",
+          "hip-hop"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X.X.....X.X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X.......",
+          "s": "....X...XXXX.XXX",
+          "h": "x.x.x...........",
+          "o": "..............X."
+    }
   },
   {
     "id": "walkthisway",
@@ -447,20 +525,26 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig kit / Joey Kramer",
     "tip": "The opening break that launched rap-rock via Run-DMC. Double kick push on beat 2-and and 4-and with open hat accents.",
     "tags": [
-      "rock",
-      "rap-rock",
-      "breakbeat"
+          "rock",
+          "rap-rock",
+          "breakbeat"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X...x.x.X...x.x.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x.......x"
+    "o": ".......x.......x",
+    "fill": {
+          "k": "X.......X..x....",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..x...x........."
+    }
   },
   {
     "id": "godmake",
@@ -472,21 +556,27 @@ const RAW: RawPattern[] = [
     "gear": "Fibes acrylic drum kit / Mike Clark",
     "tip": "Sampled by 2Pac (\"Keep Ya Head Up\"), De La Soul, Snoop Dogg. The quintessential West Coast funk pocket with crisp open hat on step 7.",
     "tags": [
-      "holy grail",
-      "breakbeat",
-      "funk",
-      "2pac"
+          "holy grail",
+          "breakbeat",
+          "funk",
+          "2pac"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.....x...X.....",
+          "s": "....X..g.g.gX.X.",
+          "h": "x.x.x.x.x.x.....",
+          "o": ".......x......x."
+    }
   },
   {
     "id": "differentstrokes",
@@ -498,20 +588,26 @@ const RAW: RawPattern[] = [
     "gear": "Hi Records Memphis studio kit",
     "tip": "Sampled in Wu-Tang Clan (\"Shame on a Nigga\"), De La Soul (\"The Magic Number\"), EPMD. Aggressive stuttering kick pickup into beat 3.",
     "tags": [
-      "breakbeat",
-      "wu-tang",
-      "soul",
-      "de la soul"
+          "breakbeat",
+          "wu-tang",
+          "soul",
+          "de la soul"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...x.X...x.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...x.X...x.....",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "singasong",
@@ -523,20 +619,26 @@ const RAW: RawPattern[] = [
     "gear": "Gretsch kit / Greg Errico",
     "tip": "Sampled by 2Pac, Cypress Hill, Public Enemy. The kick drops on 1, the \"and\" of 1, and rolls heavily into beat 3.",
     "tags": [
-      "breakbeat",
-      "funk",
-      "sly stone"
+          "breakbeat",
+          "funk",
+          "sly stone"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X..x....X.x.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X..x....X.x...X.",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "justkissed",
@@ -548,20 +650,26 @@ const RAW: RawPattern[] = [
     "gear": "Gretsch Broadkaster kit / Zigaboo Modeliste",
     "tip": "Sampled by Public Enemy, EPMD. Deep New Orleans swamp funk. Zigaboo’s offbeat kick drags with ghost snares around the backbeats.",
     "tags": [
-      "breakbeat",
-      "meters",
-      "new orleans",
-      "funk"
+          "breakbeat",
+          "meters",
+          "new orleans",
+          "funk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X..x..X...x..X..",
     "s": "....X..g.X..g...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X..g.X..g.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "ntbreak",
@@ -573,20 +681,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic jazz kit / George \"Funky\" Brown",
     "tip": "Sampled by Nas (\"N.Y. State of Mind\" intro), Q-Tip, Big Daddy Kane. Crisp ghost notes with open hi-hat on beat 2-and.",
     "tags": [
-      "breakbeat",
-      "nas",
-      "kool & the gang"
+          "breakbeat",
+          "nas",
+          "kool & the gang"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X..x..X...x.x...",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x........."
+    "o": "......x.........",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "......x.......x."
+    }
   },
   {
     "id": "imglad",
@@ -598,19 +712,25 @@ const RAW: RawPattern[] = [
     "gear": "Al Jackson Jr. on Ludwig kit at Royal Studios Memphis",
     "tip": "Sampled by The Notorious B.I.G. (\"Dead Wrong\"), Eric B. & Rakim (\"The R\"). Deep, slow, dripping snare crack with double kick into 3.",
     "tags": [
-      "breakbeat",
-      "biggie",
-      "memphis soul"
+          "breakbeat",
+          "biggie",
+          "memphis soul"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X.......X.gX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "odebillie",
@@ -622,21 +742,27 @@ const RAW: RawPattern[] = [
     "gear": "Leo Morris (Idris Muhammad) on drums",
     "tip": "Sampled by A Tribe Called Quest (\"Clap Your Hands\"), Cypress Hill, Kanye West. Relaxed, greasy jazz-funk pocket.",
     "tags": [
-      "breakbeat",
-      "idris muhammad",
-      "jazz funk",
-      "tribe"
+          "breakbeat",
+          "idris muhammad",
+          "jazz funk",
+          "tribe"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X.....x...X.....",
+          "s": "....X.......XgXX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............X."
+    }
   },
   {
     "id": "tramp",
@@ -648,19 +774,25 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit recorded 1967",
     "tip": "Sampled in Salt-N-Pepa (\"Push It\"), Cypress Hill, De La Soul. Laid-back blues-funk kick syncopation.",
     "tags": [
-      "breakbeat",
-      "blues funk",
-      "sample gold"
+          "breakbeat",
+          "blues funk",
+          "sample gold"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X..x....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X..x..X.",
+          "s": "....X.......X.X.",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "thechamp",
@@ -672,20 +804,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit + Hammond B3 / Alan Hawkshaw",
     "tip": "Sampled in over 700 songs (KRS-One, Eric B & Rakim, De La Soul). Driving double kick syncopation that defines b-boy breaking.",
     "tags": [
-      "b-boy",
-      "breakbeat",
-      "holy grail",
-      "krs-one"
+          "b-boy",
+          "breakbeat",
+          "holy grail",
+          "krs-one"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...x.X.X...x.X.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...x.X.X.......",
+          "s": "....X...XXXX.XXX",
+          "h": "x.x.x.x.........",
+          "o": "..............x."
+    }
   },
   {
     "id": "longred",
@@ -697,20 +835,26 @@ const RAW: RawPattern[] = [
     "gear": "N.D. Smart II on drums live at Woodstock 1969",
     "tip": "Sampled in Eric B & Rakim, Nas, Pete Rock, J Dilla. Heavy stomping rock kick with delayed hitch on beat 2-and.",
     "tags": [
-      "breakbeat",
-      "rock",
-      "nas",
-      "woodstock"
+          "breakbeat",
+          "rock",
+          "nas",
+          "woodstock"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X.....XX",
+          "s": "....X.......X.X.",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............X."
+    }
   },
   {
     "id": "scorpio",
@@ -722,20 +866,26 @@ const RAW: RawPattern[] = [
     "gear": "Pistol Allen on kit + King Errisson on congas",
     "tip": "Sampled in Public Enemy, Young MC, LL Cool J. Driving 16th conga roll layered over a driving 3-3-2 kick pulse.",
     "tags": [
-      "breakbeat",
-      "congas",
-      "b-boy"
+          "breakbeat",
+          "congas",
+          "b-boy"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "X..x..X.X..x..X.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X.X.......",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "blindalley",
@@ -747,20 +897,26 @@ const RAW: RawPattern[] = [
     "gear": "Stax studio kit / Willie Hall",
     "tip": "Sampled by Big Daddy Kane (\"Ain't No Half-Steppin'\"), Mariah Carey, 112. Open hi-hats sizzling on beat 2-and and 4-and.",
     "tags": [
-      "breakbeat",
-      "stax",
-      "big daddy kane"
+          "breakbeat",
+          "stax",
+          "big daddy kane"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x.......x"
+    "o": ".......x.......x",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": ".......x.......X"
+    }
   },
   {
     "id": "giveitup",
@@ -772,21 +928,27 @@ const RAW: RawPattern[] = [
     "gear": "In The Jungle Groove remix / Clyde Stubblefield & Jabo Starks",
     "tip": "The ultimate b-boy cypher battle break. Galloping congas, crisp double kicks, and rolling ghost snares.",
     "tags": [
-      "b-boy",
-      "cypher",
-      "breakbeat",
-      "james brown"
+          "b-boy",
+          "cypher",
+          "breakbeat",
+          "james brown"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "X..x....X..x....",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X..x..X.",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "hotpants",
@@ -798,20 +960,26 @@ const RAW: RawPattern[] = [
     "gear": "John \"Jabo\" Starks on drums",
     "tip": "Sampled by Stone Roses (\"Fools Gold\"), Public Enemy, 2 Live Crew. Swung funk pocket with ghost snare on step 15.",
     "tags": [
-      "breakbeat",
-      "fools gold",
-      "jabo starks"
+          "breakbeat",
+          "fools gold",
+          "jabo starks"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..x.x...",
     "s": "....X.......X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X......x..x.x...",
+          "s": "....X.......XX.X",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "thegrunt",
@@ -823,19 +991,25 @@ const RAW: RawPattern[] = [
     "gear": "Jabo Starks on drums",
     "tip": "Sampled on Public Enemy (\"Rebel Without a Pause\"), Jungle Brothers. Driving continuous 16th hats with 4-on-the-floor kick push.",
     "tags": [
-      "breakbeat",
-      "public enemy",
-      "jbs"
+          "breakbeat",
+          "public enemy",
+          "jbs"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXX.XXX",
+          "h": "xxxxxxxx........",
+          "o": "..............x."
+    }
   },
   {
     "id": "papawas",
@@ -847,20 +1021,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic southern soul kit",
     "tip": "Sampled by Eric B & Rakim (\"I Ain't No Joke\"), Wu-Tang. Heavy downbeat kick with syncopated open hat upbeat.",
     "tags": [
-      "breakbeat",
-      "eric b & rakim",
-      "joe tex"
+          "breakbeat",
+          "eric b & rakim",
+          "joe tex"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X..x....X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X..x....X.x...x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": ".......x......X."
+    }
   },
   {
     "id": "funkypenguin",
@@ -872,19 +1052,25 @@ const RAW: RawPattern[] = [
     "gear": "Stax Records Memphis / Willie Hall",
     "tip": "Sampled by A Tribe Called Quest, Compton's Most Wanted. Funky ghost note flurries around the backbeat.",
     "tags": [
-      "breakbeat",
-      "stax",
-      "rufus thomas"
+          "breakbeat",
+          "stax",
+          "rufus thomas"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X..x....",
     "s": "....X..g.g..X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X..x....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "ufo",
@@ -896,20 +1082,26 @@ const RAW: RawPattern[] = [
     "gear": "South Bronx punk-funk sisters / acoustic kit",
     "tip": "Sampled by Biggie, Public Enemy, TLC, Beastie Boys. Sparse post-punk offbeat hats and subterranean simplicity.",
     "tags": [
-      "breakbeat",
-      "esg",
-      "minimal",
-      "bronx"
+          "breakbeat",
+          "esg",
+          "minimal",
+          "bronx"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X.......X.XX",
+          "h": "..x...x.........",
+          "o": "..............x."
+    }
   },
   {
     "id": "darkestlight",
@@ -921,20 +1113,26 @@ const RAW: RawPattern[] = [
     "gear": "Afro-funk kit recorded in Paris 1974",
     "tip": "Sampled in Jay-Z (\"Show Me What You Got\"), Wreckx-n-Effect (\"Rump Shaker\"). Heavy syncopated open hat on the upbeat of 2.",
     "tags": [
-      "breakbeat",
-      "jay-z",
-      "afro-rock"
+          "breakbeat",
+          "jay-z",
+          "afro-rock"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X......x..X...x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": ".......x......x."
+    }
   },
   {
     "id": "hihache",
@@ -946,20 +1144,26 @@ const RAW: RawPattern[] = [
     "gear": "Layered acoustic kit + Congas",
     "tip": "Sampled by Biz Markie (\"Nobody Beats The Biz\"), LL Cool J. Rolling conga cadence with punchy syncopated kicks.",
     "tags": [
-      "breakbeat",
-      "biz markie",
-      "congas"
+          "breakbeat",
+          "biz markie",
+          "congas"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "X..x..X...x.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "boombap",
@@ -971,19 +1175,25 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC60 / E-mu SP-1200",
     "tip": "The gold standard. Kick on beat 1 and the upbeat of beat 2, crack of the snare on 2 and 4, steady 8th hats.",
     "tags": [
-      "boom bap",
-      "golden era",
-      "hip-hop standard"
+          "boom bap",
+          "golden era",
+          "hip-hop standard"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x...X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x...X...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "boombap2bar",
@@ -995,25 +1205,31 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200",
     "tip": "Two-bar narrative loop: Bar 1 sets the phrase, Bar 2 varies the kick syncopation and adds double-snare pickups.",
     "tags": [
-      "2-bar loop",
-      "boom bap",
-      "sp-1200"
+          "2-bar loop",
+          "boom bap",
+          "sp-1200"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.....x.....x...",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.xx",
-      "o": "..............x."
+          "k": "X.....x.....x...",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.xx",
+          "o": "..............x."
+    },
+    "fill": {
+          "k": "X.....x...X.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............X."
     }
   },
   {
@@ -1026,25 +1242,31 @@ const RAW: RawPattern[] = [
     "gear": "Akai S950 sampler + Akai MPC60 / DJ Premier",
     "tip": "The ultimate Premier head-nod pocket. Snapping open hat on the upbeat of 2, slightly dragged kick cadence.",
     "tags": [
-      "boom bap",
-      "dj premier",
-      "gang starr"
+          "boom bap",
+          "dj premier",
+          "gang starr"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": ".......x........",
     "var": {
-      "k": "X.....x.x.X.....",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": ".......x........"
+          "k": "X.....x.x.X.....",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": ".......x........"
+    },
+    "fill": {
+          "k": "X.......X.x...X.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
     }
   },
   {
@@ -1057,21 +1279,27 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Pete Rock",
     "tip": "Layered Tom Scott saxophone over a crisp SP-1200 kick and razor-sharp layered snare with pickup open hat.",
     "tags": [
-      "boom bap",
-      "pete rock",
-      "troy",
-      "sp-1200"
+          "boom bap",
+          "pete rock",
+          "troy",
+          "sp-1200"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X..x....X.x.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "nystate",
@@ -1083,21 +1311,27 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 & Akai S950",
     "tip": "The grittiest Queensbridge street cadence. Joe Chambers jazz piano chops over Joe Tex / Kool & The Gang drums.",
     "tags": [
-      "boom bap",
-      "nas",
-      "illmatic",
-      "dj premier"
+          "boom bap",
+          "nas",
+          "illmatic",
+          "dj premier"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..X.....",
     "s": "....X..g....X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.....x.X.....XX",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "shookones",
@@ -1109,25 +1343,31 @@ const RAW: RawPattern[] = [
     "gear": "Akai EPS-16+ / Havoc",
     "tip": "Menacing Queensbridge coldness. Herbie Hancock piano slowed down with crisp layered snare and relentless 8th hats.",
     "tags": [
-      "boom bap",
-      "mobb deep",
-      "havoc",
-      "queensbridge"
+          "boom bap",
+          "mobb deep",
+          "havoc",
+          "queensbridge"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x.X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.....x...X.x...",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X.....x...X.x...",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X..x....X.x...X.",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
     }
   },
   {
@@ -1140,20 +1380,26 @@ const RAW: RawPattern[] = [
     "gear": "Ensoniq ASR-10 / RZA",
     "tip": "The Charmels piano loop with dusty, unquantized kick-snare snap. Simple, devastating, timeless.",
     "tags": [
-      "boom bap",
-      "wu-tang",
-      "rza",
-      "classic"
+          "boom bap",
+          "wu-tang",
+          "rza",
+          "classic"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X...XX..",
+          "s": "....X.......X.gX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "electricrelaxation",
@@ -1165,21 +1411,27 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 & Akai S950",
     "tip": "Ramsey Lewis jazz chops over swung boom bap kick rolls. Keep right hand steady on 8th hats.",
     "tags": [
-      "boom bap",
-      "tribe called quest",
-      "q-tip",
-      "jazz hop"
+          "boom bap",
+          "tribe called quest",
+          "q-tip",
+          "jazz hop"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X...x.x.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x........."
+    "o": "......x.........",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "comeclean",
@@ -1191,19 +1443,25 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC60 & SP-1200",
     "tip": "Water droplet dripping sounds paired with an extremely dry, crisp snare and hollow offbeat hats.",
     "tags": [
-      "boom bap",
-      "dj premier",
-      "jeru the damaja"
+          "boom bap",
+          "dj premier",
+          "jeru the damaja"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X..x....",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X.......",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "halftime",
@@ -1215,19 +1473,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Large Professor",
     "tip": "Japanese Schoolchildren brass loop with booming 808 kick drops underlying acoustic boom bap drums.",
     "tags": [
-      "boom bap",
-      "nas",
-      "large professor"
+          "boom bap",
+          "nas",
+          "large professor"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X.x...X.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "scenario",
@@ -1239,19 +1503,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Q-Tip",
     "tip": "High-energy stomp boom bap. Double kick punches on 1 and 3 driving maximum cypher hype.",
     "tags": [
-      "boom bap",
-      "tribe called quest",
-      "busta rhymes"
+          "boom bap",
+          "tribe called quest",
+          "busta rhymes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.x.....X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...x.X.X.......",
+          "s": "....X...XXXX.XXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "survival",
@@ -1263,20 +1533,26 @@ const RAW: RawPattern[] = [
     "gear": "Ensoniq ASR-10 / Havoc",
     "tip": "Stark, haunting piano chords over a punchy kick push on step 11 and open hat on beat 2-and.",
     "tags": [
-      "boom bap",
-      "mobb deep",
-      "queensbridge"
+          "boom bap",
+          "mobb deep",
+          "queensbridge"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.....x.X.....X.",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "timesup",
@@ -1288,20 +1564,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC60 / Buckwild (D.I.T.C.)",
     "tip": "Slick D.I.T.C. shuffle. Open hat on step 7 with double 16th hat roll on step 14-15 before downbeat.",
     "tags": [
-      "boom bap",
-      "ditc",
-      "buckwild"
+          "boom bap",
+          "ditc",
+          "buckwild"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.xx",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X..x....X.x...x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "hip2dagame",
@@ -1313,19 +1595,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Lord Finesse",
     "tip": "Swung 16th hi-hat flutter driving classic Bronx D.I.T.C. elegance and precision.",
     "tags": [
-      "boom bap",
-      "ditc",
-      "lord finesse"
+          "boom bap",
+          "ditc",
+          "lord finesse"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X......x..X.....",
     "s": "....X.......X...",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "protectyaneck",
@@ -1337,19 +1625,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 12-bit crunchy sampling",
     "tip": "Raw, unpolished Staten Island boom bap attack. Double kick hitch right before beat 2 and beat 4.",
     "tags": [
-      "boom bap",
-      "wu-tang",
-      "rza"
+          "boom bap",
+          "wu-tang",
+          "rza"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...x.x.X...x.x.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "xxxxxxxx........",
+          "o": "..............X."
+    }
   },
   {
     "id": "worstcomes",
@@ -1361,20 +1655,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC2000XL / The Alchemist",
     "tip": "The Alchemist neck-snap signature. William Bell vocal chop over heavy, compressed SP/MPC boom bap.",
     "tags": [
-      "boom bap",
-      "alchemist",
-      "dilated peoples"
+          "boom bap",
+          "alchemist",
+          "dilated peoples"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x........."
+    "o": "......x.........",
+    "fill": {
+          "k": "X.....x.X.x...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "whogotdaprops",
@@ -1386,20 +1686,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai S950 & MPC60 / Evil Dee & Mr. Walt",
     "tip": "Dusty Brooklyn basement boom bap. Ghost snare pickup on step 15 and deep syncopated kick.",
     "tags": [
-      "boom bap",
-      "beatminerz",
-      "black moon"
+          "boom bap",
+          "beatminerz",
+          "black moon"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X..x....X.x.....",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "bestkeptsecret",
@@ -1411,20 +1717,26 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Diamond D",
     "tip": "Kool & The Gang horns over punchy SP-1200 kick with syncopated open hat on the upbeat of 2.",
     "tags": [
-      "boom bap",
-      "diamond d",
-      "ditc"
+          "boom bap",
+          "diamond d",
+          "ditc"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X..x....X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.......X.x...x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "partyandbull",
@@ -1436,19 +1748,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 / Easy Mo Bee",
     "tip": "Driving uptown Brooklyn party bounce. Punchy double kick cadence on 1-and and 3-and.",
     "tags": [
-      "boom bap",
-      "biggie",
-      "easy mo bee"
+          "boom bap",
+          "biggie",
+          "easy mo bee"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...x.X.X...x.X.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X.x.....",
+          "s": "....X...XXXX.XXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "statikswing",
@@ -1460,25 +1778,31 @@ const RAW: RawPattern[] = [
     "gear": "Turntables & Akai MPC2000XL",
     "tip": "The classic modern East Coast 2-bar boom bap swing. Ghost notes support the backbeat with punchy open hat on step 7.",
     "tags": [
-      "boom bap",
-      "statik selektah",
-      "swing"
+          "boom bap",
+          "statik selektah",
+          "swing"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x...X.....",
     "s": "....X..g....X..g",
     "h": "x.x.x.x.x.x.x.x.",
     "o": ".......x........",
     "var": {
-      "k": "X.....x.x.X.....",
-      "s": "....X..g.g..X..g",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": ".......x........"
+          "k": "X.....x.x.X.....",
+          "s": "....X..g.g..X..g",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": ".......x........"
+    },
+    "fill": {
+          "k": "X.....x.X.x...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
     }
   },
   {
@@ -1491,20 +1815,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC2000 / Nujabes (Samurai Champloo)",
     "tip": "The defining anthem of lo-fi hip-hop. Soft acoustic guitar chop with gentle, swinging kick and open hat on beat 2-and.",
     "tags": [
-      "nujabes",
-      "lo-fi classic",
-      "samurai champloo"
+          "nujabes",
+          "lo-fi classic",
+          "samurai champloo"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X.....x.X.....x.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "feather",
@@ -1516,24 +1846,30 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC2000 & vintage soul records",
     "tip": "Breezy, nostalgic piano loop with warm pillowy kick drum and relaxed backbeat.",
     "tags": [
-      "nujabes",
-      "chillhop",
-      "nostalgia"
+          "nujabes",
+          "chillhop",
+          "nostalgia"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.....x.X.......",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "..............x."
+          "k": "X.....x.X.......",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "..............x."
+    },
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
     }
   },
   {
@@ -1546,24 +1882,30 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC3000 / J Dilla (\"Donuts\")",
     "tip": "Masterclass in micro-timing. The kick on step 9 drags heavily behind beat 3, creating the legendary Dilla neck snap.",
     "tags": [
-      "dilla",
-      "donuts",
-      "drunk swing"
+          "dilla",
+          "donuts",
+          "drunk swing"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X..x.....x.X....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.......x..X....",
-      "s": "....X.......X..g",
-      "h": "x.x.x.x.x.x.x.xx",
-      "o": "................"
+          "k": "X.......x..X....",
+          "s": "....X.......X..g",
+          "h": "x.x.x.x.x.x.x.xx",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X.....x...X...X.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
     }
   },
   {
@@ -1576,19 +1918,25 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC3000 / The Isley Brothers sample",
     "tip": "Sensual neo-soul groove. Feather-light 16th hats with subtle ghost snare on step 7 supporting the backbeat.",
     "tags": [
-      "dilla",
-      "neo-soul",
-      "pocket"
+          "dilla",
+          "neo-soul",
+          "pocket"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x...X.x...",
     "s": "....X..g....X...",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g..X.gX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "workinonit",
@@ -1600,20 +1948,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC3000 / 10cc guitar chop",
     "tip": "Four-on-the-floor kick meets dirty, crunchy rock breakbeat chops and relentless offbeat open hats.",
     "tags": [
-      "dilla",
-      "donuts",
-      "rock chop"
+          "dilla",
+          "donuts",
+          "rock chop"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X..x....X.x...X.",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "accordion",
@@ -1625,19 +1979,25 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-303 Dr. Sample / Madlib",
     "tip": "Daedelus accordion loop sampled through SP-303 vinyl simulator. Offbeat hi-hat clicks floating over muffled kick.",
     "tags": [
-      "madlib",
-      "mf doom",
-      "sp-303"
+          "madlib",
+          "mf doom",
+          "sp-303"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X...XX..",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "allcaps",
@@ -1649,24 +2009,30 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-303 & Akai MPC2000",
     "tip": "Heavy, dragging comic-book groove. Kick on step 9 pushes into beat 3 with delayed 16th hat grace notes.",
     "tags": [
-      "madlib",
-      "mf doom",
-      "sp-303"
+          "madlib",
+          "mf doom",
+          "sp-303"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.....x.X.......",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.xx",
-      "o": "................"
+          "k": "X.....x.X.......",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.xx",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X.......X.x...x.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
     }
   },
   {
@@ -1679,20 +2045,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-303 vinyl sim & vintage jazz records",
     "tip": "Dusty, muted kick with crackling vinyl hiss. Open hi-hat on the upbeat of 2 provides the breathing room.",
     "tags": [
-      "madlib",
-      "quasimoto",
-      "vinyl"
+          "madlib",
+          "quasimoto",
+          "vinyl"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X......x..X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X..x....X.x.....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "klipsh",
@@ -1704,19 +2076,25 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-404SX / Knxwledge",
     "tip": "Extreme off-grid swing. The kick hits are noticeably displaced from the quantize grid, creating a fluid, human wobble.",
     "tags": [
-      "knxwledge",
-      "sp-404",
-      "tape swing"
+          "knxwledge",
+          "sp-404",
+          "tape swing"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "x..x.....x.x....",
     "s": "....X..g....X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X.x...X.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "lofigirl",
@@ -1728,26 +2106,32 @@ const RAW: RawPattern[] = [
     "gear": "Muffled 808 kick + filtered rimshot + vinyl crackle",
     "tip": "The world-famous study beat formula: low-pass filtered kick, soft rimshot on 2 and 4, relaxed 8th-note hats.",
     "tags": [
-      "lofigirl",
-      "study",
-      "chillhop",
-      "relax"
+          "lofigirl",
+          "study",
+          "chillhop",
+          "relax"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X.......X.x.....",
     "s": "................",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.....x.X.......",
-      "s": "................",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X.....x.X.......",
+          "s": "................",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
     }
   },
   {
@@ -1760,19 +2144,25 @@ const RAW: RawPattern[] = [
     "gear": "Stones Throw live-feel drum recording / Kiefer",
     "tip": "Jazz-hop virtuosity. Ghost snares roll softly on the e-and-a subdivisions under rich Rhodes chords.",
     "tags": [
-      "kiefer",
-      "jazzhop",
-      "ghost notes"
+          "kiefer",
+          "jazzhop",
+          "ghost notes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.....x.X.......",
     "s": "..g.X.g...g.X.g.",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X.x.....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "sakuratrees",
@@ -1784,20 +2174,26 @@ const RAW: RawPattern[] = [
     "gear": "Bossa-hop nylon guitar + shaker + SP-404",
     "tip": "Chillhop bossa nova fusion. Continuous shaker 16ths floating over syncopated kicks and gentle snare brushes.",
     "tags": [
-      "saib",
-      "chillhop",
-      "bossa"
+          "saib",
+          "chillhop",
+          "bossa"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "z": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "z": "R"
     },
     "k": "X..x....X..x....",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X.....x.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "faraway",
@@ -1809,19 +2205,25 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-404 vinyl sim + pitch-bent samples",
     "tip": "Ultra-minimal 1-minute bedroom loop. Slow dragging tempo with kick pickup on step 11.",
     "tags": [
-      "tomppabeats",
-      "bedroom",
-      "sp-404"
+          "tomppabeats",
+          "bedroom",
+          "sp-404"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X..x....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "cookinsoul",
@@ -1833,20 +2235,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland SP-404MKII & Akai MPC Live",
     "tip": "Punchy Cookin Soul trademark bounce. Crispy layered snare with ghost taps and punchy kick on 1 and 2-and.",
     "tags": [
-      "cookin soul",
-      "sp-404mkii",
-      "boom bap"
+          "cookin soul",
+          "sp-404mkii",
+          "boom bap"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.....x.X.x.....",
     "s": "....X..g....X..g",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........"
+    "o": ".......x........",
+    "fill": {
+          "k": "X..x....X.x...X.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "vanilla",
@@ -1858,20 +2266,26 @@ const RAW: RawPattern[] = [
     "gear": "Vintage soul 45s + Akai MPC",
     "tip": "Warm, uplifting soul lo-fi. Shuffling 16th hats with sweet open hat upbeat on step 6.",
     "tags": [
-      "vanilla",
-      "soul lo-fi",
-      "sample flip"
+          "vanilla",
+          "soul lo-fi",
+          "sample flip"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "......x........."
+    "o": "......x.........",
+    "fill": {
+          "k": "X.......X.x...x.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "wuntwo",
@@ -1883,19 +2297,25 @@ const RAW: RawPattern[] = [
     "gear": "Tape deck + muted drum hits",
     "tip": "Pure lo-fi meditation. Maximum restraint: kick on 1 and 3, dry finger-click snare on 2 and 4, gentle offbeat hats.",
     "tags": [
-      "wun two",
-      "minimal",
-      "tape"
+          "wun two",
+          "minimal",
+          "tape"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X.....x.",
+          "s": "....X..g.g..X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "planetrock",
@@ -1907,21 +2327,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 Rhythm Composer",
     "tip": "The definitive 808 electro blueprint. Syncopated tresillo kick with snappy claps on 2 and 4 and rapid 16th hats.",
     "tags": [
-      "808",
-      "electro",
-      "hip-hop",
-      "classic"
+          "808",
+          "electro",
+          "hip-hop",
+          "classic"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X..X..X.X..X..X.",
     "s": "................",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "bluemonday",
@@ -1933,24 +2359,30 @@ const RAW: RawPattern[] = [
     "gear": "Oberheim DMX drum machine",
     "tip": "The best-selling 12\" single in history. Machine-gun 16th kick burst anchors the relentless intro before dropping into 4-on-floor.",
     "tags": [
-      "synth-pop",
-      "dmx",
-      "post-punk"
+          "synth-pop",
+          "dmx",
+          "post-punk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.X.X.X.X.X.X.X.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X...X...X...X...",
-      "s": "....X.......X...",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X...X...X...X...",
+          "s": "....X.......X...",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "XXXXXXXXX...X...",
+          "s": "....X.......XXXX",
+          "h": "xxxxxxxx........",
+          "o": "..............X."
     }
   },
   {
@@ -1963,19 +2395,25 @@ const RAW: RawPattern[] = [
     "gear": "Custom electronic percussion pads & sequencers",
     "tip": "Sparse, crystalline electro minimalism. Snare clicks and dry kick steps leave vast space for speech synthesizers.",
     "tags": [
-      "krautrock",
-      "electro",
-      "kraftwerk"
+          "krautrock",
+          "electro",
+          "kraftwerk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXX.XXX",
+          "h": "xxxxxxxx........",
+          "o": "..............x."
+    }
   },
   {
     "id": "clear",
@@ -1987,20 +2425,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 / Juan Atkins & Richard Davis",
     "tip": "Detroit electro genesis. Dotted 808 bass patterns sync with double snare pops and bright crash hits.",
     "tags": [
-      "detroit",
-      "electro",
-      "808"
+          "detroit",
+          "electro",
+          "808"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X..x..X...x..x..",
     "s": "....X.......X..x",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...x...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "trans-europe",
@@ -2012,19 +2456,25 @@ const RAW: RawPattern[] = [
     "gear": "Electronic drum synths",
     "tip": "The mechanical train pulse later lifted by Afrika Bambaataa for Planet Rock. Hypnotic kick and tight shaker hats.",
     "tags": [
-      "krautrock",
-      "mechanical",
-      "proto-techno"
+          "krautrock",
+          "mechanical",
+          "proto-techno"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...x...X...x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X...XX..",
+          "s": "....X...XXXXXXXX",
+          "h": "x.x.x...........",
+          "o": "..............x."
+    }
   },
   {
     "id": "sexualhealing",
@@ -2036,21 +2486,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 (one of the first major hits to use it)",
     "tip": "Warm 808 handclaps on 2 and 4 with gentle kick downbeats and laid-back open hat accents.",
     "tags": [
-      "808",
-      "soul",
-      "classic"
+          "808",
+          "soul",
+          "classic"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L",
+          "o": "R"
     },
     "k": "X.......X.x.....",
     "s": "................",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x.......x."
+    "o": "......x.......x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X.......X.XX",
+          "h": "xxxxxxxxxxxx....",
+          "o": "..............x."
+    }
   },
   {
     "id": "pumpup",
@@ -2062,20 +2518,26 @@ const RAW: RawPattern[] = [
     "gear": "Akai S900 sampler + Roland TR-909",
     "tip": "Early sampling masterpiece. Four-on-the-floor kick coupled with syncopated breakbeat snare fills and offbeat hats.",
     "tags": [
-      "early house",
-      "sampling",
-      "uk club"
+          "early house",
+          "sampling",
+          "uk club"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X..x",
     "h": "x...x...x...x...",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...XXXX",
+          "s": "....X.......XXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "voodooray",
@@ -2087,20 +2549,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 & TB-303 (Manchester Hacienda anthem)",
     "tip": "Classic UK acid house swing. Swung 808 hats, conga accents, and skipping snare taps create hypnotic movement.",
     "tags": [
-      "acid house",
-      "hacienda",
-      "808"
+          "acid house",
+          "hacienda",
+          "808"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "X...x...X...x...",
     "s": "....X.......X...",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X..X.g.gXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "closer",
@@ -2112,24 +2580,30 @@ const RAW: RawPattern[] = [
     "gear": "Sampled acoustic drums + Akai S1100 + distortion",
     "tip": "Industrial groove sampled from Iggy Pop (\"Nightclubbing\"). Heavy stomping kick and heavily filtered snare on 2 and 4.",
     "tags": [
-      "industrial",
-      "nin",
-      "heavy groove"
+          "industrial",
+          "nin",
+          "heavy groove"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
     "o": "................",
     "var": {
-      "k": "X...X...X..xX...",
-      "s": "....X.......X...",
-      "h": "..x...x...x...x.",
-      "o": "................"
+          "k": "X...X...X..xX...",
+          "s": "....X.......X...",
+          "h": "..x...x...x...x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X...X...X.X.X...",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
     }
   },
   {
@@ -2142,19 +2616,25 @@ const RAW: RawPattern[] = [
     "gear": "E-mu Emulator & electronic percussions",
     "tip": "Mechanical rhythmic pedaling with breathing sound effects acting as upbeats over a crisp electronic 4/4 pulse.",
     "tags": [
-      "electro",
-      "cycling",
-      "krautrock"
+          "electro",
+          "cycling",
+          "krautrock"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "aroundtheworld",
@@ -2166,21 +2646,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 + LinnDrum + Ensoniq ASR-10",
     "tip": "French touch perfection. Driving 909 four-on-the-floor kick with punchy clap on 2/4 and bright open hat sizzles on upbeats.",
     "tags": [
-      "french touch",
-      "909",
-      "disco house"
+          "french touch",
+          "909",
+          "disco house"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L",
+          "o": "R"
     },
     "k": "X...X...X...X...",
     "s": "................",
     "h": "x...x...x...x...",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "acid303",
@@ -2192,21 +2678,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-707 & TB-303 (\"Acid Tracks\")",
     "tip": "The track that started Acid House. Punchy 707 rimshots and dry handclaps cutting through churning 303 squelches.",
     "tags": [
-      "acid house",
-      "707",
-      "chicago"
+          "acid house",
+          "707",
+          "chicago"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L",
+          "r": "L"
     },
     "k": "X...X...X...X...",
     "s": "................",
     "h": "x...x...x...x...",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXX.XXX",
+          "h": "..x...x.........",
+          "o": "..............x."
+    }
   },
   {
     "id": "four",
@@ -2218,21 +2710,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909",
     "tip": "The heartbeat of club music. Kick on all four beats, open hat on the offbeat (& of every beat), claps on 2 and 4.",
     "tags": [
-      "house",
-      "909",
-      "club foundation"
+          "house",
+          "909",
+          "club foundation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x...x...x...x...",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "deephouse",
@@ -2244,20 +2742,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 & TR-707",
     "tip": "Warm, swung 16th hats layered over subtle rimshots and a deep, pillowy kick. Keep velocities relaxed.",
     "tags": [
-      "deep house",
-      "swing",
-      "chicago"
+          "deep house",
+          "swing",
+          "chicago"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.xx",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X..g.g..X.XX",
+          "h": "..x...x...x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "detroittechno",
@@ -2269,21 +2773,27 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909",
     "tip": "Relentless driving 909 kick paired with syncopated open hats, ride cymbal pushes, and fierce claps.",
     "tags": [
-      "detroit",
-      "909",
-      "techno foundation"
+          "detroit",
+          "909",
+          "techno foundation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L",
+          "y": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "..x...x...x...xx",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXX.XXX",
+          "h": "xxxxxxxx........",
+          "o": "..............X."
+    }
   },
   {
     "id": "berlinrumble",
@@ -2295,20 +2805,26 @@ const RAW: RawPattern[] = [
     "gear": "Analog drum synths + Reverb tail rumble + Overdrive",
     "tip": "The modern industrial techno signature. Fast driving 16th closed hats cutting through a heavy sub-frequency kick rumble.",
     "tags": [
-      "industrial",
-      "rumble",
-      "peak-time",
-      "berlin"
+          "industrial",
+          "rumble",
+          "peak-time",
+          "berlin"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.x.x.x.X.x.x.x.",
     "s": "............X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...........",
+          "s": "........XXXXXXXX",
+          "h": "xxxxxxxx........",
+          "o": "..............X."
+    }
   },
   {
     "id": "minimaltechno",
@@ -2320,20 +2836,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 minimal processing",
     "tip": "Hypnotic restraint. Only two or three elements playing at once: a dry kick, sparse click hat, and offbeat rim.",
     "tags": [
-      "minimal",
-      "robert hood",
-      "hypnotic"
+          "minimal",
+          "robert hood",
+          "hypnotic"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X...X...X...X...",
     "s": "............X...",
     "h": "..x.......x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "............XXXX",
+          "h": "..x.......x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "dubtechno",
@@ -2345,20 +2867,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 + Tape delay / Space Echo",
     "tip": "Cavernous space. Kick on quarter notes with filtered noise hats delayed across dotted-eighth subdivisions.",
     "tags": [
-      "dub techno",
-      "delay",
-      "basic channel"
+          "dub techno",
+          "delay",
+          "basic channel"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x..x..x.x..x..x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X.......",
+          "s": "....X.......X.gX",
+          "h": "..x...x...x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "jackinhouse",
@@ -2370,20 +2898,26 @@ const RAW: RawPattern[] = [
     "gear": "E-mu SP-1200 & Roland TR-909",
     "tip": "Skippy, syncopated snare bounces on steps 7 and 15 that make the body \"jack\". Shuffling 16th hats.",
     "tags": [
-      "chicago",
-      "jack",
-      "swing"
+          "chicago",
+          "jack",
+          "swing"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X..x....X..x",
     "h": "..x...x...x...xx",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X..x.XXXXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "acidtechno",
@@ -2395,20 +2929,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 pushed into red mixer gain",
     "tip": "Hard, fast, unapologetic driving kick with rapid sixteenth hats and stinging crash cymbals on section drops.",
     "tags": [
-      "acid",
-      "hard techno",
-      "909"
+          "acid",
+          "hard techno",
+          "909"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "xxxxxxxx........",
+          "o": "..............X."
+    }
   },
   {
     "id": "dilla",
@@ -2420,25 +2960,31 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC3000 (quantize turned completely OFF)",
     "tip": "Legendary unquantized human feel. The kick drags slightly behind the downbeat, snare leans forward, hats shuffle lazily.",
     "tags": [
-      "dilla",
-      "neo-soul",
-      "drunk swing",
-      "mpc3000"
+          "dilla",
+          "neo-soul",
+          "drunk swing",
+          "mpc3000"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "x..x.....x.x....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "x.......x..x....",
-      "s": "....X.......X..g",
-      "h": "x.x.x.x.x.x.x.xx",
-      "o": "................"
+          "k": "x.......x..x....",
+          "s": "....X.......X..g",
+          "h": "x.x.x.x.x.x.x.xx",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X.....x.X.....X.",
+          "s": "....X..g.g..X.gX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
     }
   },
   {
@@ -2451,21 +2997,27 @@ const RAW: RawPattern[] = [
     "gear": "Akai MPC3000 & LinnDrum samples",
     "tip": "Laid back California bounce. Heavy snare clap on 2 and 4, delayed kick pickups, and sparkling open hats.",
     "tags": [
-      "g-funk",
-      "west coast",
-      "dr dre"
+          "g-funk",
+          "west coast",
+          "dr dre"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L",
-      "o": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L",
+          "o": "R"
     },
     "k": "X.....x.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "......x.......x."
+    "o": "......x.......x.",
+    "fill": {
+          "k": "X.......X.x...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "timbaland",
@@ -2477,20 +3029,26 @@ const RAW: RawPattern[] = [
     "gear": "Ensoniq ASR-10 keyboard workstation",
     "tip": "Staccato beatbox mouth percussions and skippy 16th syncopations. Crisp ghost kicks and playful rhythmic spaces.",
     "tags": [
-      "timbaland",
-      "bounce",
-      "syncopation"
+          "timbaland",
+          "bounce",
+          "syncopation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "X...x..x..X.x...",
     "s": "....X.......X..x",
     "h": "x.x.xxx.x.x.xxx.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X.X.X.X...",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............x."
+    }
   },
   {
     "id": "trap",
@@ -2502,20 +3060,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 software kits",
     "tip": "Halftime snare exclusively on beat 3 (step 8). Rapid 16th and 32nd hi-hat rolls over booming sub 808 kicks.",
     "tags": [
-      "trap",
-      "atlanta",
-      "808 rolls"
+          "trap",
+          "atlanta",
+          "808 rolls"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X......X..X.....",
     "s": "........X.......",
     "h": "x.x.x.x.xxx.x.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x...X...X.",
+          "s": "........X.XXXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............x."
+    }
   },
   {
     "id": "trapbounce",
@@ -2527,20 +3091,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 sub hits",
     "tip": "Syncopated 808 kick notes that slide around the half-time snare, with sudden triplet hat flourishes.",
     "tags": [
-      "trap",
-      "808 bounce",
-      "lex luger"
+          "trap",
+          "808 bounce",
+          "lex luger"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X..x......x..x..",
     "s": "........X.......",
     "h": "x.x.x.x.x.xxx.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x......x.....",
+          "s": "........X...XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill",
@@ -2552,19 +3122,25 @@ const RAW: RawPattern[] = [
     "gear": "Custom Drill sample packs + 808 glide",
     "tip": "Signature displaced snare landing on beat 3 and the upbeat of 4 (step 8 and 13). Skippy dotted hats.",
     "tags": [
-      "drill",
-      "uk drill",
-      "slipped snare"
+          "drill",
+          "uk drill",
+          "slipped snare"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.........x..X..",
     "s": "........X....X..",
     "h": "x..x..x.x..x..x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "........X.X.X.XX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............x."
+    }
   },
   {
     "id": "brooklyndrill",
@@ -2576,20 +3152,26 @@ const RAW: RawPattern[] = [
     "gear": "FL Studio + Sliding 808s",
     "tip": "Aggressive sliding 808 sub kicks with staggered snare accents and stuttering triplets.",
     "tags": [
-      "drill",
-      "brooklyn",
-      "pop smoke"
+          "drill",
+          "brooklyn",
+          "pop smoke"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X....x....x..x..",
     "s": "........X...x...",
     "h": "x.xxx.x.x.xxx.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.........x...X.",
+          "s": "........X.XX.XXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............x."
+    }
   },
   {
     "id": "crunk",
@@ -2601,20 +3183,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-808 & Boss SP-505",
     "tip": "High-energy club hypeness. Loud 808 clap on beat 3 with straight 8th hats and heavy downbeat 808 kicks.",
     "tags": [
-      "crunk",
-      "808",
-      "southern"
+          "crunk",
+          "808",
+          "southern"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X.......X...x...",
     "s": "........X.......",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "twostep",
@@ -2626,25 +3214,31 @@ const RAW: RawPattern[] = [
     "gear": "Akai S3000XL / Roland JV-1080 drum samples",
     "tip": "Skippy, syncopated kick rhythm on step 0 and step 10. Shuffling hats with ghost snares give it that buoyant UK swing.",
     "tags": [
-      "2-step",
-      "ukg",
-      "swing"
+          "2-step",
+          "ukg",
+          "swing"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X.........X.....",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
     "o": "................",
     "var": {
-      "k": "X.....x...X.....",
-      "s": "....X.......X...",
-      "h": "..x.x.x...x.x.x.",
-      "o": "..............x."
+          "k": "X.....x...X.....",
+          "s": "....X.......X...",
+          "h": "..x.x.x...x.x.x.",
+          "o": "..............x."
+    },
+    "fill": {
+          "k": "X.....x.....X...",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
     }
   },
   {
@@ -2657,20 +3251,26 @@ const RAW: RawPattern[] = [
     "gear": "Roland TR-909 & Akai sampler",
     "tip": "Driving 4-on-the-floor kick underneath syncopated UK garage snares and time-stretched break fills.",
     "tags": [
-      "speed garage",
-      "909",
-      "bass"
+          "speed garage",
+          "909",
+          "bass"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X..x....X..x",
     "h": "..x...x...x...x.",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "jungle",
@@ -2682,24 +3282,30 @@ const RAW: RawPattern[] = [
     "gear": "Akai S950 / E-mu Emax time-stretched Amen sample",
     "tip": "Rapid chopped snare syncopations and delayed kick drops. Requires lightning-fast finger dexterity or sequencer edits.",
     "tags": [
-      "jungle",
-      "breakbeat",
-      "amen"
+          "jungle",
+          "breakbeat",
+          "amen"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.x.......X.....",
     "s": "....X..g.X.XX.X.",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.x...x...x..x..",
-      "s": ".x..X..g.X..X.XX",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X.x...x...x..x..",
+          "s": ".x..X..g.X..X.XX",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "..XX......X.....",
+          "s": ".g..X..g.g.gXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
     }
   },
   {
@@ -2712,25 +3318,31 @@ const RAW: RawPattern[] = [
     "gear": "E-mu Ultra sampler + EMU Morpheus filters",
     "tip": "The foundational D&B cadence: Kick on step 0, Snare on step 4, Kick on step 10, Snare on step 12. Relentless speed.",
     "tags": [
-      "dnb",
-      "two-step",
-      "fast"
+          "dnb",
+          "two-step",
+          "fast"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X.........X.....",
     "s": "....X..g....X..g",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.........XX....",
-      "s": "....X..g.X..X...",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "..............x."
+          "k": "X.........XX....",
+          "s": "....X..g.X..X...",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "..............x."
+    },
+    "fill": {
+          "k": "X.........X...X.",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
     }
   },
   {
@@ -2743,20 +3355,26 @@ const RAW: RawPattern[] = [
     "gear": "Processed Think & Soul Searcher breaks layered with synthetic punch",
     "tip": "Continuous 16th ghost snare taps rolling between the heavy backbeats. Smooth, hypnotic, forward-surging motion.",
     "tags": [
-      "liquid",
-      "rolling",
-      "dnb",
-      "ghost notes"
+          "liquid",
+          "rolling",
+          "dnb",
+          "ghost notes"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.........XX....",
     "s": "....X..g.g..X..g",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.........XX....",
+          "s": "....X...XXXXXXXX",
+          "h": "x.xxx.xxx.......",
+          "o": "..............X."
+    }
   },
   {
     "id": "dubstep",
@@ -2768,19 +3386,25 @@ const RAW: RawPattern[] = [
     "gear": "Korg Electribe / FruityLoops",
     "tip": "Massive half-time weight. Kick on step 0, colossal reverberant snare on step 8 (beat 3). Sub-bass carries the groove.",
     "tags": [
-      "dubstep",
-      "half-time",
-      "deep"
+          "dubstep",
+          "half-time",
+          "deep"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.........X.....",
     "s": "........X.......",
     "h": "..x.......x.....",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.........X...X.",
+          "s": "........X...XXXX",
+          "h": "..x.......x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "grime",
@@ -2792,20 +3416,26 @@ const RAW: RawPattern[] = [
     "gear": "Korg Triton / PC Music 2000s synths (\"Eski-beat\")",
     "tip": "Cold, angular syncopation. 8-bar square wave bass with snappy clap on 2 and 4 and unexpected kick displacements.",
     "tags": [
-      "grime",
-      "eski",
-      "uk"
+          "grime",
+          "eski",
+          "uk"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "c": "L"
     },
     "k": "X.....x.x...X...",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x...X.....",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "bossa",
@@ -2817,20 +3447,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic nylon guitar tapping + soft brushes kit",
     "tip": "Soft Brazilian baion kick on dotted eighths with syncopated cross-stick rim clicks. Gentle, breezy dynamics.",
     "tags": [
-      "bossa nova",
-      "brazil",
-      "cross-stick"
+          "bossa nova",
+          "brazil",
+          "cross-stick"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "x..xx..xx..xx..x",
     "s": "x..x..x...x..x..",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X.X..x....",
+          "s": "....X...X..gX.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "sonclave",
@@ -2842,26 +3478,32 @@ const RAW: RawPattern[] = [
     "gear": "Rosewood Claves & Timbales",
     "tip": "The foundational key of Afro-Cuban music. Bar 1 has three pulses (1, 2-and, 4); Bar 2 has two pulses (2, 3).",
     "tags": [
-      "clave",
-      "afro-cuban",
-      "latin foundation"
+          "clave",
+          "afro-cuban",
+          "latin foundation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "w": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "w": "R",
+          "r": "L"
     },
     "k": "X.......X.......",
     "s": "X..x..X.....X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.......X.......",
-      "s": "....X...X.......",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X.......X.......",
+          "s": "....X...X.......",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "X..x..x...XXXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............x."
     }
   },
   {
@@ -2874,25 +3516,31 @@ const RAW: RawPattern[] = [
     "gear": "Claves, Quinto, Congas, Palitos",
     "tip": "Notice the delayed third hit in the 3-side: instead of step 6 (2-and), it lands on step 7 (the \"a\" of 2). Deep syncopation.",
     "tags": [
-      "rumba",
-      "clave",
-      "afro-cuban"
+          "rumba",
+          "clave",
+          "afro-cuban"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X.......X.......",
     "s": "X..x...X....X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "var": {
-      "k": "X.......X.......",
-      "s": "....X...X.......",
-      "h": "x.x.x.x.x.x.x.x.",
-      "o": "................"
+          "k": "X.......X.......",
+          "s": "....X...X.......",
+          "h": "x.x.x.x.x.x.x.x.",
+          "o": "................"
+    },
+    "fill": {
+          "k": "X..x..x...x.....",
+          "s": "X..x...x..XXXXXX",
+          "h": "x.x.x.x.........",
+          "o": "..............x."
     }
   },
   {
@@ -2905,19 +3553,25 @@ const RAW: RawPattern[] = [
     "gear": "Oberheim DMX / E-mu SP-1200",
     "tip": "The rhythm of reggaeton and modern Latin pop. Four-on-the-floor kick with the syncopated tresillo snare (step 3, 6, 11, 14).",
     "tags": [
-      "reggaeton",
-      "dembow",
-      "tresillo"
+          "reggaeton",
+          "dembow",
+          "tresillo"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X...X...X...X...",
     "s": "...X..X....X..X.",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X..X.g.gXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
+    }
   },
   {
     "id": "tambor",
@@ -2929,20 +3583,26 @@ const RAW: RawPattern[] = [
     "gear": "Boss Dr. Sample SP-202 / MPC",
     "tip": "The percussive heartbeat of Brazilian Baile Funk. Thumping low-end kick cadence interlocking with crisp timbal/rim shots.",
     "tags": [
-      "baile funk",
-      "brazil",
-      "favela"
+          "baile funk",
+          "brazil",
+          "favela"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "b": "L"
     },
     "k": "x..x...x..x.x...",
     "s": "...X..X...X...X.",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X.X.X.X...",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.........",
+          "o": "..............x."
+    }
   },
   {
     "id": "songo",
@@ -2954,21 +3614,27 @@ const RAW: RawPattern[] = [
     "gear": "Timbales kit with bass drum pedal & cowbell",
     "tip": "Invented by Changuito in Cuba. The cowbell drives steady eighths while the kick avoids beat 1 and accents upbeats.",
     "tags": [
-      "songo",
-      "cuba",
-      "changuito"
+          "songo",
+          "cuba",
+          "changuito"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "w": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "w": "R",
+          "b": "L"
     },
     "k": "...X......X..X..",
     "s": "..x..X.x..XX...X",
     "h": "x...x...x...x...",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X..x.x..XXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
+    }
   },
   {
     "id": "afrobeat",
@@ -2980,22 +3646,28 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic jazz kit / Tony Allen",
     "tip": "Masterclass in polyrhythmic independence. Constant shaker 16ths, polyrhythmic cowbell, and interlocking hi-hat/cross-stick.",
     "tags": [
-      "afrobeat",
-      "tony allen",
-      "polyrhythm"
+          "afrobeat",
+          "tony allen",
+          "polyrhythm"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "w": "R",
-      "z": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "w": "R",
+          "z": "R",
+          "r": "L"
     },
     "k": "X.....x...X.x...",
     "s": "..x..X.x..X..x.x",
     "h": "x.xxx.xxx.xxx.xx",
-    "o": "..........x....."
+    "o": "..........x.....",
+    "fill": {
+          "k": "X..x..X...x.....",
+          "s": "....X..g.g.gXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
+    }
   },
   {
     "id": "baion",
@@ -3007,20 +3679,26 @@ const RAW: RawPattern[] = [
     "gear": "Zabumba bass drum & Triangle",
     "tip": "The dotted-eighth kick syncopation that influenced rock and pop across the world. Shuffling triangle/hat 16ths.",
     "tags": [
-      "brazil",
-      "zabumba",
-      "baion"
+          "brazil",
+          "zabumba",
+          "baion"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "z": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "z": "R"
     },
     "k": "X..x..X.X..x..X.",
     "s": "....X.......X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...x.X...X.XX..",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............x."
+    }
   },
   {
     "id": "cumbia",
@@ -3032,21 +3710,27 @@ const RAW: RawPattern[] = [
     "gear": "Tambor alegre, llamador, and guache shaker",
     "tip": "Rolling 16th shaker scraping over steady offbeat upbeats. Kick drops on 1 and 3, congas accent beat 2 and 4.",
     "tags": [
-      "cumbia",
-      "colombia",
-      "shaker"
+          "cumbia",
+          "colombia",
+          "shaker"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "z": "R",
-      "b": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "z": "R",
+          "b": "L"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X...XX..",
+          "s": "....X.......XXXX",
+          "h": "xx.xxx.xxx......",
+          "o": "..............x."
+    }
   },
   {
     "id": "onedrop",
@@ -3058,20 +3742,26 @@ const RAW: RawPattern[] = [
     "gear": "Ludwig kit with tuned timbales / Carlton Barrett",
     "tip": "Complete silence on beat 1. The kick and rimshot fall together exclusively on beat 3. Relaxed, deep spiritual groove.",
     "tags": [
-      "reggae",
-      "one drop",
-      "carlton barrett"
+          "reggae",
+          "one drop",
+          "carlton barrett"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "........X.......",
     "s": "................",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "........X.......",
+          "s": "........X..gXXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "steppers",
@@ -3083,20 +3773,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit + Simmons electronic drum pads",
     "tip": "Driving four-on-the-floor kick through a dub reggae skank. The offbeat hi-hat skank drives the spiritual forward march.",
     "tags": [
-      "dub",
-      "steppers",
-      "sly and robbie"
+          "dub",
+          "steppers",
+          "sly and robbie"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X...X...X...X...",
     "s": "........X.......",
     "h": "..x...x...x...x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
+    }
   },
   {
     "id": "rockers",
@@ -3108,20 +3804,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit / Sly Dunbar",
     "tip": "Unlike the One Drop, Rockers kicks on beat 1 and beat 3, with militaristic rolling snare syncopations.",
     "tags": [
-      "rockers",
-      "channel one",
-      "sly dunbar"
+          "rockers",
+          "channel one",
+          "sly dunbar"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X.......X.......",
     "s": "....x...X...x.x.",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x...X.",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "ska",
@@ -3133,20 +3835,26 @@ const RAW: RawPattern[] = [
     "gear": "Jazz kit with tight snare",
     "tip": "Fast, joyous Jamaican jump blues. The guitar skank and hi-hat hit on the upbeat (& of every beat) with punchy bass drum drops.",
     "tags": [
-      "ska",
-      "jamaica",
-      "upbeat"
+          "ska",
+          "jamaica",
+          "upbeat"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "r": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "r": "L"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "..x...x...x...x.",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "..x...x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "billie",
@@ -3158,20 +3866,26 @@ const RAW: RawPattern[] = [
     "gear": "Yamaha kit / Leon \"Ndugu\" Chancler",
     "tip": "The cleanest pocket in pop history. Rock-solid 8th-note hats, unshakeable backbeat on 2 and 4, kick on 1 and 3.",
     "tags": [
-      "pop",
-      "classic",
-      "pocket"
+          "pop",
+          "classic",
+          "pocket"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "z": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "z": "R"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X.......X.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "rock",
@@ -3183,20 +3897,26 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic rock drum kit",
     "tip": "The driving bedrock of classic rock. Kick hits on 1 and the upbeat of 3 (\"3-and\"), pushing the pulse into the 4th beat.",
     "tags": [
-      "rock",
-      "standard",
-      "beginner"
+          "rock",
+          "standard",
+          "beginner"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X.......X.x.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X...XXXXXXXX",
+          "h": "x.x.x...........",
+          "o": "..............X."
+    }
   },
   {
     "id": "motorik",
@@ -3208,19 +3928,25 @@ const RAW: RawPattern[] = [
     "gear": "Acoustic kit recorded with pristine German tape delay",
     "tip": "The \"endless road\" beat that inspired David Bowie, Joy Division, and Stereolab. Relentless, hypnotic 16th kick pulse.",
     "tags": [
-      "krautrock",
-      "motorik",
-      "hypnotic"
+          "krautrock",
+          "motorik",
+          "hypnotic"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R"
     },
     "k": "X.x...x.X.x...x.",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X.......X.gX",
+          "h": "xxxxxxxxxxxx....",
+          "o": "..............x."
+    }
   },
   {
     "id": "motown",
@@ -3232,20 +3958,26 @@ const RAW: RawPattern[] = [
     "gear": "Funk Brothers studio kit / Snakepit Detroit",
     "tip": "The trademark Motown signature: snare hits on all four quarter notes (1, 2, 3, 4) accompanied by driving tambourine/shakers.",
     "tags": [
-      "motown",
-      "soul",
-      "pop foundation"
+          "motown",
+          "soul",
+          "pop foundation"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "z": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "z": "R"
     },
     "k": "X...X...X...X...",
     "s": "X...X...X...X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "X...X...XXXXXXXX",
+          "h": "x.x.x...........",
+          "o": "..............X."
+    }
   },
   {
     "id": "teenspirit",
@@ -3257,20 +3989,26 @@ const RAW: RawPattern[] = [
     "gear": "Tama Granstar kit with oversized cymbals / Dave Grohl",
     "tip": "Explosive grunge powerhouse. Double kick syncopation into beat 1 and beat 3 with massive rimshot wallops.",
     "tags": [
-      "grunge",
-      "nirvana",
-      "dave grohl"
+          "grunge",
+          "nirvana",
+          "dave grohl"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X.X.....X.X.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x.......x"
+    "o": ".......x.......x",
+    "fill": {
+          "k": "X..x..X.X...XX..",
+          "s": "....X.....g.XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "dbeat",
@@ -3282,20 +4020,26 @@ const RAW: RawPattern[] = [
     "gear": "Raw acoustic punk kit",
     "tip": "The foundational beat of hardcore crust punk. Displaced kick lands on 1, the \"and\" of 2, and 3, driving relentless momentum.",
     "tags": [
-      "punk",
-      "hardcore",
-      "d-beat"
+          "punk",
+          "hardcore",
+          "d-beat"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "y": "R"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "y": "R"
     },
     "k": "X.....X.X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..X...X.....",
+          "s": "....X..X....XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-8th",
@@ -3307,20 +4051,26 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads (MPC, Maschine, SP-404)",
     "tip": "Lock in your right-hand 8th hats while left hand lands backbeats on 2 & 4. Keep your kick on 1 & 3 completely rock-solid.",
     "tags": [
-      "drill",
-      "beginner",
-      "hand-independence",
-      "foundation"
+          "drill",
+          "beginner",
+          "hand-independence",
+          "foundation"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X...XXXX.XXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-four",
@@ -3332,22 +4082,28 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Master kicking on every downbeat while coordinating offbeat open-hat taps with right index finger and claps with left index.",
     "tags": [
-      "drill",
-      "beginner",
-      "house",
-      "coordination"
+          "drill",
+          "beginner",
+          "house",
+          "coordination"
     ],
     "hands": {
-      "k": "R",
-      "s": "L",
-      "h": "R",
-      "o": "R",
-      "c": "L"
+          "k": "R",
+          "s": "L",
+          "h": "R",
+          "o": "R",
+          "c": "L"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "x...x...x...x...",
-    "o": "..x...x...x...x."
+    "o": "..x...x...x...x.",
+    "fill": {
+          "k": "X...X...X...X...",
+          "s": "....X...XXXXXXXX",
+          "h": "x.x.x...........",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-sync",
@@ -3359,19 +4115,25 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Practise dropping the kick on the syncopated upbeat \"and\" of 2 and 3 without letting your steady hi-hat hand flinch.",
     "tags": [
-      "drill",
-      "beginner",
-      "syncopation"
+          "drill",
+          "beginner",
+          "syncopation"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R"
     },
     "k": "X.....X...X.x...",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x....X...XX..",
+          "s": "....X.......XXXX",
+          "h": "x.x.x.x.x.x.....",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-ghost",
@@ -3383,20 +4145,26 @@ const RAW: RawPattern[] = [
     "gear": "Velocity-sensitive drum pads",
     "tip": "Develop finger touch dynamics. Tap the ghost snares (g) with minimal pad velocity right before and after loud backbeats (X).",
     "tags": [
-      "drill",
-      "intermediate",
-      "ghost notes",
-      "velocity"
+          "drill",
+          "intermediate",
+          "ghost notes",
+          "velocity"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R"
     },
     "k": "X.......X.......",
     "s": "..g.X.g...g.X.g.",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.x.....",
+          "s": "....X..g.g.gX.XX",
+          "h": "x.x.x.x.x.x.x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "drill-linear",
@@ -3408,20 +4176,26 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Linear drumming: NO two pads are ever hit simultaneously! Notice each step has at most ONE hit across kick, snare, or hat.",
     "tags": [
-      "drill",
-      "intermediate",
-      "linear",
-      "coordination"
+          "drill",
+          "intermediate",
+          "linear",
+          "coordination"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R"
     },
     "k": "X.......x.......",
     "s": "....X.......X...",
     "h": ".x.x...x.x.x...x",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X...x.......x...",
+          "s": "..x...x...x...x.",
+          "h": "....x...x...x...",
+          "o": "..............x."
+    }
   },
   {
     "id": "drill-alt",
@@ -3433,23 +4207,29 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Alternate strictly Right hand and Left hand on sixteenth notes (RLRLRLRL). Drop accents on the snare pad with left hand.",
     "tags": [
-      "drill",
-      "intermediate",
-      "rudiments",
-      "alternation"
+          "drill",
+          "intermediate",
+          "rudiments",
+          "alternation"
     ],
     "hands": {
-      "h": "R/L",
-      "s": "L",
-      "k": "R"
+          "h": "R/L",
+          "s": "L",
+          "k": "R"
     },
     "stepHands": {
-      "h": "RLRLRLRLRLRLRLRL"
+          "h": "RLRLRLRLRLRLRLRL"
     },
     "k": "X.......X.......",
     "s": "....X.......X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X...x.x.x.x.",
+          "h": "x.x.x.x..x.x.x.x",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-paradiddle",
@@ -3461,23 +4241,29 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Classic drumming rudiment translated to pads: R L R R | L R L L. Distributes hat taps and snare drops between hands.",
     "tags": [
-      "drill",
-      "advanced",
-      "paradiddle",
-      "rudiments"
+          "drill",
+          "advanced",
+          "paradiddle",
+          "rudiments"
     ],
     "hands": {
-      "h": "R/L",
-      "s": "L",
-      "k": "R"
+          "h": "R/L",
+          "s": "L",
+          "k": "R"
     },
     "stepHands": {
-      "h": "RLRRLLRRLRLLRLRR"
+          "h": "RLRRLLRRLRLLRLRR"
     },
     "k": "X...x...X.......",
     "s": "....X.......X...",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.......X.......",
+          "s": "....X...X.XX.X..",
+          "h": "x.x.x.x..X..X.XX",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-rolls",
@@ -3489,20 +4275,26 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Trap finger drumming speed drill. Alternate index and middle fingers on the hi-hat pad for bursts of rapid 16th rolls.",
     "tags": [
-      "drill",
-      "advanced",
-      "trap",
-      "speed"
+          "drill",
+          "advanced",
+          "trap",
+          "speed"
     ],
     "hands": {
-      "h": "R index+mid",
-      "s": "L",
-      "k": "R thumb"
+          "h": "R index+mid",
+          "s": "L",
+          "k": "R thumb"
     },
     "k": "X......X..X..x..",
     "s": "........X.......",
     "h": "xxxxxxxxxxxxxxxx",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X.....x.X.....X.",
+          "s": "....X.......XXXX",
+          "h": "xxxxxxxxxxxx....",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-poly",
@@ -3514,20 +4306,26 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "Accenting every 3rd sixteenth step while maintaining a standard 4/4 downbeat kick and snare pulse. Trains brain independence.",
     "tags": [
-      "drill",
-      "advanced",
-      "polyrhythm",
-      "metric modulation"
+          "drill",
+          "advanced",
+          "polyrhythm",
+          "metric modulation"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R"
     },
     "k": "X...X...X...X...",
     "s": "....X.......X...",
     "h": "X..X..X..X..X..x",
-    "o": "................"
+    "o": "................",
+    "fill": {
+          "k": "X..x..x...x..X..",
+          "s": "....X..x..x.XXXX",
+          "h": "x.x.x.x.........",
+          "o": "..............X."
+    }
   },
   {
     "id": "drill-master",
@@ -3539,21 +4337,27 @@ const RAW: RawPattern[] = [
     "gear": "4x4 Drum Pads",
     "tip": "The ultimate boss drill: combines ghost notes, syncopated offbeat kicks, open-hat chokes, and hand alternation simultaneously.",
     "tags": [
-      "drill",
-      "advanced",
-      "master",
-      "independence"
+          "drill",
+          "advanced",
+          "master",
+          "independence"
     ],
     "hands": {
-      "h": "R",
-      "s": "L",
-      "k": "R",
-      "o": "R"
+          "h": "R",
+          "s": "L",
+          "k": "R",
+          "o": "R"
     },
     "k": "X..x..x.X..x..x.",
     "s": "..g.X.g...g.X.g.",
     "h": "x.x.x.x.x.x.x...",
-    "o": "..............x."
+    "o": "..............x.",
+    "fill": {
+          "k": "X..x....X.x.X...",
+          "s": "....X.g.XX.gXXXX",
+          "h": "x.x.x.x.x.......",
+          "o": "..............X."
+    }
   }
 ];
 

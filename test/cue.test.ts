@@ -19,6 +19,15 @@ describe('Cue library data', () => {
     }
   });
 
+  it('every pattern defines an explicit, bespoke fill', () => {
+    for (const p of LIB) {
+      assert.ok(p.fill, `${p.id} missing explicit fill`);
+      for (const k of ['k', 's', 'h', 'o'] as const) {
+        assert.match(p.fill[k], /^[xXg.]{16}$/, `${p.id} fill.${k}`);
+      }
+    }
+  });
+
   it('has comprehensive catalogue with rich metadata and hands', () => {
     assert.ok(LIB.length >= 130, `Catalogue has ${LIB.length} patterns`);
     for (const p of LIB) {
