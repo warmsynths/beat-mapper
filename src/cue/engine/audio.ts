@@ -3,10 +3,23 @@ import type { LaneKey, Pattern } from '../data/library.ts';
 // Simple synthesized drum voices — enough to hear the groove, not a sampler.
 let ctx: AudioContext | null = null;
 let noise: AudioBuffer;
+let master: GainNode | null = null;
+
+const VOL_KEY = 'bm-vol';
+let vol = (() => { try { const v = parseFloat(localStorage.getItem(VOL_KEY) ?? ''); return isNaN(v) ? 0.8 : v; } catch { return 0.8; } })();
+
+/** Master volume, 0–1 (remembered). The gain is squared so the slider fades evenly to the ear. */
+export const getVolume = () => vol;
+export function setVolume(v: number): void {
+  vol = Math.max(0, Math.min(1, v));
+  try { localStorage.setItem(VOL_KEY, String(vol)); } catch { /* storage unavailable */ }
+  if (ctx && master) master.gain.setTargetAtTime(vol * vol, ctx.currentTime, 0.02);
+}
 
 export function audio(): AudioContext {
   if (!ctx) {
     ctx = new AudioContext();
+    master = ctx.createGain(); master.gain.value = vol * vol; master.connect(ctx.destination);
     noise = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const d = noise.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
@@ -48,12 +61,12 @@ export const kitFor = (p: Pattern): Kit => KITS.find(k => k.id === (GENRE_KIT[p.
 export const kitById = (id: string | null): Kit | undefined => KITS.find(k => k.id === id);
 
 export function hit(key: LaneKey, dynamic: Dynamic = 'normal', kit: Kit = KITS[2]): void {
-  const c = audio(), t = c.currentTime, g = c.createGain();
+  const c = audio(), out = master!, t = c.currentTime, g = c.createGain();
   if (kit.lp) {
     const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = kit.lp;
-    g.connect(lp); lp.connect(c.destination);
-  } else g.connect(c.destination);
-  const vel = dynamic === 'accent' ? 1.25 : dynamic === 'ghost' ? 0.35 : 1.0;
+    g.connect(lp); lp.connect(out);
+  } else g.connect(out);
+  const vel = dynamic === 'accent' ? 1.45 : dynamic === 'ghost' ? 0.32 : 1.0;
   const env = (peak: number, dur: number, gain = g) => {
     gain.gain.setValueAtTime(peak * vel, t);
     gain.gain.exponentialRampToValueAtTime(0.001, t + (dynamic === 'ghost' ? dur * 0.75 : dur));
@@ -73,7 +86,7 @@ export function hit(key: LaneKey, dynamic: Dynamic = 'normal', kit: Kit = KITS[2
     noiseThrough(type, dynamic === 'ghost' ? hz * 0.8 : hz, dur); env(gain, dur);
     // The tone body goes through the kit's lowpass too, so Dusty stays dusty.
     o.frequency.value = tone; env(gain * 0.6, 0.07, og);
-    o.connect(og); og.connect(kit.lp ? g : c.destination); o.start(t); o.stop(t + 0.08);
+    o.connect(og); og.connect(kit.lp ? g : out); o.start(t); o.stop(t + 0.08);
   } else if (key === 'h' || key === 'o') {
     const [hz, dur, gain] = kit[key];
     noiseThrough('highpass', hz, dur); env(gain, dur);

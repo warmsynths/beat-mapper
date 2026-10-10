@@ -60,7 +60,8 @@ function draw(cv: HTMLCanvasElement, P: Peek, prog: number) {
       if (now) { g.lineWidth = 2; g.strokeStyle = gray(1); g.stroke(); }
       if (p.text && p.t !== 'key') text(g, p.text, 0.05);
     }
-    if (lit && p.t !== 'label') { paint(m, '#fff'); if (now) { m.lineWidth = 2; m.strokeStyle = '#fff'; m.stroke(); } }
+    // Ghost notes go into the mask at 40%, which dithers them in at reduced brightness.
+    if (lit && p.t !== 'label') { paint(m, p.t === 'key' && P.pat[P.lk][p.step!] === 'g' ? 'rgba(255,255,255,0.4)' : '#fff'); if (now) { m.lineWidth = 2; m.strokeStyle = '#fff'; m.stroke(); } }
   });
 
   const cs = getComputedStyle(document.documentElement);
@@ -69,9 +70,9 @@ function draw(cv: HTMLCanvasElement, P: Peek, prog: number) {
   cv.width = w; cv.height = h; cv.style.width = w * DOT + 'px'; cv.style.height = h * DOT + 'px';
   const ctx = cv.getContext('2d')!, out = ctx.createImageData(w, h), o = out.data;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = (y * w + x) * 4, t = (BAYER[y & 7][x & 7] + 0.5) / 64, lum = gd[i] / 255 * (gd[i + 3] / 255), lit = md[i + 3] > 127;
+    const i = (y * w + x) * 4, t = (BAYER[y & 7][x & 7] + 0.5) / 64, lum = gd[i] / 255 * (gd[i + 3] / 255), lv = md[i + 3] / 255, lit = lv > 0.2;
     // A second, offset Bayer pass decides which dots have dissolved in so far.
-    const vis = (BAYER[(y + 3) & 7][(x + 5) & 7] + 0.5) / 64 < prog * 1.02, on = vis && (lit ? t < 0.82 : lum > t);
+    const vis = (BAYER[(y + 3) & 7][(x + 5) & 7] + 0.5) / 64 < prog * 1.02, on = vis && (lit ? t < 0.82 * lv : lum > t);
     const c = on ? (lit ? AC : FG) : BG;
     o[i] = c[0]; o[i + 1] = c[1]; o[i + 2] = c[2]; o[i + 3] = 255;
   }

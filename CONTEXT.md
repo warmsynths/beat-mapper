@@ -69,4 +69,6 @@ The pattern library as a two-job app: **Program** (enter a pattern into your mac
 - **Focus**: in Play, the beats (1–4) being practised; playback loops only those.
 - **Kit**: one of five synthesized voicings of the core four (808, 909, Acoustic, Dusty, Dancehall); extra percussion sounds the same in every kit. Each beat starts on the kit that suits its genre (`kitFor`); a picked kit lasts until another beat is chosen.
 - **Tempo**: defaults to the beat's BPM; −/+ step by 2, or type a value (clamped to 40–220).
+- **Volume**: a master level (remembered, default 80%) from the speaker button in the footer; the gain is squared so the slider fades evenly, and Mute remembers the level to return to.
+- **Accent / Ghost key**: shown under the score, keys or caption only when a shown lane has accents or ghosts. Accents get an accent-colour ring, ghosts a faded cell and smaller mark; they play at about 1.45× and a third of normal level.
 - `?view=mobile` pins the layout to a phone frame for previewing on desktop.

@@ -23,6 +23,8 @@ export interface State {
   kit: string | null; kitMenu: boolean;
   /** Machine chooser: Peek shows a dithered drawing of the machine; `rackPrev` = the one being previewed (null = yours). */
   peek: boolean; rackPrev: string | null;
+  /** Phone footer pop-ups: the Main / Var / Fill / Chain pill and the volume slider (only one open at a time). */
+  partsOpen: boolean; volOpen: boolean;
 }
 
 const DEVICE_KEY = 'beatmapper.device', PEEK_KEY = 'beatmapper.peek';
@@ -33,7 +35,7 @@ export const initState = (theme: string): State => ({
   info: false,
   device: ls(DEVICE_KEY, DEVS[0].id), mode: 'program', layer: 'k', beats: [0, 1, 2, 3], done: {},
   part: 'MAIN', chain: false, perc: false, bar: 0, pg: 0, playing: false, step: -1, tempo: null, tempoDraft: null, kit: null, kitMenu: false,
-  peek: ls(PEEK_KEY, '') === '1', rackPrev: null
+  peek: ls(PEEK_KEY, '') === '1', rackPrev: null, partsOpen: false, volOpen: false
 });
 
 export const saveDevice = (id: string) => { try { localStorage.setItem(DEVICE_KEY, id); } catch { /* storage unavailable */ } };
@@ -56,6 +58,8 @@ export interface Derived {
   step: number; bpm: number; allBeats: boolean;
   kit: Kit; suits: Kit;
   hits: (k: LaneKey) => number[];
+  /** Any shown lane has accents or ghost notes — shows the Accent / Ghost key. */
+  feel: boolean;
 }
 
 export function derive(s: State): Derived {
@@ -90,7 +94,8 @@ export function derive(s: State): Derived {
     makers: [...new Set(dl.map(d => d.maker))].map(m => ({ maker: m, items: dl.filter(d => d.maker === m) })),
     step: s.playing ? s.step : -1, bpm: bpmOf(s), allBeats: s.beats.length === 4,
     kit: kitById(s.kit) || kitFor(base), suits: kitFor(base),
-    hits: k => sel[k].split('').flatMap((x, i) => /[xXg]/.test(x) ? [i] : [])
+    hits: k => sel[k].split('').flatMap((x, i) => /[xXg]/.test(x) ? [i] : []),
+    feel: lanes.some(l => /[Xg]/.test(sel[l.key]))
   };
 }
 

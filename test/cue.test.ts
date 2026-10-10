@@ -95,6 +95,11 @@ describe('Cue model', () => {
     assert.deepStrictEqual(derive(state({ selectedId: 'amen' })).parts, ['MAIN', 'VAR', 'FILL']);
   });
 
+  it('shows the Accent / Ghost key only when a shown lane has dynamics', () => {
+    assert.strictEqual(derive(state({ selectedId: 'amen' })).feel, true);
+    assert.strictEqual(derive(state({ selectedId: 'bossa' })).feel, false);
+  });
+
   it('searches name, artist and genre', () => {
     assert.deepStrictEqual(derive(state({ query: 'james brown' })).list.map(p => p.id).sort(), ['coldsweat', 'funky', 'giveitup']);
     assert.ok(derive(state({ query: 'zzz' })).list.length === 0);
