@@ -51,7 +51,7 @@ const AUDIT_DATA = {
     refSong: "Tramp", refArtist: "Lowell Fulsom", refDrummer: "Chuck Blackwell / Earl Palmer", refYear: 1967,
   },
   "thechamp": {
-    refSong: "The Champ", refArtist: "The Mohawks", refDrummer: "Uncredited session drummer (Alan Hawkshaw's band; \"Harry Palmer\" is the writing credit)", refYear: 1968,
+    refSong: "The Champ", refArtist: "The Mohawks", refDrummer: "Brian Bennett (The Shadows) / Alan Hawkshaw band", refYear: 1968,
   },
   "longred": {
     refSong: "Long Red", refArtist: "Mountain", refDrummer: "N.D. Smart II", refYear: 1969,
