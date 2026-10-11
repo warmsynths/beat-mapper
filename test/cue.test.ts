@@ -1,8 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { barsOf, chainOf, DEVS, INST, LIB, partData } from '../src/cue/data/library.ts';
+import { barsOf, chainOf, DEVS, INST, inspired, LIB, partData } from '../src/cue/data/library.ts';
 import { drawDevice } from '../src/cue/data/drawings.ts';
-import { commitTempo, derive, initState, levelOf, rampNext, rampStart, selectPattern, stepMs, tick, toggleBeat, toggleLearned, type State } from '../src/cue/model.ts';
+import { commitTempo, derive, initState, levelOf, rampNext, rampStart, selectPattern, stepMs, tick, toggleBeat, toggleLearned, ytUrl, type State } from '../src/cue/model.ts';
 import { KITS, kitFor } from '../src/cue/engine/audio.ts';
 
 const state = (patch: Partial<State> = {}): State => ({ ...initState('aubergine'), device: DEVS[0].id, ...patch });
@@ -262,5 +262,13 @@ describe('Cue v4 practice and learning', () => {
 
   it('picking a beat turns swing back on', () => {
     assert.strictEqual(selectPattern('amen').swingOn, true);
+  });
+
+  it('YouTube searches the record for real beats and the style for the rest', () => {
+    const q = (id: string) => decodeURIComponent(ytUrl(LIB.find(p => p.id === id)!).split('search_query=')[1]);
+    const amen = LIB.find(p => p.id === 'amen')!;
+    assert.strictEqual(q('amen'), `${amen.artist} ${amen.name} drums`);
+    const style = LIB.find(p => !inspired(p))!;
+    assert.strictEqual(q(style.id), `${style.name} ${style.genre} drum beat`);
   });
 });

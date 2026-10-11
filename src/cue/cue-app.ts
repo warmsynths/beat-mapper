@@ -5,7 +5,7 @@ import { ref } from 'lit/directives/ref.js';
 import { barsOf, chainOf, DEVS, FAM, inspired, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
 import { audio, click, getVolume, hit, kitById, kitFor, KITS, preview, setVolume } from './engine/audio.ts';
 import { peekDraw } from './engine/peek.ts';
-import { bpmOf, clamp, commitTempo, COUNTIN_KEY, derive, initState, LEVELS, levelOf, RAMP_KEY, rampNext, rampStart, saveDevice, saveFlag, savePeek, selectPattern, selected, stepMs, tick, titleCase, toggleBeat, toggleLearned, type Derived, type Mode, type State } from './model.ts';
+import { bpmOf, clamp, commitTempo, COUNTIN_KEY, derive, initState, LEVELS, levelOf, RAMP_KEY, rampNext, rampStart, saveDevice, saveFlag, savePeek, selectPattern, selected, stepMs, tick, titleCase, toggleBeat, toggleLearned, ytUrl, type Derived, type Mode, type State } from './model.ts';
 import { applyTheme, storedTheme, THEMES } from './themes.ts';
 
 const CREAM = 'var(--fg)', INK = 'var(--ink)', ACC = 'var(--acc)', MUTED = 'var(--mute)';
@@ -760,6 +760,7 @@ export class CueApp extends LitElement {
           </div>
           <div class="info-learn">
             <button aria-pressed=${learned ? 'true' : 'false'} style="background:${learned ? ACC : CREAM};" @click=${() => this.toggleLearned(p.id)}>${learned ? '✓ Learned' : 'Mark as learned'}</button>
+            <a class="yt" href=${ytUrl(p)} target="_blank" rel="noopener">Hear it on YouTube ↗</a>
             <span>${this.s.learned.length} of ${LIB.length} beats learned</span>
           </div>
           ${inspired(p) ? html`<p class="legal">* ${NOT_AFFILIATED}</p>` : nothing}
@@ -1076,6 +1077,8 @@ export class CueApp extends LitElement {
     .info-tip { margin: 0; font-size: 17px; line-height: 1.45; color: var(--mute); text-wrap: pretty; }
     .info-learn { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 14px; font-weight: 600; color: var(--mute); }
     .info-learn button { height: 48px; padding: 0 22px; border: none; border-radius: 999px; color: var(--ink); font-family: 'Tilt Warp', sans-serif; font-size: 17px; white-space: nowrap; }
+    .info-learn .yt { height: 48px; padding: 0 20px; display: flex; align-items: center; border: 2px solid var(--fg); border-radius: 999px; box-sizing: border-box; color: var(--fg); font-size: 15px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    .info-learn .yt:hover { background: var(--fg); color: var(--ink); }
 
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
     .theme-card { display: flex; flex-direction: column; gap: 10px; padding: 12px; border: 2px solid; border-radius: 18px; text-align: left; }

@@ -1,4 +1,4 @@
-import { barsOf, chainOf, DEVS, INST, LIB, partData, type Device, type Inst, type LaneKey, type Lanes, type PartId, type Pattern } from './data/library.ts';
+import { barsOf, chainOf, DEVS, INST, inspired, LIB, partData, type Device, type Inst, type LaneKey, type Lanes, type PartId, type Pattern } from './data/library.ts';
 import { kitById, kitFor, type Kit } from './engine/audio.ts';
 
 export type Mode = 'program' | 'play';
@@ -65,6 +65,10 @@ export const levelOf = (p: Pattern) => Math.max(0, LEVELS.indexOf(p.difficulty ?
 
 export const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 export const titleCase = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
+
+/** "Hear it on YouTube": a search, not a fixed video. Records search artist + title, styles search name + genre. */
+export const ytUrl = (p: Pattern) => 'https://www.youtube.com/results?search_query='
+  + encodeURIComponent(inspired(p) ? `${p.artist} ${p.name} drums` : `${p.name} ${p.genre} drum beat`);
 
 export const selected = (s: State): Pattern => LIB.find(p => p.id === s.selectedId) || LIB[0];
 export const bpmOf = (s: State) => s.tempo ?? selected(s).bpm;
