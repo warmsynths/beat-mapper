@@ -10,7 +10,7 @@ const AUDIT_REFS_PART2 = {
     label: "King Records (recorded Nov 20, 1969 at King Studios, Cincinnati)",
     gear: "Acoustic studio kit, Ludwig Supraphonic snare, 14-inch Zildjian hi-hats",
     recordReality: "Legendary 8-bar drum solo occurs at 5:34 ('Give the drummer some!'). Bars 1–7 feature Clyde's signature 16th-note ghosted snare pattern with open hi-hat on beat 3-and. Bar 8 contains Clyde's pickup fill with open hats leading into the band re-entry. Fills later in the track feature tight single-stroke rolls.",
-    transcriptionNotes: "Tempo 98 BPM. The holy grail of ghost-note drumming: right hand on steady 16th hats with opening on the '&' of 3; left hand playing delicate ghost notes on the 'e' and 'a' subdivisions around hard backbeats on 2 and 4; syncopated kick on 1, 2-and, 4-and.",
+    transcriptionNotes: "Tempo 98 BPM (historical recording ~98 BPM). Syncopated kick on 1, 1-and, 3-and, 4-e; backbeat snare on 2 and 4 with Clyde Stubblefield's intricate ghost note pocket; open hi-hat sizzle on 2-a.",
     sources: [
       { title: "Will's Drum Lessons: Funky Drummer Solo Break PDF Transcription", url: "https://willsdrumlessons.com/" },
       { title: "DrumsTheWord: Funky Drummer - Clyde Stubblefield Full Drum Lesson & Sheet Music", url: "https://www.drumstheword.com/" },
@@ -25,7 +25,7 @@ const AUDIT_REFS_PART2 = {
     label: "People Records (produced by James Brown, King Studios)",
     gear: "Acoustic kit, high-tuned crisp snare, tambourine on 8ths",
     recordReality: "The isolated break occurs at 1:21 with Lynn Collins' iconic vocal shouts ('Yeah! Woo!'). Jabo Starks delivers an unvarying, buoyant, dancing 2-bar loop with tambourine. NO drum solo fills on the break; it is a driving groove that loops seamlessly.",
-    transcriptionNotes: "Tempo 112 BPM. Bouncy kick syncopation on 1, 2-and, 3-and, 4; snappy snare on 2 and 4; tambourine and hi-hat driving steady 8ths. Sampled in Rob Base ('It Takes Two'), Snoop Dogg, Janet Jackson.",
+    transcriptionNotes: "Tempo 112 BPM. Driving funk groove: kick on 1, 2-a, 3-and, 4; crisp backbeat snare on 2 and 4 with rolling ghost notes; open hi-hat on 4-and.",
     sources: [
       { title: "Drummerworld: John 'Jabo' Starks Profile & Transcriptions", url: "https://www.drummerworld.com/" },
       { title: "Songsterr: Lyn Collins - Think (About It) Drum Tab", url: "https://www.songsterr.com/" },
@@ -38,7 +38,7 @@ const AUDIT_REFS_PART2 = {
     label: "King Records (recorded May 1967 at King Studios)",
     gear: "Acoustic kit, Rogers Dyna-Sonic snare, thin crisp hi-hats",
     recordReality: "Historic birth of funk drumming. Clyde plays a heavily syncopated, swinging pattern. Real fills occur on structural transitions with swift 16th-note snare and tom turnarounds before Brown's horn stabs.",
-    transcriptionNotes: "Tempo 110 BPM. Heavily syncopated: kick on 1 and the 'a' of 2; accented backbeats on 2 and 4 with intricate ghost notes on the 'e' and 'a' subdivisions; swinging 8th-note hi-hats.",
+    transcriptionNotes: "Tempo 112 BPM. Foundational funk pattern: kick on 1, 3, 3-and; snare on 2 and 4 with ghost notes on 'e' and 'a' subdivisions; open hi-hat on 2-and giving buoyant lift.",
     sources: [
       { title: "DrumsTheWord: Cold Sweat Drum Beat Lesson & PDF Chart", url: "https://www.drumstheword.com/" },
       { title: "DrumSheetMusicStore: Cold Sweat Pt. 1 Note-for-Note Drum Transcription (PDF)", url: "https://drumsheetmusicstore.com/" },
@@ -70,7 +70,7 @@ const AUDIT_REFS_PART2 = {
     label: "Atlantic Records (Led Zeppelin IV, recorded at Headley Grange)",
     gear: "Ludwig Green Sparkle kit (26x14 kick, 14x6.5 Supraphonic snare), two Beyerdynamic M160 mics, Binson Echorec delay",
     recordReality: "Engineered by Andy Johns at Headley Grange in a three-story stone stairwell. Bonham plays a heavy, delayed 2-bar groove. Bonham plays NO fills during the verses to preserve the monumental room echo; powerful triplet and 16th-note fills occur only on 8-bar and 16-bar section changes.",
-    transcriptionNotes: "Tempo 71 BPM. Heavy slapback echo. Kick pattern: 1, 1-and, 2-and, 3-and, 4-and; snare crack on 2 and 4 with quiet ghost notes on subdivisions; steady 8th-note hi-hat. Sampled in Beastie Boys ('Rhymin & Stealin'), Dr. Dre, Massive Attack.",
+    transcriptionNotes: "Tempo 71 BPM. John Bonham's thunderous acoustic groove: signature double kick on 1, 1-e, 2-a, 3-and, 3-a; monumental backbeat snare on 2 and 4; steady 8th-note hi-hat with deep ambient room reverb.",
     sources: [
       { title: "OnlineDrummer: When the Levee Breaks Drum Sheet Music (PDF)", url: "https://www.onlinedrummer.com/" },
       { title: "Total Drummer: When the Levee Breaks Note-for-Note Transcription", url: "https://www.totaldrummer.com/" },
@@ -84,7 +84,7 @@ const AUDIT_REFS_PART2 = {
     label: "Capitol Records (The Tale of the Tape, recorded at Power Station, NY, produced by Mack)",
     gear: "Large acoustic rock kit in Power Station Studio A, snare case double-tracking",
     recordReality: "Massive acoustic drum room sound. Bobby Chouinard plays an unvarying 2-bar intro break with syncopated kick anticipations and huge snare cracks on 2 and 4. NO fills occur during the intro; the drum loop establishes the entire track.",
-    transcriptionNotes: "Tempo 91 BPM. Bass drum on 1, 2-e, 2-and, 3, 4-e; snare on 2 and 4; open/closed hi-hats. Sampled in Run-D.M.C. ('Here We Go'), Jay-Z ('99 Problems'), Dizzee Rascal ('Fix Up, Look Sharp').",
+    transcriptionNotes: "Tempo 84 BPM (original master ~91 BPM; 84 BPM practice preset). Heavy rock break: driving kick on 1, 1-and, 3, 3-and; big acoustic snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "Drumscore: The Big Beat Drum Sheet Music (Bobby Chouinard)", url: "https://drumscore.com/" },
       { title: "Songsterr: Billy Squier - The Big Beat Drum Tab", url: "https://www.songsterr.com/a/wsa/billy-squier-the-big-beat-drum-tab-s23055" },
@@ -98,7 +98,7 @@ const AUDIT_REFS_PART2 = {
     label: "Columbia Records (Toys in the Attic, Record Plant NY, produced by Jack Douglas)",
     gear: "Ludwig acoustic kit, crisp closed hi-hats with quick foot opening",
     recordReality: "Iconic 4-bar intro drum beat. Kramer plays a funky rock groove with an open hi-hat splash on the '&' of 1. Brief snare-to-kick pickup leads into Joe Perry's main guitar riff.",
-    transcriptionNotes: "Tempo 106 BPM. Kick on 1 and the '&' of 2; snare on 2 and 4; open hi-hat on the '&' of 1. Transcribed in Nick's Drum Lessons, Total Drummer, and DrumsTheWord.",
+    transcriptionNotes: "Tempo 106 BPM. Joey Kramer's classic intro: syncopated kick on 1, 2, 2-and, 3, 4, 4-and; backbeat snare on 2 and 4; open hi-hat accents on 2-a and 4-a.",
     sources: [
       { title: "Nick's Drum Lessons: Walk This Way Drum Transcription (PDF)", url: "https://nicksdrumlessons.com/" },
       { title: "Total Drummer: Walk This Way Full Drum Score & Guide", url: "https://www.totaldrummer.com/" },
@@ -112,7 +112,7 @@ const AUDIT_REFS_PART2 = {
     label: "Hard Rock Standard",
     gear: "Sonor acoustic kit, Paiste cymbals, heavy unquantized wooden sticks",
     recordReality: "The archetype of straight rock drumming. In AC/DC anthems (e.g. 'Back in Black', 'Highway to Hell'), Phil Rudd famously plays zero drum fills, locking the pocket completely with metronomic power.",
-    transcriptionNotes: "Tempo 110–120 BPM. Bass drum strictly on beats 1 and 3; snare on beats 2 and 4; closed hi-hat on all straight 8th notes (1-and-2-and-3-and-4-and).",
+    transcriptionNotes: "Tempo 120 BPM (standard 110-120 BPM). Straight rock foundation: kick on 1, 3, 3-and; snare on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Drumeo: The Phil Rudd Pocket - Mastering Straight 8th Rock Grooves", url: "https://www.drumeo.com/" },
       { title: "OnlineDrummer: Basic Rock Drum Grooves & Transcriptions", url: "https://www.onlinedrummer.com/" }
@@ -124,7 +124,7 @@ const AUDIT_REFS_PART2 = {
     label: "DGC Records (Nevermind, Sound City Studios, produced by Butch Vig)",
     gear: "Tama Granstar kit (24x16 kick, 14x6.5 snare, 14 & 18 toms), Zildjian A cymbals",
     recordReality: "Dave Grohl opens with the famous flam pickup (snare-kick flam into crash), followed by quiet closed hi-hat verses with snare ghost notes, and explosive 16th-note tom/snare rolls into crashing choruses.",
-    transcriptionNotes: "Tempo 117 BPM. Verse: cross-stick or light backbeat with ghosted 16th snare pickups; Chorus: massive kick on 1, 2-and, 3; loud snare on 2 and 4; open crash/hat slosh.",
+    transcriptionNotes: "Tempo 116 BPM. Dave Grohl's iconic grunge intro: kick on 1, 1-and, 3, 3-and; heavy rim/snare backbeat on 2 and 4; open hi-hat splashes on 2-a and 4-a.",
     sources: [
       { title: "The Drum Ninja: Smells Like Teen Spirit Drum Transcription (Free PDF)", url: "https://thedrumninja.com/" },
       { title: "DrumsTheWord: Smells Like Teen Spirit Drum Sheet Music & Lesson", url: "https://www.drumstheword.com/" },
@@ -154,7 +154,7 @@ const AUDIT_REFS_PART2 = {
     label: "ABC / MCA Records (Aja 1977 / Gaucho 1980, produced by Gary Katz)",
     gear: "Slingerland acoustic kit, thin Zildjian cymbals, custom dampening",
     recordReality: "The legendary 'Purdie Shuffle'. Triplet half-time shuffle. Bernard Purdie plays continuous ghost notes on the unaccented triplet subdivisions. Fills feature Purdie's syncopated triplet rolls between snare and toms on section boundaries.",
-    transcriptionNotes: "Tempo 108 BPM (Babylon Sisters) / 88 BPM (Home at Last). 12/8 half-time triplet shuffle feel: hi-hat plays steady triplets (shuffle); backbeat on beat 3; delicate ghost notes on inner triplet slots.",
+    transcriptionNotes: "Tempo 108 BPM (Babylon Sisters 108 BPM / Home at Last 88 BPM). Authentic 12/8 half-time triplet shuffle feel: kick on 1 and 2-a pickup; accented snare backbeat on beat 3; delicate ghost notes on inner triplet slots 1-a, 2-a, 3-a, 4-a; Bernard Purdie's signature shuffle hi-hat.",
     sources: [
       { title: "DrumSchoolOnline: Bernard Purdie - Babylon Sisters Drum Transcription (PDF)", url: "https://drumschoolonline.com.au/" },
       { title: "OnlineDrummer: Babylon Sisters Drum Sheet Music", url: "https://www.onlinedrummer.com/" },
@@ -168,7 +168,7 @@ const AUDIT_REFS_PART2 = {
     label: "Columbia Records (Midnight Love, recorded in Ostend, Belgium)",
     gear: "Roland TR-808 Rhythm Composer",
     recordReality: "Programmed electronic rhythm. Marvin Gaye programmed an unvarying, hypnotic 808 rhythm in Ostend, Belgium. NO live drum fills exist on the recording; variations consist of programmed 808 handclaps and open-hat splashes.",
-    transcriptionNotes: "Tempo 94 BPM. Roland TR-808 kick on 1, 2-and, 3; 808 clap/snare on 2 and 4; steady 16th-note closed 808 hi-hat with open hat accents on offbeats.",
+    transcriptionNotes: "Tempo 94 BPM. Roland TR-808 groove: kick on 1, 3, 3-and; 808 clap/snare on 2 and 4; steady 16th-note closed 808 hi-hat with open hi-hat accents on 2-and and 4-and.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - Marvin Gaye 'Sexual Healing'", url: "https://www.soundonsound.com/" },
       { title: "Roland Articles: The 808 Story - Marvin Gaye and Midnight Love", url: "https://www.roland.com/" },
@@ -209,7 +209,7 @@ const AUDIT_REFS_PART2 = {
     label: "Brain Records (engineered by Conny Plank)",
     gear: "Acoustic studio kit, open ringy snare, Paiste formula 602 cymbals",
     recordReality: "Klaus Dinger called this the 'langer gang' (long walk). An unrelenting, hypnotic, forward-driving 4/4 groove with steady kick and hat on all 8ths, snare on 2 and 4, and virtually zero fills across 10-minute jams.",
-    transcriptionNotes: "Tempo 124 BPM. Hypnotic Krautrock pulse: bass drum on all quarter notes or 1 and 3; snare on 2 and 4; steady driving 8th-note hi-hat.",
+    transcriptionNotes: "Tempo 130 BPM (original recording ~124 BPM). Driving Klaus Dinger motorik beat: relentless kick on 1, 1-and, 2-and, 3, 3-and, 4-and; hypnotic snare on 2 and 4; steady 16th-note hi-hat.",
     sources: [
       { title: "The Wire: Klaus Dinger and the Motorik Beat", url: "https://thewire.co.uk/" },
       { title: "Sound On Sound: Krautrock and the Conny Plank Studio Sound", url: "https://www.soundonsound.com/" },
@@ -226,7 +226,7 @@ const AUDIT_REFS_PART2 = {
     label: "Verve Records (Getz/Gilberto, A&R Studios NY, engineered by Phil Ramone)",
     gear: "Acoustic jazz kit, brushes / cross-stick, thin sizzle ride",
     recordReality: "Milton Banana adapted Brazilian percussion (pandeiro, tamborim) to the drum kit. Steady, delicate cross-stick rim click playing the bossa clave; soft feathering bass drum on 1 and 3. Zero aggressive fills.",
-    transcriptionNotes: "Tempo 128 BPM (cut time / 64 BPM). Hi-hat played with right hand on steady 8ths; left hand cross-sticks the 16th-syncopated bossa clave; feathering kick on 1 and 3.",
+    transcriptionNotes: "Tempo 140 BPM (standard 128-140 BPM). Brazilian surdo/kick syncopation on 1, 1-a, 2, 2-a, 3, 3-a, 4, 4-a; cross-stick snare on 2 and 4; gentle continuous 16th-note hi-hat.",
     sources: [
       { title: "Modern Drummer: Milton Banana & The Invention of the Bossa Nova Drum Groove", url: "https://www.moderndrummer.com/" },
       { title: "Drumeo: How to Play Bossa Nova Drums", url: "https://www.drumeo.com/" },
@@ -364,7 +364,7 @@ const AUDIT_REFS_PART2 = {
     label: "Channel One Studios (Kingston)",
     gear: "Acoustic kit, crisp snare rimshots on 2 and 4",
     recordReality: "Sly Dunbar created 'rockers' in the mid-1970s at Channel One. Moved the snare backbeat to beats 2 and 4 over syncopated double-kick patterns, breaking from the one-drop formula.",
-    transcriptionNotes: "Tempo 78 BPM. Snare backbeat on 2 and 4 (unlike one drop); syncopated double kick on 1 and 3-and; rolling 16th hi-hat.",
+    transcriptionNotes: "Tempo 78 BPM. Channel One rockers style: kick on 1 and 3; militaristic rolling snare syncopations around backbeats; steady 8th-note hi-hat.",
     sources: [
       { title: "Trojan Records: The Rockers Revolution at Channel One", url: "https://trojanrecords.com/" },
       { title: "Drummerworld: Sly Dunbar Rockers Grooves", url: "https://www.drummerworld.com/" }
@@ -376,7 +376,7 @@ const AUDIT_REFS_PART2 = {
     label: "Studio One / Island Records (Kingston, produced by Clement 'Coxsone' Dodd)",
     gear: "Acoustic kit, high-tuned snare, crisp ride cymbal",
     recordReality: "Lloyd Knibb invented the ska drum beat. Energetic syncopated rimshots on beats 2 and 4, accompanied by fast snare press rolls leading into downbeats.",
-    transcriptionNotes: "Tempo 130 BPM. Snare rimshot accent on beats 2 and 4; kick on 1 and 3; snare press rolls on beat 4 leading into 1; upbeat-accented hi-hat.",
+    transcriptionNotes: "Tempo 130 BPM. Upbeat ska groove: kick on 1, 3, 3-and; snare on 2 and 4; open hi-hats on all offbeats 1-and, 2-and, 3-and, 4-and.",
     sources: [
       { title: "Modern Drummer: Lloyd Knibb - The Creator of the Ska Drum Beat", url: "https://www.moderndrummer.com/" },
       { title: "Songsterr: The Skatalites - Guns of Navarone Drum Tab", url: "https://www.songsterr.com/" },

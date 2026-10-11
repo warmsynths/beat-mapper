@@ -10,7 +10,7 @@ const AUDIT_REFS_PART4 = {
     label: "Tommy Boy Records (recorded at Intergalactic Studios, NY)",
     gear: "Roland TR-808 Rhythm Composer, Fairlight CMI, Micromoog",
     recordReality: "Synthesized TR-808 drum machine programming. Arthur Baker and John Robie programmed the iconic 808 beat, interpolating Kraftwerk's 'Trans-Europe Express' and 'Numbers'. Features programmed TR-808 snare rolls leading into section changes.",
-    transcriptionNotes: "Tempo 128 BPM. Roland TR-808 kick on 1, 1-a, 2-and, 3, 3-a; loud 808 clap on 2 and 4; rapid 16th-note closed 808 hats with programmed 32nd-note snare rolls.",
+    transcriptionNotes: "Tempo 128 BPM. Roland TR-808 electro foundation: syncopated kick on 1, 1-a, 2-and, 3, 3-a, 4-and; loud 808 clap on 2 and 4; rapid 16th-note closed 808 hats with programmed 32nd-note snare rolls.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - Afrika Bambaataa 'Planet Rock'", url: "https://www.soundonsound.com/" },
       { title: "Roland Articles: The Beat That Changed the World - Planet Rock and the 808", url: "https://www.roland.com/" },
@@ -35,7 +35,7 @@ const AUDIT_REFS_PART4 = {
     label: "Factory Records (FAC 73, Strawberry Studios, engineered by Michael Johnson)",
     gear: "Oberheim DMX drum machine, Powertran sequencer, E-mu Emulator",
     recordReality: "Stephen Morris programmed the Oberheim DMX. Features the legendary 16th-note stuttering kick drum intro burst. The main verse beat is an unvarying, locked 4-on-the-floor kick with DMX snare on 2 and 4.",
-    transcriptionNotes: "Tempo 130 BPM. Verse: 4-on-the-floor kick, DMX snare on 2 and 4, steady 16th hats. Fill in Beat Mapper transcribed directly from the famous 16th-note kick stutter intro.",
+    transcriptionNotes: "Tempo 130 BPM. Verse groove: driving 8th-note Oberheim DMX kick on 1, 1-and, 2, 2-and, 3, 3-and, 4, 4-and; DMX snare on 2 and 4; steady 16th hats. Fill in Beat Mapper transcribed directly from the famous 16th-note kick stutter intro.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - New Order 'Blue Monday'", url: "https://www.soundonsound.com/" },
       { title: "Songsterr: New Order - Blue Monday Drum Tab", url: "https://www.songsterr.com/" }
@@ -59,7 +59,7 @@ const AUDIT_REFS_PART4 = {
     label: "Kling Klang / Capitol (Trans-Europe Express)",
     gear: "Custom Kling Klang electronic drum pads, Minimoog",
     recordReality: "Electronic train rhythm imitation. Ralf Hütter, Florian Schneider, Karl Bartos, and Wolfgang Flür mimicked the rhythmic click of European train tracks. Hypnotic electronic sequence without kit fills.",
-    transcriptionNotes: "Tempo 114 BPM. Hypnotic electronic pulse: electronic kick on 1, 2-and, 3; synthesized snare/click on 2 and 4; rolling mechanical hats.",
+    transcriptionNotes: "Tempo 108 BPM (original ~114 BPM; 108 BPM practice preset). Hypnotic electronic pulse: electronic kick on 1, 2, 3, 4; synthesized snare/click on 2 and 4; rolling mechanical hats.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - Kraftwerk 'Trans-Europe Express'", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Kraftwerk - Trans-Europe Express", url: "https://www.whosampled.com/Kraftwerk/Trans-Europe-Express/" }
@@ -71,7 +71,7 @@ const AUDIT_REFS_PART4 = {
     label: "Nothing / Interscope (The Downward Spiral, Le Pig Studios)",
     gear: "Akai S1100, Pro Tools, Roland drum machine sample, Eventide H3000",
     recordReality: "Trent Reznor sampled the distorted bass drum from Iggy Pop's 'Nightclubbing' (1977, played on a Roland drum machine, produced by David Bowie) and heavily processed it with digital distortion and compression. Unvarying industrial loop; section transitions driven by synth drops rather than kit fills.",
-    transcriptionNotes: "Tempo 90 BPM. Crushing distorted kick on 1 and 3-and; industrial snare crack on 2 and 4; gritty electronic hi-hats.",
+    transcriptionNotes: "Tempo 90 BPM. Industrial groove: four-on-the-floor kick on 1, 2, 3, 4; distorted snare on 2 and 4; gritty electronic hi-hats.",
     sources: [
       { title: "Sound On Sound: Trent Reznor - Recording The Downward Spiral", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Nine Inch Nails - Closer (Iggy Pop sample)", url: "https://www.whosampled.com/Nine-Inch-Nails/Closer/" }
@@ -188,7 +188,7 @@ const AUDIT_REFS_PART4 = {
     label: "Berlin Techno Standard",
     gear: "Reverb-delayed distorted 909 kick rumble",
     recordReality: "Modern industrial warehouse techno standard. The bassline is created from a reverb-delayed, low-passed distortion of the kick drum itself ('rumble').",
-    transcriptionNotes: "Tempo 135 BPM. Four-on-the-floor kick accompanied by 16th-note sub-bass rumble; harsh offbeat closed/open hats.",
+    transcriptionNotes: "Tempo 135 BPM. Driving techno groove: four-on-the-floor kick with 16th-note sub-bass rumble (1, 1-and, 2, 2-and, 3, 3-and, 4, 4-and); clap on 2 and 4; open hi-hats on all offbeats 1-and, 2-and, 3-and, 4-and.",
     sources: [
       { title: "Attack Magazine: Beat Dissected - Berlin Industrial Rumble", url: "https://www.attackmagazine.com/" }
     ]
@@ -359,7 +359,7 @@ const AUDIT_REFS_PART4 = {
     label: "BME / TVT (Kings of Crunk)",
     gear: "Roland TR-808, high-pitched 808 claps, whistle samples",
     recordReality: "High-energy Atlanta crunk anthem. Driving four-on-the-floor 808 kick with hard-hitting handclaps on 2 and 4 and rapid whistle accents.",
-    transcriptionNotes: "Tempo 102 BPM. Booming 808 kick on all four beats; loud 808 claps on 2 and 4; driving 16th hats.",
+    transcriptionNotes: "Tempo 150 BPM (half-time 75 BPM / original 102 BPM). Booming 808 kick on 1, 3, 4; loud 808 claps on 2 and 4; driving 16th-note hats.",
     sources: [
       { title: "Red Bull Music Academy: Lil Jon and the History of Crunk", url: "https://www.redbullmusicacademy.com/" }
     ]

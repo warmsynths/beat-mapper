@@ -27,7 +27,7 @@ const AUDIT_REFS = {
     label: "MGM Records (produced by Michael Viner)",
     gear: "Acoustic studio drum kit, bongos, congas",
     recordReality: "Extended percussion & drum break beginning at 1:14. Opens with King Errisson's bongo solo, followed by Jim Gordon's galloping kick/snare groove. The drum kit groove itself is an unrelenting, driving 2-bar pattern without kit fills; dynamic accents and bongo fills drive section transitions.",
-    transcriptionNotes: "Driving 16th-note galloping kick on 1, 3-and, 4-and with steady 8th-note hi-hat and backbeat snare on 2 and 4. Beat Mapper's fill provides a classic funk turnaround pickup.",
+    transcriptionNotes: "Tempo 114 BPM. Galloping kick on 1, 2-a, 3, 3-and; steady 8th-note hi-hat; crisp backbeat snare on 2 and 4. Beat Mapper's fill provides a classic funk turnaround pickup.",
     sources: [
       { title: "Songsterr: Incredible Bongo Band - Apache Drum Tab", url: "https://www.songsterr.com/a/wsa/incredible-bongo-band-apache-drum-tab-s436798" },
       { title: "Scribd: 30 Classic Breakbeats (transcribed by Szymon Ciszek)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
@@ -36,15 +36,16 @@ const AUDIT_REFS = {
   },
   "impeach": {
     refSong: "Impeach the President", refArtist: "The Honey Drippers", refYear: 1973,
-    refDrummer: "Uncredited session drummer (produced by Roy C. Hammond)",
+    refDrummer: "Steve Williams (produced by Roy C. Hammond)",
     label: "Alaga Records",
-    gear: "Acoustic kit, crisp open/closed hi-hats, dry snare (Sound Clinic, NY)",
-    recordReality: "Unvarying 2-bar isolated drum intro. NO drum fills exist on the intro recording. It is a locked, relaxed, swinging pocket with open hi-hat on beat 1-and anticipating the snare. Any fill in Beat Mapper is a synthetic turnaround exercise.",
-    transcriptionNotes: "Mid-tempo funk groove (96 BPM) with a distinct swing feel sitting between straight 16ths and shuffle triplets. Bass drum on 1, 2-and, 3-e; snare on 2 and 4; open hi-hat on the '&' of 1.",
+    gear: "Acoustic kit, crisp open/closed hi-hats, dry snare (Sound Clinic, Jamaica, Queens, NY)",
+    recordReality: "Unvarying 2-bar isolated drum intro. NO drum fills exist on the intro recording. It is a locked, relaxed, swinging pocket with open hi-hat anticipating the downbeat. Any fill in Beat Mapper is a synthetic turnaround exercise.",
+    transcriptionNotes: "Tempo 96 BPM. Relaxed funk groove: kick on 1, 2-a, 3-and; backbeat snare on 2 and 4; closed hi-hat on 8ths with open hi-hat on 4-and anticipating the downbeat.",
     sources: [
-      { title: "Ethan Hein: Impeach The President Rhythmic Analysis & Programming", url: "https://www.ethanhein.com/wp/2014/impeach-the-president/" },
-      { title: "Songsterr: The Honey Drippers - Impeach the President Drum Tab", url: "https://www.songsterr.com/a/wsa/the-honey-drippers-impeach-the-president-drum-tab-s85077" },
-      { title: "Scribd: 30 Classic Breakbeats (Szymon Ciszek, Break #2)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
+      { title: "The Breakbeat Bible: Mike Adamo - Impeach The President Transcription", url: "https://hudsonmusic.com/product/the-breakbeat-bible/" },
+      { title: "Ethan Hein: The Impeach Beat and the Mathematics of Groove (NYU Analysis)", url: "https://www.ethanhein.com/wp/2014/impeach-the-president/" },
+      { title: "Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #2)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
+      { title: "Songsterr: The Honey Drippers - Impeach the President Drum Tab", url: "https://www.songsterr.com/a/wsa/honey-drippers-impeach-the-president-drum-tab-s457492" },
       { title: "WhoSampled: The Honey Drippers - Impeach the President", url: "https://www.whosampled.com/The-Honey-Drippers/Impeach-the-President/" }
     ]
   },
@@ -54,7 +55,7 @@ const AUDIT_REFS = {
     label: "GSF Records (engineered by Ed Stasium at Venture Sound)",
     gear: "Ludwig kit, LA-2A compression, tightly tuned snare, sizzle hi-hats",
     recordReality: "Famous 2-bar drum intro break. NO drum fills occur on the intro; Bragg lays down a consistent, crunchy, syncopated funk loop before the horns and rhythm section enter on bar 3. Fills in Beat Mapper are synthetic practice turnarounds.",
-    transcriptionNotes: "95 BPM laid-back funk groove. Signature syncopated kick pattern: kick on 1, 2-and, 3-and; snare on 2 and 4 with prominent ghost notes on 'e' and 'a' subdivisions; steady 8th-note hi-hat with subtle sizzle.",
+    transcriptionNotes: "Tempo 95 BPM. Laid-back funk groove: syncopated kick on 1, 2-a, 3-and; snare on 2 and 4 with ghost notes; steady 8th-note hi-hat with crisp open hat on 4-and.",
     sources: [
       { title: "Red Bull Music Academy: Ed Stasium on Recording the Skull Snaps Break", url: "https://www.redbullmusicacademy.com/lectures/ed-stasium" },
       { title: "MusicGurus: Iconic Drum Breaks - It's A New Day Breakdown", url: "https://www.musicgurus.com/" },
@@ -136,7 +137,7 @@ const AUDIT_REFS = {
     label: "Epic Records (produced by Sly Stone)",
     gear: "Acoustic studio kit, prominent bass drum, crisp open hi-hat",
     recordReality: "Minimalist, powerhouse funk groove. Errico plays with steady, locked-in discipline. No drum fills during the verses; Sly Stone mixed the drums upfront as the primary rhythmic hook.",
-    transcriptionNotes: "Tempo 100 BPM. Solid kick on 1, 2-and, 3; backbeat snare on 2 and 4; open hi-hat splash on the '&' of 2. Transcribed in CopyDrum and DrumSetSheetMusic.",
+    transcriptionNotes: "Tempo 100 BPM. Funk groove: syncopated kick on 1, 1-a, 3, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.",
     sources: [
       { title: "DrumSetSheetMusic: Sing a Simple Song Drum Sheet Music (Greg Errico)", url: "https://drumsetsheetmusic.com/products/sing-a-simple-song-sly-the-family-stone-drum-sheet-music-copydrum" },
       { title: "Songsterr: Sly & The Family Stone - Sing a Simple Song Drum Tab", url: "https://www.songsterr.com/a/wsa/sly-the-family-stone-sing-a-simple-song-drum-tab-s396655" },
@@ -163,7 +164,7 @@ const AUDIT_REFS = {
     label: "De-Lite Records (recorded live at the Sex Machine Club, Philadelphia)",
     gear: "Acoustic kit, dry snare, sizzle ride cymbal",
     recordReality: "Extended drum solo break. George Brown plays dynamic, rolling snare ghost notes, syncopated kick doubles, and ride cymbal variations. Real fills feature quick snare-to-tom rolls into horn stabs.",
-    transcriptionNotes: "BPM 101. Features syncopated kick on 1, 2-and, 4-and; snare backbeat on 2 and 4 with rolling ghost notes; ride/hat interplay.",
+    transcriptionNotes: "Tempo 98 BPM. Syncopated funk groove: kick on 1, 1-a, 2-and, 3-and, 4; backbeat snare on 2 and 4 with ghost notes; open hi-hat on 2-and.",
     sources: [
       { title: "Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #12: Kool & The Gang - N.T.)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
       { title: "Songsterr: Kool & The Gang - N.T. Drum Tab", url: "https://www.songsterr.com/" },
@@ -176,7 +177,7 @@ const AUDIT_REFS = {
     label: "Hi Records (Royal Studios, Memphis, produced by Willie Mitchell)",
     gear: "Rogers drum kit, Ludwig Supraphonic snare with wallet dampening, ribbon mics",
     recordReality: "Al Jackson Jr. plays an unvarying, deeply relaxed 2-bar soul pocket. NO drum fills exist in the opening breaks; Jackson maintains an unflinching tempo that Willie Mitchell famously recorded with dry room acoustics.",
-    transcriptionNotes: "BPM 76. Subtle kick syncopation: kick on 1 and the 'a' of 2; snare cross-stick or soft backbeat on 2 and 4; gentle 8th-note hi-hat. Sampled in Notorious B.I.G. ('Dead Wrong') and Mobb Deep ('Survival of the Fittest').",
+    transcriptionNotes: "Tempo 74 BPM. Slow Memphis soul groove: deep kick on 1, 3, 3-and; dripping snare backbeat on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #7: Al Green - I'm Glad You're Mine)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
       { title: "Songsterr: Al Green - I'm Glad You're Mine Drum Tab", url: "https://www.songsterr.com/" },
@@ -189,7 +190,7 @@ const AUDIT_REFS = {
     label: "Blue Note Records (recorded Oct 27, 1967 by Rudy Van Gelder)",
     gear: "Gretsch kit, K Zildjian cymbals, Van Gelder single overhead mic setup",
     recordReality: "Opening 8-bar solo drum break. Leo Morris (Idris Muhammad) plays a steady, fatback soul-jazz groove. Fills occur at the end of the 8-bar intro with a light snare press roll into Donaldson's alto sax entrance.",
-    transcriptionNotes: "BPM 85. Iconic soul-jazz fatback beat: kick on 1 and the '&' of 2; heavy backbeat on 2 and 4; swinging 8th-note hi-hats. Sampled in A Tribe Called Quest ('Clap Your Hands') and Kanye West ('Jesus Walks').",
+    transcriptionNotes: "Tempo 89 BPM (original master ~85 BPM; 89 BPM practice preset). Swamp soul groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.",
     sources: [
       { title: "Blue Note Records: Lou Donaldson - Mr. Shing-A-Ling Session Notes", url: "https://www.bluenote.com/" },
       { title: "All About Jazz: Idris Muhammad - The Master of the Fatback Groove", url: "https://www.allaboutjazz.com/" },
@@ -202,7 +203,7 @@ const AUDIT_REFS = {
     label: "Kent Records (arranged by Maxwell Davis)",
     gear: "Acoustic kit, tight dry snare, open hi-hat",
     recordReality: "Staggered, syncopated kick and snare groove. The intro break is a locked groove; fills occur during vocal turnarounds with quick 16th snare rolls.",
-    transcriptionNotes: "BPM 104. Syncopated kick on 1, 2-and; snare on 2 and 4; open hi-hat on the '&' of 4 anticipating the next downbeat.",
+    transcriptionNotes: "Tempo 98 BPM. Stax groove: kick on 1, 3, 3-a; dry backbeat snare on 2 and 4 with subtle ghost notes; steady closed 8th-note hi-hat.",
     sources: [
       { title: "AllMusic: Lowell Fulsom - Tramp Review & Personnel", url: "https://www.allmusic.com/" },
       { title: "WhoSampled: Lowell Fulsom - Tramp (sampled by Cypress Hill, De La Soul)", url: "https://www.whosampled.com/Lowell-Fulsom/Tramp/" },
@@ -215,7 +216,7 @@ const AUDIT_REFS = {
     label: "Philips / Pama Records (Morgan Studios, London, composed by Alan Hawkshaw as 'Harry Palmer')",
     gear: "Premier studio drum kit, Keith Mansfield bass, Alan Hawkshaw Hammond organ",
     recordReality: "High-octane British session funk. Brian Bennett drives the track with aggressive snare rolls and heavy kick hits. Fills occur at regular 4-bar and 8-bar boundaries with classic 16th-note snare rolls.",
-    transcriptionNotes: "BPM 108. Driving 8th-note groove with punchy kick on 1 and 3-and; snare crack on 2 and 4. Brian Bennett's drumming provided one of hip-hop's most sampled foundations.",
+    transcriptionNotes: "Tempo 104 BPM (original ~108 BPM). Driving b-boy break: syncopated double kick on 1, 2, 2-and, 3, 4, 4-and; snare on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Cliff Richard & The Shadows Session Archives: The Mohawks - The Champ / Brian Bennett", url: "http://www.cliffrichardsongs.com/" },
       { title: "Electronic Sound: Alan Hawkshaw & KPM Library Sessions: The Champ", url: "https://electronicsound.co.uk/" },
@@ -242,7 +243,7 @@ const AUDIT_REFS = {
     label: "Sussex Records (produced by Mike Theodore)",
     gear: "Two acoustic kits tracked simultaneously, congas (King Errisson), guitar effects",
     recordReality: "Dual Funk Brothers drummers. Dennis Coffey tracked both Pistol Allen and Uriel Jones simultaneously. Extended drum and percussion break in the middle with Bob Babbitt's bass solo. Fills feature interlocking snare and conga figures.",
-    transcriptionNotes: "BPM 111. High-energy Detroit funk. Kick on 1 and 3-and; snare on 2 and 4 with dense ghost-note interplay from the two kits and bongos/congas.",
+    transcriptionNotes: "Tempo 106 BPM. Rapid bongo-funk groove: syncopated kick on 1, 1-a, 2-and, 3, 3-a, 4-and; snare on 2 and 4; driving 16th-note percussion.",
     sources: [
       { title: "All About Jazz: Dennis Coffey - The Scorpio Sessions & The Funk Brothers", url: "https://www.allaboutjazz.com/" },
       { title: "Red Bull Music Academy: Dennis Coffey Lecture on Scorpio & Two-Drum Concept", url: "https://www.redbullmusicacademy.com/" },
@@ -255,7 +256,7 @@ const AUDIT_REFS = {
     label: "Volt / Stax Records (produced by David Porter & Isaac Hayes)",
     gear: "Stax studio kit, Ludwig snare with tape damping, warm kick",
     recordReality: "Al Jackson Jr. lays down an airtight Memphis soul groove. The intro break is steady; Jackson uses small hi-hat lifts rather than busy fills to mark section transitions.",
-    transcriptionNotes: "BPM 93. Solid kick on 1 and the '&' of 2; crisp snare on 2 and 4; steady 8th-note hi-hat. Sampled in Big Daddy Kane ('Ain't No Half-Steppin'') and A Tribe Called Quest ('Push It Along').",
+    transcriptionNotes: "Tempo 94 BPM. Memphis soul break: kick on 1, 3, 3-and; crisp snare on 2 and 4; open hi-hat sizzling on 2-a and 4-a.",
     sources: [
       { title: "Stax Records Discography: The Emotions - Untouched / Blind Alley Credits", url: "https://staxrecords.com/" },
       { title: "Songsterr: The Emotions - Blind Alley Drum Tab", url: "https://www.songsterr.com/" },
@@ -281,7 +282,7 @@ const AUDIT_REFS = {
     label: "People Records (produced by James Brown)",
     gear: "Acoustic kit, light jazz-influenced snare tuning, Zildjian hats",
     recordReality: "Jabo Starks delivers a dancing, buoyant hi-hat and snare groove with bouncy kick syncopation. No extended solo fills; Starks maintains an energetic pocket throughout.",
-    transcriptionNotes: "BPM 108. Bouncy kick syncopation on 1, 2-and, 4; crisp snare on 2 and 4; 8th-note hi-hat with subtle 16th ghostings. Sampled in Eric B. & Rakim, Public Enemy.",
+    transcriptionNotes: "Tempo 98 BPM (historical recording ~108 BPM; 98 BPM practice preset). Funk groove: kick on 1, 2-a, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.",
     sources: [
       { title: "Drummerworld: John 'Jabo' Starks Biography & Transcriptions", url: "https://www.drummerworld.com/" },
       { title: "WhoSampled: Bobby Byrd - Hot Pants - I'm Coming, Coming, I'm Almost There", url: "https://www.whosampled.com/Bobby-Byrd/Hot-Pants---I%27m-Coming,-Coming,-I%27m-Almost-There/" }
@@ -293,7 +294,7 @@ const AUDIT_REFS = {
     label: "King Records (produced by James Brown)",
     gear: "King Studios acoustic kit, heavy bass drum, loud cutting snare",
     recordReality: "Heavy, aggressive funk stomp. The opening drum break features loud snare backbeats on 2 and 4 with driving double kick beats. The groove is relentless with minimal variation.",
-    transcriptionNotes: "BPM 104. Hard-hitting kick on 1, 1-a, 3, 3-a; loud snare crack on 2 and 4. Sampled in Public Enemy ('Rebel Without a Pause') and Wu-Tang Clan ('Protect Ya Neck').",
+    transcriptionNotes: "Tempo 100 BPM (original ~104 BPM). JB funk rhythm: four-on-the-floor kick pulse on 1, 2, 3, 4; sharp snare on 2 and 4; tight 16th-note hi-hats.",
     sources: [
       { title: "Wax Poetics: The J.B.'s and the Sound of King Records", url: "https://www.waxpoetics.com/" },
       { title: "WhoSampled: The J.B.'s - The Grunt", url: "https://www.whosampled.com/The-J.B.%27s/The-Grunt/" }
@@ -305,7 +306,7 @@ const AUDIT_REFS = {
     label: "Dial Records (produced by Buddy Killen)",
     gear: "Acoustic studio kit, open hi-hat on beat 4-and",
     recordReality: "Clyde Stubblefield's early break recorded before joining James Brown. The drum break features a crisp snare on 2 and 4, syncopated kick, and open hi-hat splash on beat 4-and leading into downbeats.",
-    transcriptionNotes: "BPM 102. Signature open hi-hat pickup on 4-and; snare on 2 and 4; kick on 1 and 2-and. Sampled in Wu-Tang Clan and Big Daddy Kane.",
+    transcriptionNotes: "Tempo 96 BPM (original ~102 BPM). Clyde Stubblefield's groove: kick on 1, 1-a, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "Modern Drummer: Clyde Stubblefield - Early Days with Joe Tex", url: "https://www.moderndrummer.com/" },
       { title: "WhoSampled: Joe Tex - Papa Was, Too", url: "https://www.whosampled.com/Joe-Tex/Papa-Was,-Too/" }
@@ -317,7 +318,7 @@ const AUDIT_REFS = {
     label: "Stax Records (produced by Al Jackson Jr.)",
     gear: "Stax studio kit, heavy snare with ring, driving kick",
     recordReality: "Willie Hall plays a stomping, energetic Memphis funk rhythm. Fills occur into dance calls with 16th-note snare and tom roll turnarounds.",
-    transcriptionNotes: "BPM 108. Heavy kick on 1 and 3; snare on 2 and 4 with syncopated 16th pickups; open hi-hat splashes. Sampled in A Tribe Called Quest ('Scenario') and Cypress Hill.",
+    transcriptionNotes: "Tempo 112 BPM (original ~108 BPM). Rufus Thomas groove: kick on 1, 3, 3-a; snare on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Stax Museum: Willie Hall / The Bar-Kays Session Notes", url: "https://staxmuseum.com/" },
       { title: "WhoSampled: Rufus Thomas - Do the Funky Penguin", url: "https://www.whosampled.com/Rufus-Thomas/Do-the-Funky-Penguin/" }
@@ -329,7 +330,7 @@ const AUDIT_REFS = {
     label: "99 Records (produced by Martin Hannett)",
     gear: "Acoustic kit, Martin Hannett AMS DMX digital delay and spatial reverb",
     recordReality: "Valerie Scroggins plays a raw, minimalist post-punk / funk drum break: steady kick on 1, snare on 2 and 4, and sparse offbeat accents. NO kit fills on the track; the haunting groove relies on bassline and feedback.",
-    transcriptionNotes: "BPM 114. Ultra-sparse: kick on 1 and 3-and; snare on 2 and 4; closed hi-hats. One of the most sampled post-punk records in hip-hop history (sampled in over 500 songs).",
+    transcriptionNotes: "Tempo 98 BPM. Minimal groove: kick on 1 and 3; snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "The Guardian: ESG - The South Bronx Sisters Who Changed Dance Music", url: "https://www.theguardian.com/music/2017/mar/20/esg-interview-south-bronx-funk-band" },
       { title: "Songsterr: ESG - UFO Drum Tab", url: "https://www.songsterr.com/" },
@@ -342,7 +343,7 @@ const AUDIT_REFS = {
     label: "Disques Dreyfus / Editions Musidisc (Paris)",
     gear: "Acoustic kit, warm open bass drum, dry wooden snare",
     recordReality: "Ernest Donable lays down a relaxed, swinging funk pocket behind the famous saxophone hook. Minimal drum fills; the groove stays locked to allow the horns to soar.",
-    transcriptionNotes: "BPM 98. Laid-back pocket with syncopated kick on 1 and 3-and; crisp backbeat on 2 and 4. Sampled in Wreckx-n-Effect ('Rump Shaker') and Jay-Z ('Show Me What You Got').",
+    transcriptionNotes: "Tempo 98 BPM. Soul break: kick on 1, 2-a, 3-and; snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "Wax Poetics: Lafayette Afro Rock Band - American Funk in Paris", url: "https://www.waxpoetics.com/" },
       { title: "WhoSampled: Lafayette Afro Rock Band - Darkest Light", url: "https://www.whosampled.com/Lafayette-Afro-Rock-Band/Darkest-Light/" }
@@ -354,7 +355,7 @@ const AUDIT_REFS = {
     label: "Disques Dreyfus (Paris)",
     gear: "Acoustic kit, prominent hi-hat openings, syncopated snare",
     recordReality: "Opening drum solo break. Donable opens with a rolling, syncopated drum and hi-hat intro that became a foundational early hip-hop park break.",
-    transcriptionNotes: "BPM 106. Driving 16th-note hi-hat workout with syncopated kick on 1, 2-and, 3-and; snappy snare backbeat. Sampled in LL Cool J, De La Soul.",
+    transcriptionNotes: "Tempo 104 BPM. Syncopated break: kick on 1, 1-a, 2-and, 3-and, 4; snare on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Dust & Grooves: Lafayette Afro Rock Band - Malik Album Retrospective", url: "https://www.dustandgrooves.com/" },
       { title: "WhoSampled: Lafayette Afro Rock Band - Hihache", url: "https://www.whosampled.com/Lafayette-Afro-Rock-Band/Hihache/" }

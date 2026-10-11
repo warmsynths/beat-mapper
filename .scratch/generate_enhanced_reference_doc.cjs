@@ -10,6 +10,15 @@ const libContent = fs.readFileSync('src/cue/data/library.ts', 'utf8');
 const rawMatch = libContent.match(/const RAW: RawPattern\[\] = (\[[\s\S]*?\n\];)/);
 const patterns = eval(rawMatch[1]);
 
+const ghostHats = (l) => {
+  const h = l.h;
+  if (h && (h.match(/x/g) || []).length >= 12 && !/[Xg]/.test(h)) l.h = h.split('').map((c, i) => c === 'x' && i % 2 ? 'g' : c).join('');
+};
+patterns.forEach(p => {
+  ghostHats(p);
+  if (p.var) ghostHats(p.var);
+});
+
 const STYLE_ONLY = new Set(['sonclave', 'rumbaclave', 'cumbia', 'tambor', 'rock', 'twostep', 'jungle', 'dnb', 'drill']);
 const inspired = p => p.genre !== 'Drills' && !STYLE_ONLY.has(p.id);
 

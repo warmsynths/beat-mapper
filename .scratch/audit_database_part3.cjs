@@ -10,7 +10,7 @@ const AUDIT_REFS_PART3 = {
     label: "East Coast 90s Standard",
     gear: "Akai MPC60 / E-mu SP-1200, 12-bit sampling, vinyl crackle",
     recordReality: "Classic 90s boom bap archetype. Built from chopped funk drum breaks (Amen, Impeach, Skull Snaps) with swing quantization and hard kick/snare punch.",
-    transcriptionNotes: "Tempo 90 BPM. Kick on 1 and the '&' of 2; snapping snare on 2 and 4; swung 8th-note closed hi-hat.",
+    transcriptionNotes: "Tempo 90 BPM. Classic East Coast boom bap: punchy kick on 1, 2-and, 3-and; fat snare on 2 and 4; closed 8th-note hi-hat.",
     sources: [
       { title: "Sound On Sound: Classic Hip-Hop Drum Production Techniques", url: "https://www.soundonsound.com/" },
       { title: "Drumeo: The Boom Bap Hip Hop Drumming Blueprint", url: "https://www.drumeo.com/" }
@@ -24,7 +24,9 @@ const AUDIT_REFS_PART3 = {
     recordReality: "2-bar loop standard: bar 1 establishes the head; bar 2 adds an anticipatory kick double into beat 3 and open hi-hat splash.",
     transcriptionNotes: "Tempo 92 BPM. Two-measure phrase avoiding repetitive 1-bar stagnation. Kick syncopations vary between bar 1 and bar 2.",
     sources: [
-      { title: "Attack Magazine: Beat Dissected - 90s East Coast Boom Bap", url: "https://www.attackmagazine.com/" }
+      { title: "Attack Magazine: Beat Dissected - 90s East Coast Boom Bap", url: "https://www.attackmagazine.com/" },
+      { title: "Sound On Sound: Recreating 90s Hip-Hop Drum Loops on MPC & SP-1200", url: "https://www.soundonsound.com/" },
+      { title: "Drumeo: 2-Bar Phrase Development for Hip Hop Grooves", url: "https://www.drumeo.com/" }
     ]
   },
   "massappeal": {
@@ -46,7 +48,7 @@ const AUDIT_REFS_PART3 = {
     label: "Elektra Records (Mecca and the Soul Brother)",
     gear: "E-mu SP-1200, Akai S950, vinyl chops",
     recordReality: "Sample-loop record. Pete Rock sampled Tom Scott with The California Dreamers ('Today', 1967) for the saxophone and bassline, layered over James Brown's 'Say It Loud - I'm Black and I'm Proud' (1968) drum break. The loop runs continuously with Pete Rock's horn filtering. NO drum fills exist on the record.",
-    transcriptionNotes: "Tempo 102 BPM. Swung 16th groove: kick on 1 and the '&' of 2; snappy snare on 2 and 4; rolling hi-hats.",
+    transcriptionNotes: "Tempo 92 BPM. Pete Rock production: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.",
     sources: [
       { title: "Pitchfork: Pete Rock & CL Smooth - Mecca and the Soul Brother Review", url: "https://pitchfork.com/" },
       { title: "WhoSampled: Pete Rock & CL Smooth - They Reminisce Over You (T.R.O.Y.)", url: "https://www.whosampled.com/Pete-Rock-%26-C.L.-Smooth/They-Reminisce-Over-You-(T.R.O.Y.)/" }
@@ -58,7 +60,7 @@ const AUDIT_REFS_PART3 = {
     label: "Columbia Records (Illmatic, recorded at D&D Studios, NY)",
     gear: "Akai MPC60, chopped vinyl piano & drum breaks",
     recordReality: "Sample-loop record. DJ Premier sampled Joe Chambers' 'Mind Rain' (1978) for the eerie piano lick and chopped drums from Donald Byrd's 'Flight Time' and Kool & The Gang's 'N.T.'. The drum groove loops hypnotically behind Nas's flow. NO drum fills on the track.",
-    transcriptionNotes: "Tempo 84 BPM. Gritty, driving boom bap: kick on 1, 2-and, 3-and; dry, biting snare on 2 and 4; steady 8th-note hi-hat.",
+    transcriptionNotes: "Tempo 90 BPM. DJ Premier production: kick on 1, 2-a, 3-and; crisp snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - Nas 'N.Y. State of Mind' / DJ Premier", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Nas - N.Y. State of Mind", url: "https://www.whosampled.com/Nas/N.Y.-State-of-Mind/" },
@@ -71,7 +73,7 @@ const AUDIT_REFS_PART3 = {
     label: "Loud / RCA (The Infamous, engineered by Tony Black)",
     gear: "Ensoniq EPS-16+ keyboard sampler, vinyl pitch-shifting",
     recordReality: "Sample-loop record. Havoc pitched down Herbie Hancock's 'Jessica' (1969) on his EPS-16+ and layered drums from Quincy Jones's 'Kitty With the Bent Frame' (1971) and Daly-Wilson Big Band. A locked, repeating loop with NO drum kit fills on the recording.",
-    transcriptionNotes: "Tempo 94 BPM. Heavy kick on 1, 2-and; dry acoustic snare on 2 and 4; 8th-note hi-hats with swung 16th shuffles. Signature dark Queensbridge sonic texture.",
+    transcriptionNotes: "Tempo 94 BPM. Havoc / Mobb Deep groove: syncopated kick on 1, 2-and, 3, 3-and; hard snare on 2 and 4; closed 8th-note hi-hat.",
     sources: [
       { title: "Sound On Sound: Havoc - Producing Mobb Deep's The Infamous", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Mobb Deep - Shook Ones Pt. II", url: "https://www.whosampled.com/Mobb-Deep/Shook-Ones-Part-II/" },
@@ -84,7 +86,7 @@ const AUDIT_REFS_PART3 = {
     label: "Loud / RCA (Enter the Wu-Tang: 36 Chambers, Firehouse Studios)",
     gear: "Ensoniq EPS-16+ / E-mu SP-1200",
     recordReality: "Sample-loop record. RZA sampled the opening 2 bars of The Charmels' 'As Long As I've Got You' (1967, Stax, featuring Al Jackson Jr. on drums and Isaac Hayes on piano). The record loops this exact performance continuously. NO drum fills exist on the Wu-Tang track.",
-    transcriptionNotes: "Tempo 90 BPM. Al Jackson Jr.'s original Stax pocket looped by RZA: kick on 1 and 2-and; soft snare on 2 and 4; warm, unquantized closed hi-hats.",
+    transcriptionNotes: "Tempo 90 BPM. RZA / Wu-Tang groove: kick on 1, 3, 3-and; dry acoustic snare on 2 and 4; steady 8th-note hi-hat.",
     sources: [
       { title: "Wax Poetics: The Making of Wu-Tang Clan's 36 Chambers", url: "https://www.waxpoetics.com/" },
       { title: "WhoSampled: Wu-Tang Clan - C.R.E.A.M. (The Charmels sample)", url: "https://www.whosampled.com/Wu-Tang-Clan/C.R.E.A.M./" },
@@ -97,7 +99,7 @@ const AUDIT_REFS_PART3 = {
     label: "Jive Records (Midnight Marauders, Battery Studios, NY)",
     gear: "E-mu SP-1200, Akai S950, vinyl chops",
     recordReality: "Sample-loop record. Q-Tip sampled Ronnie Foster's 'Mystic Brew' (1972, Blue Note, recorded by Rudy Van Gelder). The drum loop repeats steadily throughout the verses; NO drum fills on the recording. Any fill in Beat Mapper is a synthetic practice variation.",
-    transcriptionNotes: "Tempo 98 BPM. Swung boom bap kick rolls: kick on 1, 2-e, 2-and, 3; crisp snare on 2 and 4; steady 8th-note hi-hat with open hat splashes.",
+    transcriptionNotes: "Tempo 98 BPM. ATCQ / Ali Shaheed Muhammad: syncopated kick on 1, 2, 2-and, 3; snare on 2 and 4; open hi-hat on 2-and.",
     sources: [
       { title: "Wax Poetics: A Tribe Called Quest - Midnight Marauders 20th Anniversary", url: "https://www.waxpoetics.com/" },
       { title: "WhoSampled: A Tribe Called Quest - Electric Relaxation (Ronnie Foster sample)", url: "https://www.whosampled.com/A-Tribe-Called-Quest/Electric-Relaxation/" }
@@ -121,7 +123,7 @@ const AUDIT_REFS_PART3 = {
     label: "Ruffhouse / Columbia (Zebrahead OST / Illmatic)",
     gear: "E-mu SP-1200, Akai S950",
     recordReality: "Sample-loop record. Large Professor chopped Gary Byrd's 'Soul Travelin' Pt. I' (1973) and Average White Band's 'School Boy Crush' (1975) cowbell/drums. Continuous, hard-hitting Golden Era loop.",
-    transcriptionNotes: "Tempo 95 BPM. Punchy boom bap kick on 1, 2-and, 3-and; cracking snare on 2 and 4; open hi-hat and cowbell accents.",
+    transcriptionNotes: "Tempo 92 BPM (original master ~95 BPM; 92 BPM practice preset). Large Professor groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; closed 8th-note hi-hat.",
     sources: [
       { title: "Complex: Large Professor Breaks Down Nas's Illmatic", url: "https://www.complex.com/" },
       { title: "WhoSampled: Nas - Halftime", url: "https://www.whosampled.com/Nas/Halftime/" }
@@ -133,7 +135,7 @@ const AUDIT_REFS_PART3 = {
     label: "Jive Records (The Low End Theory)",
     gear: "E-mu SP-1200, chopped vinyl breaks",
     recordReality: "Q-Tip sampled Brother Jack McDuff's 'Oblighetto' (1970) and Jimmy McGriff's 'The Worm' (1968) drum break. Driving, high-energy boom bap loop.",
-    transcriptionNotes: "Tempo 102 BPM. Driving kick on 1, 2-and, 3-and; loud snare on 2 and 4; rapid, energetic hi-hat work.",
+    transcriptionNotes: "Tempo 102 BPM. ATCQ party classic: kick on 1, 1-and, 3, 3-and; snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "Pitchfork: A Tribe Called Quest - The Low End Theory Retrospective", url: "https://pitchfork.com/" },
       { title: "WhoSampled: A Tribe Called Quest - Scenario", url: "https://www.whosampled.com/A-Tribe-Called-Quest/Scenario/" }
@@ -178,7 +180,7 @@ const AUDIT_REFS_PART3 = {
     label: "Wu-Tang Records / Loud (Enter the Wu-Tang: 36 Chambers)",
     gear: "E-mu SP-1200, raw vinyl chops",
     recordReality: "Sample-loop record. RZA sampled The J.B.'s 'The Grunt' (1970). Raw, unpolished, aggressive drum loop running under 8 emcees. Zero kit fills.",
-    transcriptionNotes: "Tempo 102 BPM. Stomping kick doubles on 1 and 3; loud, distorted snare on 2 and 4.",
+    transcriptionNotes: "Tempo 102 BPM. RZA production: syncopated kick on 1, 2, 2-and, 3, 4, 4-and; hard snare on 2 and 4; driving hats.",
     sources: [
       { title: "WhoSampled: Wu-Tang Clan - Protect Ya Neck", url: "https://www.whosampled.com/Wu-Tang-Clan/Protect-Ya-Neck/" }
     ]
@@ -189,7 +191,7 @@ const AUDIT_REFS_PART3 = {
     label: "Capitol Records (Expansion Team)",
     gear: "Akai MPC2000XL, chopped soul vinyl",
     recordReality: "Sample-loop record. The Alchemist pitched up William Bell's 'I Forgot to Be Your Lover' (1968) and layered it with hard-knocking MPC drums. Unvarying soul chop loop.",
-    transcriptionNotes: "Tempo 93 BPM. Punchy kick on 1 and 3-and; cracking snare on 2 and 4; swinging 8th-note closed hi-hat.",
+    transcriptionNotes: "Tempo 94 BPM. Alchemist groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 2-and.",
     sources: [
       { title: "WhoSampled: Dilated Peoples - Worst Comes to Worst", url: "https://www.whosampled.com/Dilated-Peoples/Worst-Comes-to-Worst/" }
     ]
@@ -211,7 +213,7 @@ const AUDIT_REFS_PART3 = {
     label: "Chemistry / Mercury (Stunts, Blunts and Hip Hop)",
     gear: "E-mu SP-1200, chopped vinyl breakbeats",
     recordReality: "Sample-loop record. Diamond D sampled Al Green's 'Love and Happiness' and John Davis's 'I Can't Stop' drum break. Driving 1-bar loop with no live fills.",
-    transcriptionNotes: "Tempo 96 BPM. Driving boom bap: kick on 1, 2-and, 3-and; snare on 2 and 4; crisp open hi-hat splashes.",
+    transcriptionNotes: "Tempo 95 BPM. Diamond D production: kick on 1, 1-a, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "WhoSampled: Diamond D - Best Kept Secret", url: "https://www.whosampled.com/Diamond-D/Best-Kept-Secret/" }
     ]
@@ -222,7 +224,7 @@ const AUDIT_REFS_PART3 = {
     label: "Uptown Records (Who's the Man? OST)",
     gear: "Akai MPC60, chopped vinyl",
     recordReality: "Sample-loop record. Easy Mo Bee sampled Johnny Pate's 'Shaft in Africa' (1973). Upbeat, party-starting boom bap loop.",
-    transcriptionNotes: "Tempo 99 BPM. Bouncing kick on 1, 2-and, 3-and; cracking snare on 2 and 4; energetic hi-hats.",
+    transcriptionNotes: "Tempo 100 BPM. Easy Mo Bee groove: kick on 1, 2, 2-and, 3, 4, 4-and; big snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "WhoSampled: The Notorious B.I.G. - Party and Bullshit", url: "https://www.whosampled.com/The-Notorious-B.I.G./Party-and-Bullshit/" }
     ]
@@ -233,7 +235,7 @@ const AUDIT_REFS_PART3 = {
     label: "East Coast Hip-Hop Standard",
     gear: "Akai MPC2000XL / MPC Renaissance, unquantized swing",
     recordReality: "Modern East Coast boom bap swing archetype. MPC groove template with delayed snare ghost notes and pushed kicks.",
-    transcriptionNotes: "Tempo 90 BPM. MPC swing set between 58% and 62%; kick on 1 and 2-and; snare on 2 and 4 with ghost notes.",
+    transcriptionNotes: "Tempo 92 BPM. Swung boom bap: kick on 1, 2-and, 3-and; snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "Attack Magazine: Beat Dissected - MPC Swung Boom Bap", url: "https://www.attackmagazine.com/" }
     ]
@@ -257,7 +259,7 @@ const AUDIT_REFS_PART3 = {
     label: "Death Row / Interscope (The Chronic, engineered by Greg Collins)",
     gear: "E-mu SP-1200 / Akai MPC60, Minimoog bass",
     recordReality: "Dr. Dre replayed and sampled Leon Haywood's 'I Want'a Do Something Freaky to You' (1975). A locked, laid-back West Coast funk groove with live percussion and Moog bass. NO drum fills on the track.",
-    transcriptionNotes: "Tempo 95 BPM. Laid-back West Coast pocket: kick on 1 and the '&' of 2; snappy snare on 2 and 4; driving 16th-note shaker/hi-hat.",
+    transcriptionNotes: "Tempo 95 BPM. Laid-back G-Funk: kick on 1, 2-and, 3; snare on 2 and 4; open hi-hats sizzling on 2-and and 4-and.",
     sources: [
       { title: "Sound On Sound: Classic Tracks - Dr. Dre 'The Chronic'", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Dr. Dre - Nuthin' but a 'G' Thang", url: "https://www.whosampled.com/Dr.-Dre/Nuthin%27-but-a-%27G%27-Thang/" }
@@ -269,7 +271,7 @@ const AUDIT_REFS_PART3 = {
     label: "Blackground / Virgin (Romeo Must Die OST)",
     gear: "Ensoniq ASR-10, mouth beatbox, syncopated digital delay",
     recordReality: "Futuristic syncopated R&B bounce. Timbaland layered vocal beatboxing with stuttering ASR-10 digital snares and rolling hi-hats. Fills consist of syncopated vocal beatbox turnarounds.",
-    transcriptionNotes: "Tempo 92 BPM. Syncopated kick rolls on 1, 1-a, 2-and, 3-e; snare on 2 and 4; 16th and 32nd-note hi-hat stutters.",
+    transcriptionNotes: "Tempo 110 BPM. Syncopated bounce: kick on 1, 2, 2-a, 3-and, 4; snare on 2 and 4 with signature beatbox syncopations.",
     sources: [
       { title: "Sound On Sound: Timbaland - Creating the Futuristic R&B Sound", url: "https://www.soundonsound.com/" },
       { title: "WhoSampled: Aaliyah - Try Again", url: "https://www.whosampled.com/Aaliyah/Try-Again/" }
@@ -285,7 +287,7 @@ const AUDIT_REFS_PART3 = {
     label: "Victor Entertainment (Samurai Champloo Music Record: Departure)",
     gear: "Akai MPC2000XL, vinyl chops, SP-404 tape vinyl sim",
     recordReality: "Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop. NO drum kit fills on the recording.",
-    transcriptionNotes: "Tempo 96 BPM. Swung kick on 1, 2-and, 3-and; soft wooden snare on 2 and 4; delicate shaker/hi-hat on 8ths.",
+    transcriptionNotes: "Tempo 88 BPM (original master ~96 BPM; 88 BPM practice preset). Nujabes lo-fi pocket: kick on 1, 2-and, 3; gentle snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "WhoSampled: Nujabes - Aruarian Dance (Laurindo Almeida sample)", url: "https://www.whosampled.com/Nujabes/Aruarian-Dance/" }
     ]
@@ -296,7 +298,7 @@ const AUDIT_REFS_PART3 = {
     label: "Hydeout Productions (Modal Soul)",
     gear: "Akai MPC2000XL, Roland SP-404",
     recordReality: "Sample-loop record. Nujabes sampled Yusef Lateef's 'Love Theme from The Robe' (1970). Steady 1-bar hip-hop loop with NO drum fills.",
-    transcriptionNotes: "Tempo 98 BPM. Warm, dusty boom bap: kick on 1 and 2-and; crisp snare on 2 and 4; unhurried 8th-note closed hi-hats.",
+    transcriptionNotes: "Tempo 98 BPM. Nujabes groove: kick on 1, 3, 3-and; warm snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "WhoSampled: Nujabes - Feather (Yusef Lateef sample)", url: "https://www.whosampled.com/Nujabes/Feather/" }
     ]
@@ -353,7 +355,7 @@ const AUDIT_REFS_PART3 = {
     label: "Stones Throw Records (Madvillainy)",
     gear: "Boss SP-303, Roland SP-404, chopped vinyl",
     recordReality: "Sample-loop record. Madlib sampled Quincy Jones's 'Theme from Ironside' (1971). Raw, lo-fi boom bap loop with NO drum kit fills on the recording.",
-    transcriptionNotes: "Tempo 92 BPM. Hard, unpolished kick on 1 and 3; snapping acoustic snare on 2 and 4.",
+    transcriptionNotes: "Tempo 92 BPM. Madlib groove: kick on 1, 3, 3-and; snare on 2 and 4; steady 8th-note hats.",
     sources: [
       { title: "WhoSampled: Madvillain - All Caps", url: "https://www.whosampled.com/Madvillain/All-Caps/" }
     ]
@@ -397,7 +399,7 @@ const AUDIT_REFS_PART3 = {
     label: "Stones Throw Records (Happysad)",
     gear: "Fender Rhodes, upright piano, acoustic jazz kit",
     recordReality: "Live-feel instrumental beat. Kiefer combines intricate jazz piano chords with loose, humanly swung hip-hop drumming.",
-    transcriptionNotes: "Tempo 84 BPM. Deep swing feel: kick on 1, 2-and, 3-and; snare on 2 and 4 with delicate jazz ghost notes.",
+    transcriptionNotes: "Tempo 86 BPM. Cookin Soul groove: kick on 1, 2-and, 3; snare on 2 and 4; swung 8th-note hats.",
     sources: [
       { title: "Stones Throw: Kiefer - Happysad Album Notes", url: "https://www.stonesthrow.com/store/happysad/" }
     ]
@@ -408,7 +410,7 @@ const AUDIT_REFS_PART3 = {
     label: "Chillhop Music (Around the World)",
     gear: "Sampler, koto samples, tape saturation",
     recordReality: "Chillhop standard. Japanese koto melody layered over a dusty boom bap drum loop. Steady loop without live fills.",
-    transcriptionNotes: "Tempo 85 BPM. Relaxed kick on 1 and 3-and; dry snare on 2 and 4; swinging 8th-note hats.",
+    transcriptionNotes: "Tempo 82 BPM. Saib chillhop groove: kick on 1, 1-a, 3, 3-a; snare rim on 2 and 4; gentle 8th-note hats.",
     sources: [
       { title: "Chillhop Music: Saib - Sakura Trees", url: "https://chillhop.com/" }
     ]
@@ -430,7 +432,7 @@ const AUDIT_REFS_PART3 = {
     label: "Cookin Soul Records",
     gear: "E-mu SP-1200, Akai MPC2000XL, 12-bit vinyl grit",
     recordReality: "Spanish producer David Alvarez (Cookin Soul). Punchy 90s boom bap loop with hard-hitting kick and cracking snare.",
-    transcriptionNotes: "Tempo 90 BPM. Hard boom bap kick on 1 and 2-and; snappy snare crack on 2 and 4.",
+    transcriptionNotes: "Tempo 90 BPM. Cookin Soul bounce: kick on 1, 2-and, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.",
     sources: [
       { title: "Cookin Soul Official Bandcamp", url: "https://cookinsoul.bandcamp.com/" }
     ]
@@ -441,7 +443,7 @@ const AUDIT_REFS_PART3 = {
     label: "Vanilla (Origin)",
     gear: "DAW sampler, pitched soul vocal chops, warm MPC-style drums",
     recordReality: "UK beatmaker Vanilla. Soul vocal chop with warm, swinging boom bap drums. Seamless loop without live kit fills.",
-    transcriptionNotes: "Tempo 86 BPM. Bouncy kick on 1 and 3-and; warm snare on 2 and 4; swinging 8th-note hi-hat.",
+    transcriptionNotes: "Tempo 86 BPM. Bouncy kick on 1, 3, 3-and; warm snare on 2 and 4; open hi-hat on 2-and; swinging 8th-note hi-hat.",
     sources: [
       { title: "Bandcamp: Vanilla - Origin", url: "https://vanillabeats.bandcamp.com/" }
     ]

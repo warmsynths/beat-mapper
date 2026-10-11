@@ -192,7 +192,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 96,
     "difficulty": "Intermediate",
-    "gear": "Acoustic kit recorded at The Hit Factory",
+    "gear": "Acoustic kit / Steve Williams on drums (prod. Roy C. Hammond, Sound Clinic NY)",
     "tip": "Crucial open hi-hat sizzle on step 15 right before the downbeat. The kick syncopation on step 11 drives the bounce.",
     "tags": [
           "boom bap",
@@ -256,7 +256,7 @@ const RAW: RawPattern[] = [
     "genre": "Funk",
     "bpm": 112,
     "difficulty": "Intermediate",
-    "gear": "Ludwig kit / Clyde Stubblefield",
+    "gear": "Rogers snare & Ludwig kit / Clyde Stubblefield",
     "tip": "Often cited as the very first true funk record (1967). Open hat on the upbeat of 2 gives it that buoyant lift.",
     "tags": [
           "funk",
@@ -293,7 +293,7 @@ const RAW: RawPattern[] = [
     "genre": "Funk",
     "bpm": 88,
     "difficulty": "Intermediate",
-    "gear": "Gretsch Broadkaster kit / Zigaboo Modeliste",
+    "gear": "Ludwig kit / Zigaboo Modeliste (Cosimo Recording Studios)",
     "tip": "New Orleans second-line syncopation. The kick plays a 3-3-2 tresillo cadence while the snare interlocks around beat 2 and 3.",
     "tags": [
           "new orleans",
@@ -328,10 +328,10 @@ const RAW: RawPattern[] = [
     "name": "Purdie Shuffle",
     "artist": "Steely Dan / Bernard Purdie",
     "genre": "Jazz & Soul",
-    "bpm": 118,
+    "bpm": 108,
     "difficulty": "Advanced",
-    "gear": "Sonor kit / Bernard Purdie (\"Babylon Sisters\" / \"Home At Last\")",
-    "tip": "The holy grail half-time shuffle. Keep ghost snares feather-light on the \"e\" and \"a\" of every beat between the backbeat clacks.",
+    "gear": "Slingerland kit / Bernard Purdie (\"Babylon Sisters\" / \"Home At Last\")",
+    "tip": "The holy grail half-time shuffle. Accented snare backbeat on beat 3, with feather-light ghost notes on the shuffle triplets around it.",
     "tags": [
           "shuffle",
           "ghost notes",
@@ -343,20 +343,20 @@ const RAW: RawPattern[] = [
           "s": "L",
           "h": "R"
     },
-    "k": "X.......X.......",
-    "s": "..g.X.g...g.X.g.",
+    "k": "X......x........",
+    "s": "..g...g.X.g...g.",
     "h": "x.xxx.xxx.xxx.xx",
     "o": "................",
     "var": {
-          "k": "X.....x.X.......",
-          "s": "..g.X.g...g.X.g.",
+          "k": "X......xX.......",
+          "s": "..g...g.X.g...g.",
           "h": "x.xxx.xxx.xxx.xx",
           "o": "................"
     },
     "fill": {
-          "k": "X.......X.....x.",
-          "s": "..g.X.g..gg.Xg.X",
-          "h": "x.xxx.xxx.xxx...",
+          "k": "X.......X.......",
+          "s": "..g...g.X..gX.gX",
+          "h": "x.xxx.xxx.x.....",
           "o": "................"
     }
   },
@@ -367,7 +367,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 95,
     "difficulty": "Intermediate",
-    "gear": "Rogers kit / George Clinton & Skull Snaps",
+    "gear": "Ludwig kit / George \"Buzzy\" Bragg (Skull Snaps)",
     "tip": "Sampled by Gang Starr, The Prodigy, and Ol Dirty Bastard. Crisp, tight open hat on step 15 and punchy ghost notes.",
     "tags": [
           "holy grail",
@@ -647,7 +647,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 86,
     "difficulty": "Advanced",
-    "gear": "Gretsch Broadkaster kit / Zigaboo Modeliste",
+    "gear": "Ludwig kit / Zigaboo Modeliste (Sea-Saint Studios)",
     "tip": "Sampled by Public Enemy, EPMD. Deep New Orleans swamp funk. Zigaboo’s offbeat kick drags with ghost snares around the backbeats.",
     "tags": [
           "breakbeat",
@@ -709,7 +709,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 74,
     "difficulty": "Beginner",
-    "gear": "Al Jackson Jr. on Ludwig kit at Royal Studios Memphis",
+    "gear": "Rogers kit & Ludwig snare / Al Jackson Jr. at Royal Studios Memphis",
     "tip": "Sampled by The Notorious B.I.G. (\"Dead Wrong\"), Eric B. & Rakim (\"The R\"). Deep, slow, dripping snare crack with double kick into 3.",
     "tags": [
           "breakbeat",
@@ -801,7 +801,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 104,
     "difficulty": "Intermediate",
-    "gear": "Acoustic kit + Hammond B3 / Alan Hawkshaw",
+    "gear": "Acoustic kit / Brian Bennett (drums) & Alan Hawkshaw (Hammond B3)",
     "tip": "Sampled in over 700 songs (KRS-One, Eric B & Rakim, De La Soul). Driving double kick syncopation that defines b-boy breaking.",
     "tags": [
           "b-boy",
@@ -894,7 +894,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 94,
     "difficulty": "Intermediate",
-    "gear": "Stax studio kit / Willie Hall",
+    "gear": "Stax studio kit / Al Jackson Jr. (Stax Recording Studios)",
     "tip": "Sampled by Big Daddy Kane (\"Ain't No Half-Steppin'\"), Mariah Carey, 112. Open hi-hats sizzling on beat 2-and and 4-and.",
     "tags": [
           "breakbeat",
@@ -1018,7 +1018,7 @@ const RAW: RawPattern[] = [
     "genre": "Breakbeat",
     "bpm": 96,
     "difficulty": "Intermediate",
-    "gear": "Acoustic southern soul kit",
+    "gear": "Acoustic kit / Clyde Stubblefield on drums (Sound Shop, Nashville)",
     "tip": "Sampled by Eric B & Rakim (\"I Ain't No Joke\"), Wu-Tang. Heavy downbeat kick with syncopated open hat upbeat.",
     "tags": [
           "breakbeat",
@@ -3725,11 +3725,11 @@ const RAW: RawPattern[] = [
   {
     "id": "rockers",
     "name": "Rockers Reggae",
-    "artist": "Third World / Channel One",
+    "artist": "Sly Dunbar / Channel One",
     "genre": "Reggae",
     "bpm": 78,
     "difficulty": "Intermediate",
-    "gear": "Acoustic kit / Sly Dunbar",
+    "gear": "Acoustic kit / Sly Dunbar (Channel One Studios)",
     "tip": "Unlike the One Drop, Rockers kicks on beat 1 and beat 3, with militaristic rolling snare syncopations.",
     "tags": [
           "rockers",

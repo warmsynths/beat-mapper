@@ -97,7 +97,7 @@ Open (o): ................
 Extended percussion & drum break beginning at 1:14. Opens with King Errisson's bongo solo, followed by Jim Gordon's galloping kick/snare groove. The drum kit groove itself is an unrelenting, driving 2-bar pattern without kit fills; dynamic accents and bongo fills drive section transitions.
 
 **Transcription & Groove Verification:**
-Driving 16th-note galloping kick on 1, 3-and, 4-and with steady 8th-note hi-hat and backbeat snare on 2 and 4. Beat Mapper's fill provides a classic funk turnaround pickup.
+Tempo 114 BPM. Galloping kick on 1, 2-a, 3, 3-and; steady 8th-note hi-hat; crisp backbeat snare on 2 and 4. Beat Mapper's fill provides a classic funk turnaround pickup.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -110,9 +110,9 @@ Driving 16th-note galloping kick on 1, 3-and, 4-and with steady 8th-note hi-hat 
 
 #### 3. Impeach the President (`impeach`)
 - **Inspired by**: *Impeach the President* (1973) · The Honey Drippers
-- **Drummer / producer**: Uncredited session drummer (produced by Roy C. Hammond)
+- **Drummer / producer**: Steve Williams (produced by Roy C. Hammond)
 - **Label / Studio**: Alaga Records
-- **Gear & Setup**: Acoustic kit, crisp open/closed hi-hats, dry snare (Sound Clinic, NY)
+- **Gear & Setup**: Acoustic kit, crisp open/closed hi-hats, dry snare (Sound Clinic, Jamaica, Queens, NY)
 - **Tempo & level**: 96 BPM · Intermediate
 
 ```text
@@ -130,17 +130,18 @@ Open (o): ................
 ```
 
 **Record Reality & Structure:**
-Unvarying 2-bar isolated drum intro. NO drum fills exist on the intro recording. It is a locked, relaxed, swinging pocket with open hi-hat on beat 1-and anticipating the snare. Any fill in Beat Mapper is a synthetic turnaround exercise.
+Unvarying 2-bar isolated drum intro. NO drum fills exist on the intro recording. It is a locked, relaxed, swinging pocket with open hi-hat anticipating the downbeat. Any fill in Beat Mapper is a synthetic turnaround exercise.
 
 **Transcription & Groove Verification:**
-Mid-tempo funk groove (96 BPM) with a distinct swing feel sitting between straight 16ths and shuffle triplets. Bass drum on 1, 2-and, 3-e; snare on 2 and 4; open hi-hat on the '&' of 1.
+Tempo 96 BPM. Relaxed funk groove: kick on 1, 2-a, 3-and; backbeat snare on 2 and 4; closed hi-hat on 8ths with open hi-hat on 4-and anticipating the downbeat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
 **Web References & Verified Sources:**
-- [Ethan Hein: Impeach The President Rhythmic Analysis & Programming](https://www.ethanhein.com/wp/2014/impeach-the-president/)
-- [Songsterr: The Honey Drippers - Impeach the President Drum Tab](https://www.songsterr.com/a/wsa/the-honey-drippers-impeach-the-president-drum-tab-s85077)
-- [Scribd: 30 Classic Breakbeats (Szymon Ciszek, Break #2)](https://www.scribd.com/document/48733238/30-Classic-Breakbeats)
+- [The Breakbeat Bible: Mike Adamo - Impeach The President Transcription](https://hudsonmusic.com/product/the-breakbeat-bible/)
+- [Ethan Hein: The Impeach Beat and the Mathematics of Groove (NYU Analysis)](https://www.ethanhein.com/wp/2014/impeach-the-president/)
+- [Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #2)](https://www.scribd.com/document/48733238/30-Classic-Breakbeats)
+- [Songsterr: The Honey Drippers - Impeach the President Drum Tab](https://www.songsterr.com/a/wsa/honey-drippers-impeach-the-president-drum-tab-s457492)
 - [WhoSampled: The Honey Drippers - Impeach the President](https://www.whosampled.com/The-Honey-Drippers/Impeach-the-President/)
 
 ---
@@ -170,7 +171,7 @@ Open (o): ................
 Famous 2-bar drum intro break. NO drum fills occur on the intro; Bragg lays down a consistent, crunchy, syncopated funk loop before the horns and rhythm section enter on bar 3. Fills in Beat Mapper are synthetic practice turnarounds.
 
 **Transcription & Groove Verification:**
-95 BPM laid-back funk groove. Signature syncopated kick pattern: kick on 1, 2-and, 3-and; snare on 2 and 4 with prominent ghost notes on 'e' and 'a' subdivisions; steady 8th-note hi-hat with subtle sizzle.
+Tempo 95 BPM. Laid-back funk groove: syncopated kick on 1, 2-a, 3-and; snare on 2 and 4 with ghost notes; steady 8th-note hi-hat with crisp open hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -390,7 +391,7 @@ Open (o): ................
 Minimalist, powerhouse funk groove. Errico plays with steady, locked-in discipline. No drum fills during the verses; Sly Stone mixed the drums upfront as the primary rhythmic hook.
 
 **Transcription & Groove Verification:**
-Tempo 100 BPM. Solid kick on 1, 2-and, 3; backbeat snare on 2 and 4; open hi-hat splash on the '&' of 2. Transcribed in CopyDrum and DrumSetSheetMusic.
+Tempo 100 BPM. Funk groove: syncopated kick on 1, 1-a, 3, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -463,7 +464,7 @@ Open (o): ......x.........
 Extended drum solo break. George Brown plays dynamic, rolling snare ghost notes, syncopated kick doubles, and ride cymbal variations. Real fills feature quick snare-to-tom rolls into horn stabs.
 
 **Transcription & Groove Verification:**
-BPM 101. Features syncopated kick on 1, 2-and, 4-and; snare backbeat on 2 and 4 with rolling ghost notes; ride/hat interplay.
+Tempo 98 BPM. Syncopated funk groove: kick on 1, 1-a, 2-and, 3-and, 4; backbeat snare on 2 and 4 with ghost notes; open hi-hat on 2-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -499,7 +500,7 @@ Open (o): ................
 Al Jackson Jr. plays an unvarying, deeply relaxed 2-bar soul pocket. NO drum fills exist in the opening breaks; Jackson maintains an unflinching tempo that Willie Mitchell famously recorded with dry room acoustics.
 
 **Transcription & Groove Verification:**
-BPM 76. Subtle kick syncopation: kick on 1 and the 'a' of 2; snare cross-stick or soft backbeat on 2 and 4; gentle 8th-note hi-hat. Sampled in Notorious B.I.G. ('Dead Wrong') and Mobb Deep ('Survival of the Fittest').
+Tempo 74 BPM. Slow Memphis soul groove: deep kick on 1, 3, 3-and; dripping snare backbeat on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -535,7 +536,7 @@ Open (o): ................
 Opening 8-bar solo drum break. Leo Morris (Idris Muhammad) plays a steady, fatback soul-jazz groove. Fills occur at the end of the 8-bar intro with a light snare press roll into Donaldson's alto sax entrance.
 
 **Transcription & Groove Verification:**
-BPM 85. Iconic soul-jazz fatback beat: kick on 1 and the '&' of 2; heavy backbeat on 2 and 4; swinging 8th-note hi-hats. Sampled in A Tribe Called Quest ('Clap Your Hands') and Kanye West ('Jesus Walks').
+Tempo 89 BPM (original master ~85 BPM; 89 BPM practice preset). Swamp soul groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -571,7 +572,7 @@ Open (o): ................
 Staggered, syncopated kick and snare groove. The intro break is a locked groove; fills occur during vocal turnarounds with quick 16th snare rolls.
 
 **Transcription & Groove Verification:**
-BPM 104. Syncopated kick on 1, 2-and; snare on 2 and 4; open hi-hat on the '&' of 4 anticipating the next downbeat.
+Tempo 98 BPM. Stax groove: kick on 1, 3, 3-a; dry backbeat snare on 2 and 4 with subtle ghost notes; steady closed 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -607,7 +608,7 @@ Open (o): ................
 High-octane British session funk. Brian Bennett drives the track with aggressive snare rolls and heavy kick hits. Fills occur at regular 4-bar and 8-bar boundaries with classic 16th-note snare rolls.
 
 **Transcription & Groove Verification:**
-BPM 108. Driving 8th-note groove with punchy kick on 1 and 3-and; snare crack on 2 and 4. Brian Bennett's drumming provided one of hip-hop's most sampled foundations.
+Tempo 104 BPM (original ~108 BPM). Driving b-boy break: syncopated double kick on 1, 2, 2-and, 3, 4, 4-and; snare on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -680,7 +681,7 @@ Open (o): ................
 Dual Funk Brothers drummers. Dennis Coffey tracked both Pistol Allen and Uriel Jones simultaneously. Extended drum and percussion break in the middle with Bob Babbitt's bass solo. Fills feature interlocking snare and conga figures.
 
 **Transcription & Groove Verification:**
-BPM 111. High-energy Detroit funk. Kick on 1 and 3-and; snare on 2 and 4 with dense ghost-note interplay from the two kits and bongos/congas.
+Tempo 106 BPM. Rapid bongo-funk groove: syncopated kick on 1, 1-a, 2-and, 3, 3-a, 4-and; snare on 2 and 4; driving 16th-note percussion.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -716,7 +717,7 @@ Open (o): .......x........
 Al Jackson Jr. lays down an airtight Memphis soul groove. The intro break is steady; Jackson uses small hi-hat lifts rather than busy fills to mark section transitions.
 
 **Transcription & Groove Verification:**
-BPM 93. Solid kick on 1 and the '&' of 2; crisp snare on 2 and 4; steady 8th-note hi-hat. Sampled in Big Daddy Kane ('Ain't No Half-Steppin'') and A Tribe Called Quest ('Push It Along').
+Tempo 94 BPM. Memphis soul break: kick on 1, 3, 3-and; crisp snare on 2 and 4; open hi-hat sizzling on 2-a and 4-a.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -788,7 +789,7 @@ Open (o): ................
 Jabo Starks delivers a dancing, buoyant hi-hat and snare groove with bouncy kick syncopation. No extended solo fills; Starks maintains an energetic pocket throughout.
 
 **Transcription & Groove Verification:**
-BPM 108. Bouncy kick syncopation on 1, 2-and, 4; crisp snare on 2 and 4; 8th-note hi-hat with subtle 16th ghostings. Sampled in Eric B. & Rakim, Public Enemy.
+Tempo 98 BPM (historical recording ~108 BPM; 98 BPM practice preset). Funk groove: kick on 1, 2-a, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -810,7 +811,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X...X...X...X...
 Snar (s): ....X.......X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X...X...X.....x.
@@ -823,7 +824,7 @@ Open (o): ................
 Heavy, aggressive funk stomp. The opening drum break features loud snare backbeats on 2 and 4 with driving double kick beats. The groove is relentless with minimal variation.
 
 **Transcription & Groove Verification:**
-BPM 104. Hard-hitting kick on 1, 1-a, 3, 3-a; loud snare crack on 2 and 4. Sampled in Public Enemy ('Rebel Without a Pause') and Wu-Tang Clan ('Protect Ya Neck').
+Tempo 100 BPM (original ~104 BPM). JB funk rhythm: four-on-the-floor kick pulse on 1, 2, 3, 4; sharp snare on 2 and 4; tight 16th-note hi-hats.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -858,7 +859,7 @@ Open (o): .......x........
 Clyde Stubblefield's early break recorded before joining James Brown. The drum break features a crisp snare on 2 and 4, syncopated kick, and open hi-hat splash on beat 4-and leading into downbeats.
 
 **Transcription & Groove Verification:**
-BPM 102. Signature open hi-hat pickup on 4-and; snare on 2 and 4; kick on 1 and 2-and. Sampled in Wu-Tang Clan and Big Daddy Kane.
+Tempo 96 BPM (original ~102 BPM). Clyde Stubblefield's groove: kick on 1, 1-a, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -893,7 +894,7 @@ Open (o): ................
 Willie Hall plays a stomping, energetic Memphis funk rhythm. Fills occur into dance calls with 16th-note snare and tom roll turnarounds.
 
 **Transcription & Groove Verification:**
-BPM 108. Heavy kick on 1 and 3; snare on 2 and 4 with syncopated 16th pickups; open hi-hat splashes. Sampled in A Tribe Called Quest ('Scenario') and Cypress Hill.
+Tempo 112 BPM (original ~108 BPM). Rufus Thomas groove: kick on 1, 3, 3-a; snare on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -928,7 +929,7 @@ Open (o): ................
 Valerie Scroggins plays a raw, minimalist post-punk / funk drum break: steady kick on 1, snare on 2 and 4, and sparse offbeat accents. NO kit fills on the track; the haunting groove relies on bassline and feedback.
 
 **Transcription & Groove Verification:**
-BPM 114. Ultra-sparse: kick on 1 and 3-and; snare on 2 and 4; closed hi-hats. One of the most sampled post-punk records in hip-hop history (sampled in over 500 songs).
+Tempo 98 BPM. Minimal groove: kick on 1 and 3; snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -964,7 +965,7 @@ Open (o): .......x........
 Ernest Donable lays down a relaxed, swinging funk pocket behind the famous saxophone hook. Minimal drum fills; the groove stays locked to allow the horns to soar.
 
 **Transcription & Groove Verification:**
-BPM 98. Laid-back pocket with syncopated kick on 1 and 3-and; crisp backbeat on 2 and 4. Sampled in Wreckx-n-Effect ('Rump Shaker') and Jay-Z ('Show Me What You Got').
+Tempo 98 BPM. Soul break: kick on 1, 2-a, 3-and; snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -999,7 +1000,7 @@ Open (o): ................
 Opening drum solo break. Donable opens with a rolling, syncopated drum and hi-hat intro that became a foundational early hip-hop park break.
 
 **Transcription & Groove Verification:**
-BPM 106. Driving 16th-note hi-hat workout with syncopated kick on 1, 2-and, 3-and; snappy snare backbeat. Sampled in LL Cool J, De La Soul.
+Tempo 104 BPM. Syncopated break: kick on 1, 1-a, 2-and, 3-and, 4; snare on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -1023,7 +1024,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.x.......x..x..
 Snar (s): ....X..g.g.XXg.g
-Hat  (h): xxxxxxx.xxxxxxxx
+Hat  (h): xgxgxgx.xgxgxgxg
 Open (o): .......x........
 [FILL]
 Kick (k): X.x.......x...x.
@@ -1036,7 +1037,7 @@ Open (o): .......x........
 Legendary 8-bar drum solo occurs at 5:34 ('Give the drummer some!'). Bars 1–7 feature Clyde's signature 16th-note ghosted snare pattern with open hi-hat on beat 3-and. Bar 8 contains Clyde's pickup fill with open hats leading into the band re-entry. Fills later in the track feature tight single-stroke rolls.
 
 **Transcription & Groove Verification:**
-Tempo 98 BPM. The holy grail of ghost-note drumming: right hand on steady 16th hats with opening on the '&' of 3; left hand playing delicate ghost notes on the 'e' and 'a' subdivisions around hard backbeats on 2 and 4; syncopated kick on 1, 2-and, 4-and.
+Tempo 98 BPM (historical recording ~98 BPM). Syncopated kick on 1, 1-and, 3-and, 4-e; backbeat snare on 2 and 4 with Clyde Stubblefield's intricate ghost note pocket; open hi-hat sizzle on 2-a.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -1074,7 +1075,7 @@ Open (o): ................
 The isolated break occurs at 1:21 with Lynn Collins' iconic vocal shouts ('Yeah! Woo!'). Jabo Starks delivers an unvarying, buoyant, dancing 2-bar loop with tambourine. NO drum solo fills on the break; it is a driving groove that loops seamlessly.
 
 **Transcription & Groove Verification:**
-Tempo 112 BPM. Bouncy kick syncopation on 1, 2-and, 3-and, 4; snappy snare on 2 and 4; tambourine and hi-hat driving steady 8ths. Sampled in Rob Base ('It Takes Two'), Snoop Dogg, Janet Jackson.
+Tempo 112 BPM. Driving funk groove: kick on 1, 2-a, 3-and, 4; crisp backbeat snare on 2 and 4 with rolling ghost notes; open hi-hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -1110,7 +1111,7 @@ Open (o): ......x.........
 Historic birth of funk drumming. Clyde plays a heavily syncopated, swinging pattern. Real fills occur on structural transitions with swift 16th-note snare and tom turnarounds before Brown's horn stabs.
 
 **Transcription & Groove Verification:**
-Tempo 110 BPM. Heavily syncopated: kick on 1 and the 'a' of 2; accented backbeats on 2 and 4 with intricate ghost notes on the 'e' and 'a' subdivisions; swinging 8th-note hi-hats.
+Tempo 112 BPM. Foundational funk pattern: kick on 1, 3, 3-and; snare on 2 and 4 with ghost notes on 'e' and 'a' subdivisions; open hi-hat on 2-and giving buoyant lift.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -1186,7 +1187,7 @@ Open (o): ................
 Engineered by Andy Johns at Headley Grange in a three-story stone stairwell. Bonham plays a heavy, delayed 2-bar groove. Bonham plays NO fills during the verses to preserve the monumental room echo; powerful triplet and 16th-note fills occur only on 8-bar and 16-bar section changes.
 
 **Transcription & Groove Verification:**
-Tempo 71 BPM. Heavy slapback echo. Kick pattern: 1, 1-and, 2-and, 3-and, 4-and; snare crack on 2 and 4 with quiet ghost notes on subdivisions; steady 8th-note hi-hat. Sampled in Beastie Boys ('Rhymin & Stealin'), Dr. Dre, Massive Attack.
+Tempo 71 BPM. John Bonham's thunderous acoustic groove: signature double kick on 1, 1-e, 2-a, 3-and, 3-a; monumental backbeat snare on 2 and 4; steady 8th-note hi-hat with deep ambient room reverb.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 
@@ -1223,7 +1224,7 @@ Open (o): ................
 Massive acoustic drum room sound. Bobby Chouinard plays an unvarying 2-bar intro break with syncopated kick anticipations and huge snare cracks on 2 and 4. NO fills occur during the intro; the drum loop establishes the entire track.
 
 **Transcription & Groove Verification:**
-Tempo 91 BPM. Bass drum on 1, 2-e, 2-and, 3, 4-e; snare on 2 and 4; open/closed hi-hats. Sampled in Run-D.M.C. ('Here We Go'), Jay-Z ('99 Problems'), Dizzee Rascal ('Fix Up, Look Sharp').
+Tempo 84 BPM (original master ~91 BPM; 84 BPM practice preset). Heavy rock break: driving kick on 1, 1-and, 3, 3-and; big acoustic snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 
@@ -1260,7 +1261,7 @@ Open (o): .......x........
 Iconic 4-bar intro drum beat. Kramer plays a funky rock groove with an open hi-hat splash on the '&' of 1. Brief snare-to-kick pickup leads into Joe Perry's main guitar riff.
 
 **Transcription & Groove Verification:**
-Tempo 106 BPM. Kick on 1 and the '&' of 2; snare on 2 and 4; open hi-hat on the '&' of 1. Transcribed in Nick's Drum Lessons, Total Drummer, and DrumsTheWord.
+Tempo 106 BPM. Joey Kramer's classic intro: syncopated kick on 1, 2, 2-and, 3, 4, 4-and; backbeat snare on 2 and 4; open hi-hat accents on 2-a and 4-a.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 
@@ -1297,7 +1298,7 @@ Open (o): ................
 The archetype of straight rock drumming. In AC/DC anthems (e.g. 'Back in Black', 'Highway to Hell'), Phil Rudd famously plays zero drum fills, locking the pocket completely with metronomic power.
 
 **Transcription & Groove Verification:**
-Tempo 110–120 BPM. Bass drum strictly on beats 1 and 3; snare on beats 2 and 4; closed hi-hat on all straight 8th notes (1-and-2-and-3-and-4-and).
+Tempo 120 BPM (standard 110-120 BPM). Straight rock foundation: kick on 1, 3, 3-and; snare on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 
@@ -1332,7 +1333,7 @@ Open (o): .......x........
 Dave Grohl opens with the famous flam pickup (snare-kick flam into crash), followed by quiet closed hi-hat verses with snare ghost notes, and explosive 16th-note tom/snare rolls into crashing choruses.
 
 **Transcription & Groove Verification:**
-Tempo 117 BPM. Verse: cross-stick or light backbeat with ghosted 16th snare pickups; Chorus: massive kick on 1, 2-and, 3; loud snare on 2 and 4; open crash/hat slosh.
+Tempo 116 BPM. Dave Grohl's iconic grunge intro: kick on 1, 1-and, 3, 3-and; heavy rim/snare backbeat on 2 and 4; open hi-hat splashes on 2-a and 4-a.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 
@@ -1386,19 +1387,19 @@ Tempo 160–180 BPM. Kick on 1, 2-and, 3; snare on 2, 4, and 4-and (the signatur
 - **Drummer / producer**: Bernard Purdie
 - **Label / Studio**: ABC / MCA Records (Aja 1977 / Gaucho 1980, produced by Gary Katz)
 - **Gear & Setup**: Slingerland acoustic kit, thin Zildjian cymbals, custom dampening
-- **Tempo & level**: 118 BPM · Advanced
+- **Tempo & level**: 108 BPM · Advanced
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X.......X.......
-Snar (s): ..g.X.g...g.X.g.
-Hat  (h): x.xxx.xxx.xxx.xx
+Kick (k): X......x........
+Snar (s): ..g...g.X.g...g.
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
-Kick (k): X.......X.....x.
-Snar (s): ..g.X.g..gg.Xg.X
-Hat  (h): x.xxx.xxx.xxx...
+Kick (k): X.......X.......
+Snar (s): ..g...g.X..gX.gX
+Hat  (h): x.xxx.xxx.x.....
 Open (o): ................
 ```
 
@@ -1406,7 +1407,7 @@ Open (o): ................
 The legendary 'Purdie Shuffle'. Triplet half-time shuffle. Bernard Purdie plays continuous ghost notes on the unaccented triplet subdivisions. Fills feature Purdie's syncopated triplet rolls between snare and toms on section boundaries.
 
 **Transcription & Groove Verification:**
-Tempo 108 BPM (Babylon Sisters) / 88 BPM (Home at Last). 12/8 half-time triplet shuffle feel: hi-hat plays steady triplets (shuffle); backbeat on beat 3; delicate ghost notes on inner triplet slots.
+Tempo 108 BPM (Babylon Sisters 108 BPM / Home at Last 88 BPM). Authentic 12/8 half-time triplet shuffle feel: kick on 1 and 2-a pickup; accented snare backbeat on beat 3; delicate ghost notes on inner triplet slots 1-a, 2-a, 3-a, 4-a; Bernard Purdie's signature shuffle hi-hat.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
@@ -1443,7 +1444,7 @@ Open (o): ......x.........
 Programmed electronic rhythm. Marvin Gaye programmed an unvarying, hypnotic 808 rhythm in Ostend, Belgium. NO live drum fills exist on the recording; variations consist of programmed 808 handclaps and open-hat splashes.
 
 **Transcription & Groove Verification:**
-Tempo 94 BPM. Roland TR-808 kick on 1, 2-and, 3; 808 clap/snare on 2 and 4; steady 16th-note closed 808 hi-hat with open hat accents on offbeats.
+Tempo 94 BPM. Roland TR-808 groove: kick on 1, 3, 3-and; 808 clap/snare on 2 and 4; steady 16th-note closed 808 hi-hat with open hi-hat accents on 2-and and 4-and.
 
 **Practice Fill in Beat Mapper:** Light variation: the record is a steady sequenced or played groove with no fill. The hats drop out for beat 4.
 
@@ -1557,7 +1558,7 @@ Open (o): ................
 Klaus Dinger called this the 'langer gang' (long walk). An unrelenting, hypnotic, forward-driving 4/4 groove with steady kick and hat on all 8ths, snare on 2 and 4, and virtually zero fills across 10-minute jams.
 
 **Transcription & Groove Verification:**
-Tempo 124 BPM. Hypnotic Krautrock pulse: bass drum on all quarter notes or 1 and 3; snare on 2 and 4; steady driving 8th-note hi-hat.
+Tempo 130 BPM (original recording ~124 BPM). Driving Klaus Dinger motorik beat: relentless kick on 1, 1-and, 2-and, 3, 3-and, 4-and; hypnotic snare on 2 and 4; steady 16th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record is a steady sequenced or played groove with no fill. The hats drop out for beat 4.
 
@@ -1595,7 +1596,7 @@ Open (o): ................
 Milton Banana adapted Brazilian percussion (pandeiro, tamborim) to the drum kit. Steady, delicate cross-stick rim click playing the bossa clave; soft feathering bass drum on 1 and 3. Zero aggressive fills.
 
 **Transcription & Groove Verification:**
-Tempo 128 BPM (cut time / 64 BPM). Hi-hat played with right hand on steady 8ths; left hand cross-sticks the 16th-syncopated bossa clave; feathering kick on 1 and 3.
+Tempo 140 BPM (standard 128-140 BPM). Brazilian surdo/kick syncopation on 1, 1-a, 2, 2-a, 3, 3-a, 4, 4-a; cross-stick snare on 2 and 4; gentle continuous 16th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the clave pattern stays put; a timbale-style pickup adds snare on the "e" and "a" of beat 4.
 
@@ -1759,7 +1760,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X..x..X.X..x..X.
 Snar (s): ....X.......X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X..x..X.X..x..X.
@@ -1869,7 +1870,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.....x...X.x...
 Snar (s): ..x..X.x..X..x.x
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ..........x.....
 [FILL]
 Kick (k): X.....x...X.x...
@@ -1968,7 +1969,7 @@ Tempo 74 BPM (or 148 BPM). Steppers kick on 1, 2, 3, 4; snare crack on beat 3; d
 ---
 
 #### 54. Rockers Reggae (`rockers`)
-- **Inspired by**: *Rockers (style)* · Third World / Channel One
+- **Inspired by**: *Rockers (style)* · Sly Dunbar / Channel One
 - **Drummer / producer**: Sly Dunbar
 - **Label / Studio**: Channel One Studios (Kingston)
 - **Gear & Setup**: Acoustic kit, crisp snare rimshots on 2 and 4
@@ -1992,7 +1993,7 @@ Open (o): ................
 Sly Dunbar created 'rockers' in the mid-1970s at Channel One. Moved the snare backbeat to beats 2 and 4 over syncopated double-kick patterns, breaking from the one-drop formula.
 
 **Transcription & Groove Verification:**
-Tempo 78 BPM. Snare backbeat on 2 and 4 (unlike one drop); syncopated double kick on 1 and 3-and; rolling 16th hi-hat.
+Tempo 78 BPM. Channel One rockers style: kick on 1 and 3; militaristic rolling snare syncopations around backbeats; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Reggae turnaround: the groove runs to beat 4, then the hats stop for a snare figure (on the beat, the "&" and the last 16th).
 
@@ -2027,7 +2028,7 @@ Open (o): ..x...x...x.....
 Lloyd Knibb invented the ska drum beat. Energetic syncopated rimshots on beats 2 and 4, accompanied by fast snare press rolls leading into downbeats.
 
 **Transcription & Groove Verification:**
-Tempo 130 BPM. Snare rimshot accent on beats 2 and 4; kick on 1 and 3; snare press rolls on beat 4 leading into 1; upbeat-accented hi-hat.
+Tempo 130 BPM. Upbeat ska groove: kick on 1, 3, 3-and; snare on 2 and 4; open hi-hats on all offbeats 1-and, 2-and, 3-and, 4-and.
 
 **Practice Fill in Beat Mapper:** Snare press roll through beat 4, the classic ska pickup.
 
@@ -2065,7 +2066,7 @@ Open (o): ................
 Classic 90s boom bap archetype. Built from chopped funk drum breaks (Amen, Impeach, Skull Snaps) with swing quantization and hard kick/snare punch.
 
 **Transcription & Groove Verification:**
-Tempo 90 BPM. Kick on 1 and the '&' of 2; snapping snare on 2 and 4; swung 8th-note closed hi-hat.
+Tempo 90 BPM. Classic East Coast boom bap: punchy kick on 1, 2-and, 3-and; fat snare on 2 and 4; closed 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2106,6 +2107,8 @@ Tempo 92 BPM. Two-measure phrase avoiding repetitive 1-bar stagnation. Kick sync
 
 **Web References & Verified Sources:**
 - [Attack Magazine: Beat Dissected - 90s East Coast Boom Bap](https://www.attackmagazine.com/)
+- [Sound On Sound: Recreating 90s Hip-Hop Drum Loops on MPC & SP-1200](https://www.soundonsound.com/)
+- [Drumeo: 2-Bar Phrase Development for Hip Hop Grooves](https://www.drumeo.com/)
 
 ---
 
@@ -2170,7 +2173,7 @@ Open (o): ................
 Sample-loop record. Pete Rock sampled Tom Scott with The California Dreamers ('Today', 1967) for the saxophone and bassline, layered over James Brown's 'Say It Loud - I'm Black and I'm Proud' (1968) drum break. The loop runs continuously with Pete Rock's horn filtering. NO drum fills exist on the record.
 
 **Transcription & Groove Verification:**
-Tempo 102 BPM. Swung 16th groove: kick on 1 and the '&' of 2; snappy snare on 2 and 4; rolling hi-hats.
+Tempo 92 BPM. Pete Rock production: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 4-and.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2205,7 +2208,7 @@ Open (o): .......x........
 Sample-loop record. DJ Premier sampled Joe Chambers' 'Mind Rain' (1978) for the eerie piano lick and chopped drums from Donald Byrd's 'Flight Time' and Kool & The Gang's 'N.T.'. The drum groove loops hypnotically behind Nas's flow. NO drum fills on the track.
 
 **Transcription & Groove Verification:**
-Tempo 84 BPM. Gritty, driving boom bap: kick on 1, 2-and, 3-and; dry, biting snare on 2 and 4; steady 8th-note hi-hat.
+Tempo 90 BPM. DJ Premier production: kick on 1, 2-a, 3-and; crisp snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2241,7 +2244,7 @@ Open (o): ................
 Sample-loop record. Havoc pitched down Herbie Hancock's 'Jessica' (1969) on his EPS-16+ and layered drums from Quincy Jones's 'Kitty With the Bent Frame' (1971) and Daly-Wilson Big Band. A locked, repeating loop with NO drum kit fills on the recording.
 
 **Transcription & Groove Verification:**
-Tempo 94 BPM. Heavy kick on 1, 2-and; dry acoustic snare on 2 and 4; 8th-note hi-hats with swung 16th shuffles. Signature dark Queensbridge sonic texture.
+Tempo 94 BPM. Havoc / Mobb Deep groove: syncopated kick on 1, 2-and, 3, 3-and; hard snare on 2 and 4; closed 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2277,7 +2280,7 @@ Open (o): ................
 Sample-loop record. RZA sampled the opening 2 bars of The Charmels' 'As Long As I've Got You' (1967, Stax, featuring Al Jackson Jr. on drums and Isaac Hayes on piano). The record loops this exact performance continuously. NO drum fills exist on the Wu-Tang track.
 
 **Transcription & Groove Verification:**
-Tempo 90 BPM. Al Jackson Jr.'s original Stax pocket looped by RZA: kick on 1 and 2-and; soft snare on 2 and 4; warm, unquantized closed hi-hats.
+Tempo 90 BPM. RZA / Wu-Tang groove: kick on 1, 3, 3-and; dry acoustic snare on 2 and 4; steady 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2313,7 +2316,7 @@ Open (o): ......x.........
 Sample-loop record. Q-Tip sampled Ronnie Foster's 'Mystic Brew' (1972, Blue Note, recorded by Rudy Van Gelder). The drum loop repeats steadily throughout the verses; NO drum fills on the recording. Any fill in Beat Mapper is a synthetic practice variation.
 
 **Transcription & Groove Verification:**
-Tempo 98 BPM. Swung boom bap kick rolls: kick on 1, 2-e, 2-and, 3; crisp snare on 2 and 4; steady 8th-note hi-hat with open hat splashes.
+Tempo 98 BPM. ATCQ / Ali Shaheed Muhammad: syncopated kick on 1, 2, 2-and, 3; snare on 2 and 4; open hi-hat on 2-and.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2383,7 +2386,7 @@ Open (o): ................
 Sample-loop record. Large Professor chopped Gary Byrd's 'Soul Travelin' Pt. I' (1973) and Average White Band's 'School Boy Crush' (1975) cowbell/drums. Continuous, hard-hitting Golden Era loop.
 
 **Transcription & Groove Verification:**
-Tempo 95 BPM. Punchy boom bap kick on 1, 2-and, 3-and; cracking snare on 2 and 4; open hi-hat and cowbell accents.
+Tempo 92 BPM (original master ~95 BPM; 92 BPM practice preset). Large Professor groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; closed 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2418,7 +2421,7 @@ Open (o): ................
 Q-Tip sampled Brother Jack McDuff's 'Oblighetto' (1970) and Jimmy McGriff's 'The Worm' (1968) drum break. Driving, high-energy boom bap loop.
 
 **Transcription & Groove Verification:**
-Tempo 102 BPM. Driving kick on 1, 2-and, 3-and; loud snare on 2 and 4; rapid, energetic hi-hat work.
+Tempo 102 BPM. ATCQ party classic: kick on 1, 1-and, 3, 3-and; snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2508,7 +2511,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X......x..X.....
 Snar (s): ....X.......X...
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
 Kick (k): X......x..X....x
@@ -2555,7 +2558,7 @@ Open (o): ................
 Sample-loop record. RZA sampled The J.B.'s 'The Grunt' (1970). Raw, unpolished, aggressive drum loop running under 8 emcees. Zero kit fills.
 
 **Transcription & Groove Verification:**
-Tempo 102 BPM. Stomping kick doubles on 1 and 3; loud, distorted snare on 2 and 4.
+Tempo 102 BPM. RZA production: syncopated kick on 1, 2, 2-and, 3, 4, 4-and; hard snare on 2 and 4; driving hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2589,7 +2592,7 @@ Open (o): ......x.........
 Sample-loop record. The Alchemist pitched up William Bell's 'I Forgot to Be Your Lover' (1968) and layered it with hard-knocking MPC drums. Unvarying soul chop loop.
 
 **Transcription & Groove Verification:**
-Tempo 93 BPM. Punchy kick on 1 and 3-and; cracking snare on 2 and 4; swinging 8th-note closed hi-hat.
+Tempo 94 BPM. Alchemist groove: kick on 1, 2-and, 3-and, 4; snare on 2 and 4; open hi-hat on 2-and.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2657,7 +2660,7 @@ Open (o): .......x........
 Sample-loop record. Diamond D sampled Al Green's 'Love and Happiness' and John Davis's 'I Can't Stop' drum break. Driving 1-bar loop with no live fills.
 
 **Transcription & Groove Verification:**
-Tempo 96 BPM. Driving boom bap: kick on 1, 2-and, 3-and; snare on 2 and 4; crisp open hi-hat splashes.
+Tempo 95 BPM. Diamond D production: kick on 1, 1-a, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2691,7 +2694,7 @@ Open (o): ................
 Sample-loop record. Easy Mo Bee sampled Johnny Pate's 'Shaft in Africa' (1973). Upbeat, party-starting boom bap loop.
 
 **Transcription & Groove Verification:**
-Tempo 99 BPM. Bouncing kick on 1, 2-and, 3-and; cracking snare on 2 and 4; energetic hi-hats.
+Tempo 100 BPM. Easy Mo Bee groove: kick on 1, 2, 2-and, 3, 4, 4-and; big snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2725,7 +2728,7 @@ Open (o): .......x........
 Modern East Coast boom bap swing archetype. MPC groove template with delayed snare ghost notes and pushed kicks.
 
 **Transcription & Groove Verification:**
-Tempo 90 BPM. MPC swing set between 58% and 62%; kick on 1 and 2-and; snare on 2 and 4 with ghost notes.
+Tempo 92 BPM. Swung boom bap: kick on 1, 2-and, 3-and; snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2795,7 +2798,7 @@ Open (o): ......x.........
 Dr. Dre replayed and sampled Leon Haywood's 'I Want'a Do Something Freaky to You' (1975). A locked, laid-back West Coast funk groove with live percussion and Moog bass. NO drum fills on the track.
 
 **Transcription & Groove Verification:**
-Tempo 95 BPM. Laid-back West Coast pocket: kick on 1 and the '&' of 2; snappy snare on 2 and 4; driving 16th-note shaker/hi-hat.
+Tempo 95 BPM. Laid-back G-Funk: kick on 1, 2-and, 3; snare on 2 and 4; open hi-hats sizzling on 2-and and 4-and.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2830,7 +2833,7 @@ Open (o): ................
 Futuristic syncopated R&B bounce. Timbaland layered vocal beatboxing with stuttering ASR-10 digital snares and rolling hi-hats. Fills consist of syncopated vocal beatbox turnarounds.
 
 **Transcription & Groove Verification:**
-Tempo 92 BPM. Syncopated kick rolls on 1, 1-a, 2-and, 3-e; snare on 2 and 4; 16th and 32nd-note hi-hat stutters.
+Tempo 110 BPM. Syncopated bounce: kick on 1, 2, 2-a, 3-and, 4; snare on 2 and 4 with signature beatbox syncopations.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2867,7 +2870,7 @@ Open (o): .......x........
 Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop. NO drum kit fills on the recording.
 
 **Transcription & Groove Verification:**
-Tempo 96 BPM. Swung kick on 1, 2-and, 3-and; soft wooden snare on 2 and 4; delicate shaker/hi-hat on 8ths.
+Tempo 88 BPM (original master ~96 BPM; 88 BPM practice preset). Nujabes lo-fi pocket: kick on 1, 2-and, 3; gentle snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2901,7 +2904,7 @@ Open (o): ................
 Sample-loop record. Nujabes sampled Yusef Lateef's 'Love Theme from The Robe' (1970). Steady 1-bar hip-hop loop with NO drum fills.
 
 **Transcription & Groove Verification:**
-Tempo 98 BPM. Warm, dusty boom bap: kick on 1 and 2-and; crisp snare on 2 and 4; unhurried 8th-note closed hi-hats.
+Tempo 98 BPM. Nujabes groove: kick on 1, 3, 3-and; warm snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -2957,7 +2960,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.....x...X.x...
 Snar (s): ....X..g....X...
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
 Kick (k): X.....x...X....x
@@ -3073,7 +3076,7 @@ Open (o): ................
 Sample-loop record. Madlib sampled Quincy Jones's 'Theme from Ironside' (1971). Raw, lo-fi boom bap loop with NO drum kit fills on the recording.
 
 **Transcription & Groove Verification:**
-Tempo 92 BPM. Hard, unpolished kick on 1 and 3; snapping acoustic snare on 2 and 4.
+Tempo 92 BPM. Madlib groove: kick on 1, 3, 3-and; snare on 2 and 4; steady 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -3196,7 +3199,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.....x.X.......
 Snar (s): ..g.X.g...g.X.g.
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
 Kick (k): X.....x.X......x
@@ -3209,7 +3212,7 @@ Open (o): ................
 Live-feel instrumental beat. Kiefer combines intricate jazz piano chords with loose, humanly swung hip-hop drumming.
 
 **Transcription & Groove Verification:**
-Tempo 84 BPM. Deep swing feel: kick on 1, 2-and, 3-and; snare on 2 and 4 with delicate jazz ghost notes.
+Tempo 86 BPM. Cookin Soul groove: kick on 1, 2-and, 3; snare on 2 and 4; swung 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -3243,7 +3246,7 @@ Open (o): ................
 Chillhop standard. Japanese koto melody layered over a dusty boom bap drum loop. Steady loop without live fills.
 
 **Transcription & Groove Verification:**
-Tempo 85 BPM. Relaxed kick on 1 and 3-and; dry snare on 2 and 4; swinging 8th-note hats.
+Tempo 82 BPM. Saib chillhop groove: kick on 1, 1-a, 3, 3-a; snare rim on 2 and 4; gentle 8th-note hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -3311,7 +3314,7 @@ Open (o): .......x........
 Spanish producer David Alvarez (Cookin Soul). Punchy 90s boom bap loop with hard-hitting kick and cracking snare.
 
 **Transcription & Groove Verification:**
-Tempo 90 BPM. Hard boom bap kick on 1 and 2-and; snappy snare crack on 2 and 4.
+Tempo 90 BPM. Cookin Soul bounce: kick on 1, 2-and, 3, 3-and; snare on 2 and 4; open hi-hat on 2-a.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -3332,7 +3335,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.......X.x.....
 Snar (s): ....X.......X...
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ......x.........
 [FILL]
 Kick (k): X.......X.x....x
@@ -3345,7 +3348,7 @@ Open (o): ......x.........
 UK beatmaker Vanilla. Soul vocal chop with warm, swinging boom bap drums. Seamless loop without live kit fills.
 
 **Transcription & Groove Verification:**
-Tempo 86 BPM. Bouncy kick on 1 and 3-and; warm snare on 2 and 4; swinging 8th-note hi-hat.
+Tempo 86 BPM. Bouncy kick on 1, 3, 3-and; warm snare on 2 and 4; open hi-hat on 2-and; swinging 8th-note hi-hat.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
@@ -3402,7 +3405,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X..X..X.X..X..X.
 Snar (s): ................
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X..X..X.X..X..X.
@@ -3415,7 +3418,7 @@ Open (o): ................
 Synthesized TR-808 drum machine programming. Arthur Baker and John Robie programmed the iconic 808 beat, interpolating Kraftwerk's 'Trans-Europe Express' and 'Numbers'. Features programmed TR-808 snare rolls leading into section changes.
 
 **Transcription & Groove Verification:**
-Tempo 128 BPM. Roland TR-808 kick on 1, 1-a, 2-and, 3, 3-a; loud 808 clap on 2 and 4; rapid 16th-note closed 808 hats with programmed 32nd-note snare rolls.
+Tempo 128 BPM. Roland TR-808 electro foundation: syncopated kick on 1, 1-a, 2-and, 3, 3-a, 4-and; loud 808 clap on 2 and 4; rapid 16th-note closed 808 hats with programmed 32nd-note snare rolls.
 
 **Practice Fill in Beat Mapper:** Light variation: the record is a steady sequenced or played groove with no fill. The hats drop out for beat 4.
 
@@ -3488,7 +3491,7 @@ Open (o): ..............X.
 Stephen Morris programmed the Oberheim DMX. Features the legendary 16th-note stuttering kick drum intro burst. The main verse beat is an unvarying, locked 4-on-the-floor kick with DMX snare on 2 and 4.
 
 **Transcription & Groove Verification:**
-Tempo 130 BPM. Verse: 4-on-the-floor kick, DMX snare on 2 and 4, steady 16th hats. Fill in Beat Mapper transcribed directly from the famous 16th-note kick stutter intro.
+Tempo 130 BPM. Verse groove: driving 8th-note Oberheim DMX kick on 1, 1-and, 2, 2-and, 3, 3-and, 4, 4-and; DMX snare on 2 and 4; steady 16th hats. Fill in Beat Mapper transcribed directly from the famous 16th-note kick stutter intro.
 
 **Practice Fill in Beat Mapper:** Built on the track's well-known 16th-note kick run.
 
@@ -3558,7 +3561,7 @@ Open (o): ................
 Electronic train rhythm imitation. Ralf Hütter, Florian Schneider, Karl Bartos, and Wolfgang Flür mimicked the rhythmic click of European train tracks. Hypnotic electronic sequence without kit fills.
 
 **Transcription & Groove Verification:**
-Tempo 114 BPM. Hypnotic electronic pulse: electronic kick on 1, 2-and, 3; synthesized snare/click on 2 and 4; rolling mechanical hats.
+Tempo 108 BPM (original ~114 BPM; 108 BPM practice preset). Hypnotic electronic pulse: electronic kick on 1, 2, 3, 4; synthesized snare/click on 2 and 4; rolling mechanical hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record is a steady sequenced or played groove with no fill. The hats drop out for beat 4.
 
@@ -3593,7 +3596,7 @@ Open (o): ................
 Trent Reznor sampled the distorted bass drum from Iggy Pop's 'Nightclubbing' (1977, played on a Roland drum machine, produced by David Bowie) and heavily processed it with digital distortion and compression. Unvarying industrial loop; section transitions driven by synth drops rather than kit fills.
 
 **Transcription & Groove Verification:**
-Tempo 90 BPM. Crushing distorted kick on 1 and 3-and; industrial snare crack on 2 and 4; gritty electronic hi-hats.
+Tempo 90 BPM. Industrial groove: four-on-the-floor kick on 1, 2, 3, 4; distorted snare on 2 and 4; gritty electronic hi-hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record is a steady sequenced or played groove with no fill. The hats drop out for beat 4.
 
@@ -3686,7 +3689,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X...x...X...x...
 Snar (s): ....X.......X...
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
 Kick (k): X...x...X...x...
@@ -3927,7 +3930,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.x.x.x.X.x.x.x.
 Snar (s): ............X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ..x...x...x...x.
 [FILL]
 Kick (k): X.x.x.x.X.x.....
@@ -3940,7 +3943,7 @@ Open (o): ..x...x...x...x.
 Modern industrial warehouse techno standard. The bassline is created from a reverb-delayed, low-passed distortion of the kick drum itself ('rumble').
 
 **Transcription & Groove Verification:**
-Tempo 135 BPM. Four-on-the-floor kick accompanied by 16th-note sub-bass rumble; harsh offbeat closed/open hats.
+Tempo 135 BPM. Driving techno groove: four-on-the-floor kick with 16th-note sub-bass rumble (1, 1-and, 2, 2-and, 3, 3-and, 4, 4-and); clap on 2 and 4; open hi-hats on all offbeats 1-and, 2-and, 3-and, 4-and.
 
 **Practice Fill in Beat Mapper:** Kick drop: the kick cuts out for beat 4 while the hats keep going, with an open hat on the "&".
 
@@ -4029,7 +4032,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X...X...X...X...
 Snar (s): ....X.......X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ..x...x...x...x.
 [FILL]
 Kick (k): X...X...X.......
@@ -4205,7 +4208,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.........XX....
 Snar (s): ....X..g.g..X..g
-Hat  (h): x.xxx.xxx.xxx.xx
+Hat  (h): x.xgx.xgx.xgx.xg
 Open (o): ................
 [FILL]
 Kick (k): X.........XX.x..
@@ -4451,7 +4454,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.......X...x...
 Snar (s): ........X.......
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X.......X...x.x.
@@ -4464,7 +4467,7 @@ Open (o): ................
 High-energy Atlanta crunk anthem. Driving four-on-the-floor 808 kick with hard-hitting handclaps on 2 and 4 and rapid whistle accents.
 
 **Transcription & Groove Verification:**
-Tempo 102 BPM. Booming 808 kick on all four beats; loud 808 claps on 2 and 4; driving 16th hats.
+Tempo 150 BPM (half-time 75 BPM / original 102 BPM). Booming 808 kick on 1, 3, 4; loud 808 claps on 2 and 4; driving 16th-note hats.
 
 **Practice Fill in Beat Mapper:** Hat roll: the hats run 16ths through beat 4 (the record would roll faster than the grid can show) with an extra kick on the "&".
 
@@ -4658,7 +4661,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X.......X.......
 Snar (s): ....X.......X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X.......X.......
@@ -4692,7 +4695,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X...x...X.......
 Snar (s): ....X.......X...
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X.......X.......
@@ -4726,7 +4729,7 @@ Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
 Kick (k): X......X..X..x..
 Snar (s): ........X.......
-Hat  (h): xxxxxxxxxxxxxxxx
+Hat  (h): xgxgxgxgxgxgxgxg
 Open (o): ................
 [FILL]
 Kick (k): X.....x.X.....X.
