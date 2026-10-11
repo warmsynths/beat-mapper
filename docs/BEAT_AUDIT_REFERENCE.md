@@ -623,33 +623,34 @@ Tempo 104 BPM (original ~108 BPM). Driving b-boy break: syncopated double kick o
 #### 17. Long Red (`longred`)
 - **Inspired by**: *Long Red* (1969) · Mountain
 - **Drummer / producer**: N.D. Smart II (Norman D. Smart)
-- **Label / Studio**: Windfall Records (recorded live at Woodstock, Aug 16, 1969, released 1972)
+- **Label / Studio**: Windfall Records (recorded live at Woodstock, Aug 16, 1969, released 1972 on Mountain Live: The Road Goes Ever On)
 - **Gear & Setup**: Live rock kit, open room acoustics, tambourine
-- **Tempo & level**: 80 BPM · Beginner
+- **Tempo & level**: 92 BPM · Intermediate
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X.....x.X.......
+Kick (k): X.x....x.xX.....
 Snar (s): ....X.......X...
 Hat  (h): x.x.x.x.x.x.x.x.
 Open (o): ................
 [FILL]
-Kick (k): X.....x.X.....x.
+Kick (k): X.x....x.xX...x.
 Snar (s): ....X.......X..X
 Hat  (h): x.x.x.x.x.x.x...
 Open (o): ................
 ```
 
 **Record Reality & Structure:**
-Live Woodstock performance. The 24-second intro break features N.D. Smart II playing a heavy, open-hi-hat groove with tambourine while Leslie West yells 'Louder! Yeah! A little louder!'. The break runs without kit fills until the guitar enters.
+Live Woodstock performance on Aug 16, 1969. The 24-second opening drum break features N.D. Smart II playing a hard-driving, unvarying 2-bar drum pocket with live crowd ambience and tambourine while Leslie West shouts 'Louder! Yeah! A little louder!'. The break runs without fills until the guitar enters.
 
 **Transcription & Groove Verification:**
-BPM 98. Open hi-hat slosh, heavy kick on 1, 2-and, 3; snare on 2 and 4. One of the most ubiquitous vocal/drum breaks in hip-hop history (sampled by Eric B. & Rakim, Kanye West, Nas).
+Tempo 92 BPM (live performance ~92-94 BPM). Driving 2-bar rock breakbeat: double kick on 1 and 1-and; crisp backbeat snare on 2 and 4; syncopated 16th kick hitches on 2-a, 3-e, and 3-and. Bar 2 introduces an extra 16th kick push on 2-e immediately following the beat 2 backbeat. Steady 8th-note hi-hat. Foundational hip-hop breakbeat sampled in over 800 tracks (Eric B. & Rakim 'Eric B. Is President', Nas, Pete Rock, J Dilla, Kanye West).
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
 **Web References & Verified Sources:**
+- [Songsterr: Mountain - Long Red (Woodstock) Drum Tab](https://www.songsterr.com/a/wsa/mountain-long-red-woodstock-drum-tab-s1584340)
 - [Woodstock 1969 Archives: Mountain Woodstock Setlist & Personnel](https://www.woodstock.com/)
 - [WhoSampled: Mountain - Long Red (Live at Woodstock, over 800 samples)](https://www.whosampled.com/Mountain/Long-Red/)
 - [Modern Drummer: N.D. Smart II Retrospective](https://www.moderndrummer.com/)

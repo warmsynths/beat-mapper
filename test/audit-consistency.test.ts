@@ -110,6 +110,20 @@ describe('Audit & Primary Source Ground Truth Verification', () => {
     assert.strictEqual(p.bars?.length, 1, 'Includes bar 2 turnaround');
   });
 
+  it('verifies Long Red against N.D. Smart II Woodstock breakbeat transcription', () => {
+    const p = LIB.find(x => x.id === 'longred')!;
+    assert.ok(p, 'longred exists');
+    assert.strictEqual(p.bpm, 92, 'BPM is 92');
+    const kicks = laneHits(p.k);
+    assert.deepStrictEqual(kicks, ['1', '1-&', '2-a', '3-e', '3-&']);
+    assert.strictEqual(p.s[4], 'X', 'Snare backbeat accent on 2');
+    assert.strictEqual(p.s[12], 'X', 'Snare backbeat accent on 4');
+    assert.strictEqual(p.h, 'x.x.x.x.x.x.x.x.');
+    assert.strictEqual(p.bars?.length, 1, 'Includes 2-bar variation with 2-e push');
+    const bar2Kicks = laneHits(p.bars![0].k);
+    assert.deepStrictEqual(bar2Kicks, ['1', '1-&', '2-e', '2-a', '3-e', '3-&']);
+  });
+
   it('verifies generated BEAT_AUDIT_REFERENCE.md contains exact note grids from library.ts', () => {
     const doc = fs.readFileSync('public/BEAT_AUDIT_REFERENCE.md', 'utf8');
     for (const p of LIB) {

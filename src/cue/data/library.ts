@@ -843,10 +843,10 @@ const RAW: RawPattern[] = [
     "name": "Long Red",
     "artist": "Mountain",
     "genre": "Breakbeat",
-    "bpm": 80,
-    "difficulty": "Beginner",
+    "bpm": 92,
+    "difficulty": "Intermediate",
     "gear": "N.D. Smart II on drums live at Woodstock 1969",
-    "tip": "Sampled in Eric B & Rakim, Nas, Pete Rock, J Dilla. Heavy stomping rock kick with delayed hitch on beat 2-and.",
+    "tip": "Sampled in Eric B. & Rakim ('Eric B. Is President'), Nas, Pete Rock, J Dilla. Heavy double kick on 1 & 1-and with syncopated 16th hitches pushing into beat 3.",
     "tags": [
           "breakbeat",
           "rock",
@@ -858,12 +858,12 @@ const RAW: RawPattern[] = [
           "s": "L",
           "h": "R"
     },
-    "k": "X.....x.X.......",
+    "k": "X.x....x.xX.....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "fill": {
-          "k": "X.....x.X.....x.",
+          "k": "X.x....x.xX...x.",
           "s": "....X.......X..X",
           "h": "x.x.x.x.x.x.x...",
           "o": "................"
@@ -4465,7 +4465,7 @@ const SW: Record<string, number> = {
   purdie: 60, statikswing: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
 };
 // Recorded performances reduced to a 16-step grid.
-const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad'];
+const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad', 'longred'];
 
 /** Busy hat lines (12+ hits, no marked dynamics) get ghosted off-beats so the 16ths breathe. */
 const ghostHats = (l: Partial<Lanes>) => {
@@ -4500,7 +4500,8 @@ const BARS: Record<string, Partial<Lanes>[]> = {
   rumbaclave: [{ s: '....X...X.......' }],
   boombap2bar: [{ k: 'X.....x.....x...', h: 'x.x.x.x.x.x.x.xx', o: '..............x.' }],
   statikswing: [{ k: 'X.....x.x.X.....', s: '....X..g.g..X..g' }],
-  imglad: [{ k: '....X..x..x.....', s: '..x..x..X.x.....', h: 'x.x.x.x.x.......', o: '..........x.....' }]
+  imglad: [{ k: '....X..x..x.....', s: '..x..x..X.x.....', h: 'x.x.x.x.x.......', o: '..........x.....' }],
+  longred: [{ k: 'X.x..x.x.xX.....' }]
 };
 /** A changed lane keeps bar 1's accent or ghost where both bars hit the same step. */
 const keepDynamics = (bar: string, main: string) => bar.split('').map((c, i) => c === '.' ? '.' : main[i] !== '.' ? main[i] : c).join('');

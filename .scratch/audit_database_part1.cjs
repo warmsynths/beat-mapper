@@ -227,11 +227,12 @@ const AUDIT_REFS = {
   "longred": {
     refSong: "Long Red", refArtist: "Mountain", refYear: 1969,
     refDrummer: "N.D. Smart II (Norman D. Smart)",
-    label: "Windfall Records (recorded live at Woodstock, Aug 16, 1969, released 1972)",
+    label: "Windfall Records (recorded live at Woodstock, Aug 16, 1969, released 1972 on Mountain Live: The Road Goes Ever On)",
     gear: "Live rock kit, open room acoustics, tambourine",
-    recordReality: "Live Woodstock performance. The 24-second intro break features N.D. Smart II playing a heavy, open-hi-hat groove with tambourine while Leslie West yells 'Louder! Yeah! A little louder!'. The break runs without kit fills until the guitar enters.",
-    transcriptionNotes: "BPM 98. Open hi-hat slosh, heavy kick on 1, 2-and, 3; snare on 2 and 4. One of the most ubiquitous vocal/drum breaks in hip-hop history (sampled by Eric B. & Rakim, Kanye West, Nas).",
+    recordReality: "Live Woodstock performance on Aug 16, 1969. The 24-second opening drum break features N.D. Smart II playing a hard-driving, unvarying 2-bar drum pocket with live crowd ambience and tambourine while Leslie West shouts 'Louder! Yeah! A little louder!'. The break runs without fills until the guitar enters.",
+    transcriptionNotes: "Tempo 92 BPM (live performance ~92-94 BPM). Driving 2-bar rock breakbeat: double kick on 1 and 1-and; crisp backbeat snare on 2 and 4; syncopated 16th kick hitches on 2-a, 3-e, and 3-and. Bar 2 introduces an extra 16th kick push on 2-e immediately following the beat 2 backbeat. Steady 8th-note hi-hat. Foundational hip-hop breakbeat sampled in over 800 tracks (Eric B. & Rakim 'Eric B. Is President', Nas, Pete Rock, J Dilla, Kanye West).",
     sources: [
+      { title: "Songsterr: Mountain - Long Red (Woodstock) Drum Tab", url: "https://www.songsterr.com/a/wsa/mountain-long-red-woodstock-drum-tab-s1584340" },
       { title: "Woodstock 1969 Archives: Mountain Woodstock Setlist & Personnel", url: "https://www.woodstock.com/" },
       { title: "WhoSampled: Mountain - Long Red (Live at Woodstock, over 800 samples)", url: "https://www.whosampled.com/Mountain/Long-Red/" },
       { title: "Modern Drummer: N.D. Smart II Retrospective", url: "https://www.moderndrummer.com/" }
