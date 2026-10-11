@@ -717,30 +717,31 @@ const RAW: RawPattern[] = [
   {
     "id": "imglad",
     "name": "I'm Glad You're Mine",
-    "artist": "Al Green / Al Jackson Jr.",
+    "artist": "Al Green / Howard Grimes",
     "genre": "Breakbeat",
     "bpm": 74,
-    "difficulty": "Beginner",
-    "gear": "Rogers kit & Ludwig snare / Al Jackson Jr. at Royal Studios Memphis",
-    "tip": "Sampled by The Notorious B.I.G. (\"Dead Wrong\"), Eric B. & Rakim (\"The R\"). Deep, slow, dripping snare crack with double kick into 3.",
+    "difficulty": "Intermediate",
+    "gear": "Rogers kit & Ludwig Supraphonic snare / Howard Grimes at Royal Studios Memphis",
+    "tip": "Sampled by The Notorious B.I.G. (\"Dead Wrong\"), Eric B. & Rakim (\"The R\"). Howard Grimes' syncopated cross-stick soul pocket with displaced open-hat turnaround.",
     "tags": [
           "breakbeat",
           "biggie",
-          "memphis soul"
+          "memphis soul",
+          "howard grimes"
     ],
     "hands": {
           "k": "R",
           "s": "L",
           "h": "R"
     },
-    "k": "X.......X.x.....",
-    "s": "....X.......X...",
+    "k": "X..........x....",
+    "s": "....X..x.x..Xx.x",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
     "fill": {
-          "k": "X.......X.x...x.",
-          "s": "....X.......X..X",
-          "h": "x.x.x.x.x.x.x...",
+          "k": "X..........x..x.",
+          "s": "....X..x.x..X.XX",
+          "h": "x.x.x.x.x.x.....",
           "o": "................"
     }
   },
@@ -4460,11 +4461,11 @@ const inherit = (part: Partial<Lanes>, main: Partial<Lanes>): Lanes =>
 // Swing % (50 = straight, 66 = triplet). Approximate, by ear; beats not listed are straight.
 const SW: Record<string, number> = {
   amen: 54, funky: 58, levee: 60, impeach: 54, apache: 54, boombap: 58, onedrop: 62, twostep: 64,
-  coldsweat: 54, think: 54, cissy: 56, afrobeat: 52, jungle: 52,
+  coldsweat: 54, think: 54, cissy: 56, afrobeat: 52, jungle: 52, imglad: 56,
   purdie: 60, statikswing: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
 };
 // Recorded performances reduced to a 16-step grid.
-const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop'];
+const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad'];
 
 /** Busy hat lines (12+ hits, no marked dynamics) get ghosted off-beats so the 16ths breathe. */
 const ghostHats = (l: Partial<Lanes>) => {
@@ -4498,7 +4499,8 @@ const BARS: Record<string, Partial<Lanes>[]> = {
   sonclave: [{ s: '....X...X.......' }],
   rumbaclave: [{ s: '....X...X.......' }],
   boombap2bar: [{ k: 'X.....x.....x...', h: 'x.x.x.x.x.x.x.xx', o: '..............x.' }],
-  statikswing: [{ k: 'X.....x.x.X.....', s: '....X..g.g..X..g' }]
+  statikswing: [{ k: 'X.....x.x.X.....', s: '....X..g.g..X..g' }],
+  imglad: [{ k: '....X..x..x.....', s: '..x..x..X.x.....', h: 'x.x.x.x.x.......', o: '..........x.....' }]
 };
 /** A changed lane keeps bar 1's accent or ghost where both bars hit the same step. */
 const keepDynamics = (bar: string, main: string) => bar.split('').map((c, i) => c === '.' ? '.' : main[i] !== '.' ? main[i] : c).join('');

@@ -173,15 +173,15 @@ const AUDIT_REFS = {
   },
   "imglad": {
     refSong: "I'm Glad You're Mine", refArtist: "Al Green", refYear: 1972,
-    refDrummer: "Al Jackson Jr.",
+    refDrummer: "Howard Grimes / Al Jackson Jr.",
     label: "Hi Records (Royal Studios, Memphis, produced by Willie Mitchell)",
     gear: "Rogers drum kit, Ludwig Supraphonic snare with wallet dampening, ribbon mics",
-    recordReality: "Al Jackson Jr. plays an unvarying, deeply relaxed 2-bar soul pocket. NO drum fills exist in the opening breaks; Jackson maintains an unflinching tempo that Willie Mitchell famously recorded with dry room acoustics.",
-    transcriptionNotes: "Tempo 74 BPM. Slow Memphis soul groove: deep kick on 1, 3, 3-and; dripping snare backbeat on 2 and 4; steady 8th-note hi-hat.",
+    recordReality: "Howard Grimes plays an unvarying, deeply relaxed 2-bar soul pocket inspired by Lee Dorsey's 'Working in the Coal Mine' with syncopated cross-stick rim clicks and a displaced open-hat turnaround. Willie Mitchell famously praised the eccentric groove.",
+    transcriptionNotes: "Tempo 74 BPM. Authentic Memphis soul groove: kick on 1 and the 'a' of 3; syncopated cross-stick snare on 2, 2-a, 3-e, 4, 4-e, 4-a; steady 8th-note hi-hat. Bar 2 features the displaced open-hat pause on the '&' of 3.",
     sources: [
-      { title: "Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #7: Al Green - I'm Glad You're Mine)", url: "https://www.scribd.com/document/48733238/30-Classic-Breakbeats" },
-      { title: "Songsterr: Al Green - I'm Glad You're Mine Drum Tab", url: "https://www.songsterr.com/" },
-      { title: "Sound On Sound: Willie Mitchell & Royal Studios Memphis Sound", url: "https://www.soundonsound.com/" }
+      { title: "Drums By Liz: Al Green 'Glad You're Mine' Note-for-Note Drum Breakdown", url: "https://www.youtube.com/watch?v=48AYV8UH2JM" },
+      { title: "Ted Sirota: Memphis Soul Drummers (Howard Grimes note-for-note charts)", url: "https://tedsirota.bandcamp.com/merch/memphis-soul-drummers-al-jackson-jr-howard-grimes-ebook" },
+      { title: "Memphis Flyer: Howard Grimes on his iconic 'I'm Glad You're Mine' beat (Timekeeper)", url: "https://www.memphisflyer.com/" }
     ]
   },
   "odebillie": {

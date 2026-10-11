@@ -42,7 +42,7 @@ const AUDIT_DATA = {
     refSong: "N.T. (Do It to the Funky Beat)", refArtist: "Kool & The Gang", refDrummer: "George 'Funky' Brown", refYear: 1971,
   },
   "imglad": {
-    refSong: "I'm Glad You're Mine", refArtist: "Al Green", refDrummer: "Al Jackson Jr.", refYear: 1972,
+    refSong: "I'm Glad You're Mine", refArtist: "Al Green", refDrummer: "Howard Grimes / Al Jackson Jr.", refYear: 1972,
   },
   "odebillie": {
     refSong: "Ode to Billie Joe", refArtist: "Lou Donaldson", refDrummer: "Idris Muhammad", refYear: 1967,

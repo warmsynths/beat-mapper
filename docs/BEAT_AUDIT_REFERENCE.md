@@ -476,38 +476,38 @@ Tempo 98 BPM. Syncopated funk groove: kick on 1, 1-a, 2-and, 3-and, 4; backbeat 
 ---
 
 #### 13. I'm Glad You're Mine (`imglad`)
-- **Inspired by**: *I'm Glad You're Mine* (1972) · Al Green / Al Jackson Jr.
-- **Drummer / producer**: Al Jackson Jr.
+- **Inspired by**: *I'm Glad You're Mine* (1972) · Al Green / Howard Grimes
+- **Drummer / producer**: Howard Grimes / Al Jackson Jr.
 - **Label / Studio**: Hi Records (Royal Studios, Memphis, produced by Willie Mitchell)
 - **Gear & Setup**: Rogers drum kit, Ludwig Supraphonic snare with wallet dampening, ribbon mics
-- **Tempo & level**: 74 BPM · Beginner
+- **Tempo & level**: 74 BPM · Intermediate
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X.......X.x.....
-Snar (s): ....X.......X...
+Kick (k): X..........x....
+Snar (s): ....X..x.x..Xx.x
 Hat  (h): x.x.x.x.x.x.x.x.
 Open (o): ................
 [FILL]
-Kick (k): X.......X.x...x.
-Snar (s): ....X.......X..X
-Hat  (h): x.x.x.x.x.x.x...
+Kick (k): X..........x..x.
+Snar (s): ....X..x.x..X.XX
+Hat  (h): x.x.x.x.x.x.....
 Open (o): ................
 ```
 
 **Record Reality & Structure:**
-Al Jackson Jr. plays an unvarying, deeply relaxed 2-bar soul pocket. NO drum fills exist in the opening breaks; Jackson maintains an unflinching tempo that Willie Mitchell famously recorded with dry room acoustics.
+Howard Grimes plays an unvarying, deeply relaxed 2-bar soul pocket inspired by Lee Dorsey's 'Working in the Coal Mine' with syncopated cross-stick rim clicks and a displaced open-hat turnaround. Willie Mitchell famously praised the eccentric groove.
 
 **Transcription & Groove Verification:**
-Tempo 74 BPM. Slow Memphis soul groove: deep kick on 1, 3, 3-and; dripping snare backbeat on 2 and 4; steady 8th-note hi-hat.
+Tempo 74 BPM. Authentic Memphis soul groove: kick on 1 and the 'a' of 3; syncopated cross-stick snare on 2, 2-a, 3-e, 4, 4-e, 4-a; steady 8th-note hi-hat. Bar 2 features the displaced open-hat pause on the '&' of 3.
 
 **Practice Fill in Beat Mapper:** Funk turnaround: the groove runs to beat 4, then the hats stop for an accented snare, a kick on the "&" and a snare on the last 16th, with ghost notes where the groove already has them.
 
 **Web References & Verified Sources:**
-- [Scribd: 30 Classic Breakbeats by Szymon Ciszek (Break #7: Al Green - I'm Glad You're Mine)](https://www.scribd.com/document/48733238/30-Classic-Breakbeats)
-- [Songsterr: Al Green - I'm Glad You're Mine Drum Tab](https://www.songsterr.com/)
-- [Sound On Sound: Willie Mitchell & Royal Studios Memphis Sound](https://www.soundonsound.com/)
+- [Drums By Liz: Al Green 'Glad You're Mine' Note-for-Note Drum Breakdown](https://www.youtube.com/watch?v=48AYV8UH2JM)
+- [Ted Sirota: Memphis Soul Drummers (Howard Grimes note-for-note charts)](https://tedsirota.bandcamp.com/merch/memphis-soul-drummers-al-jackson-jr-howard-grimes-ebook)
+- [Memphis Flyer: Howard Grimes on his iconic 'I'm Glad You're Mine' beat (Timekeeper)](https://www.memphisflyer.com/)
 
 ---
 

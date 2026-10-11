@@ -97,6 +97,19 @@ describe('Audit & Primary Source Ground Truth Verification', () => {
     assert.strictEqual(p.h, 'x.x.x.x.x.x.x.x.');
   });
 
+  it('verifies I\'m Glad You\'re Mine against Howard Grimes syncopated cross-stick groove', () => {
+    const p = LIB.find(x => x.id === 'imglad')!;
+    assert.ok(p, 'imglad exists');
+    assert.ok(p.artist.includes('Howard Grimes'), 'Credits Howard Grimes');
+    const snares = laneHits(p.s);
+    assert.deepStrictEqual(snares, ['2', '2-a', '3-e', '4', '4-e', '4-a']);
+    assert.strictEqual(p.s[4], 'X', 'Snare backbeat accent on 2');
+    assert.strictEqual(p.s[12], 'X', 'Snare backbeat accent on 4');
+    assert.strictEqual(p.k[0], 'X', 'Kick downbeat on 1');
+    assert.strictEqual(p.k[11], 'x', 'Kick push on 3-a');
+    assert.strictEqual(p.bars?.length, 1, 'Includes bar 2 turnaround');
+  });
+
   it('verifies generated BEAT_AUDIT_REFERENCE.md contains exact note grids from library.ts', () => {
     const doc = fs.readFileSync('public/BEAT_AUDIT_REFERENCE.md', 'utf8');
     for (const p of LIB) {
