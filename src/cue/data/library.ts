@@ -1,7 +1,7 @@
 // Pattern library and machine mappings. Each lane is a 16-step string: 'X' = accent, 'x' = hit, 'g' = ghost, '.' = rest.
 
 export type LaneKey = 'k' | 's' | 'h' | 'o' | 'c' | 'r' | 't' | 'b' | 'w' | 'z' | 'y';
-export type PartId = 'MAIN' | 'VAR' | 'FILL';
+export type PartId = 'INTRO' | 'MAIN' | 'VAR' | 'FILL';
 export type Lanes = Record<LaneKey, string>;
 
 export interface Inst { key: LaneKey; label: string; core: boolean }
@@ -14,6 +14,7 @@ export interface Pattern extends Lanes {
   tags?: string[];
   hands?: Partial<Record<LaneKey, string>>;
   stepHands?: Partial<Record<LaneKey, string>>;
+  intro?: Lanes; introBars?: Lanes[];
   var?: Lanes; fill?: Lanes;
   /** Main bars 2, 3, 4… (bar 1 is the pattern itself). */
   bars?: Lanes[];
@@ -41,7 +42,12 @@ export const INST: Inst[] = (
 const XK = INST.filter(i => !i.core).map(i => i.key);
 export const E = '................';
 
-type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill' | 'bars' | 'sw' | 'simp'> & Partial<Lanes> & { var?: Partial<Lanes>; fill?: Partial<Lanes> };
+type RawPattern = Omit<Pattern, LaneKey | 'var' | 'fill' | 'bars' | 'intro' | 'introBars' | 'sw' | 'simp'> & Partial<Lanes> & {
+  var?: Partial<Lanes>;
+  fill?: Partial<Lanes>;
+  intro?: Partial<Lanes>;
+  introBars?: Partial<Lanes>[];
+};
 
 const RAW: RawPattern[] = [
   {
@@ -539,6 +545,12 @@ const RAW: RawPattern[] = [
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": ".......x.......x",
+    "intro": {
+      "k": "................",
+      "s": "....X.......X...",
+      "h": "x.x.x.x.x.x.x.x.",
+      "o": ".......x.......x"
+    },
     "fill": {
           "k": "X...x.x.X....x.x",
           "s": "....X.......X.X.",
@@ -2324,6 +2336,12 @@ const RAW: RawPattern[] = [
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": "................",
+    "intro": {
+      "k": "X...X...XXXXXXXX",
+      "s": "................",
+      "h": "................",
+      "o": "................"
+    },
     "var": {
           "k": "X...X...X...X...",
           "s": "....X.......X...",
@@ -3931,6 +3949,13 @@ const RAW: RawPattern[] = [
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
     "o": ".......x.......x",
+    "intro": {
+      "k": "..........X...X.",
+      "s": "........X...X.x.",
+      "h": "................",
+      "o": "................",
+      "y": "..............X."
+    },
     "fill": {
           "k": "X.X.....X.X..x.x",
           "s": "....X.......X.X.",
@@ -4453,6 +4478,8 @@ export const LIB: Pattern[] = RAW.map(r => {
   ghostHats(p);
   if (p.var) { inherit(p.var, p); ghostHats(p.var); }
   if (p.fill) inherit(p.fill, p);
+  if (p.intro) { inherit(p.intro, p); ghostHats(p.intro); }
+  if (p.introBars) { p.introBars.forEach(b => { inherit(b, p); ghostHats(b); }); }
   return p as Pattern;
 });
 
@@ -4484,8 +4511,12 @@ const STYLE_ONLY = new Set(['sonclave', 'rumbaclave', 'cumbia', 'tambor', 'rock'
 /** True when the beat is inspired by a real record or artist (shown as "Inspired by …" or with an asterisk). */
 export const inspired = (p: Pattern) => p.genre !== 'Drills' && !STYLE_ONLY.has(p.id);
 
-/** How many bars a part has: Main can have several, Var and Fill are one bar each. */
-export const barsOf = (p: Pattern, id: PartId) => id === 'MAIN' && p.bars ? p.bars.length + 1 : 1;
+/** How many bars a part has: Main and Intro can have several, Var and Fill are one bar each. */
+export const barsOf = (p: Pattern, id: PartId) => {
+  if (id === 'MAIN') return p.bars ? p.bars.length + 1 : 1;
+  if (id === 'INTRO') return p.introBars ? p.introBars.length + 1 : (p.intro ? 1 : 0);
+  return 1;
+};
 
 // Generated fills, styled per genre, for patterns without a known fill bar.
 const FILL_STYLE: Record<string, string> = {
@@ -4515,20 +4546,34 @@ function makeFill(p: Pattern): Lanes {
   return f;
 }
 
-/** One bar of a part; `bar` counts from 0 and only matters for Main. */
+/** One bar of a part; `bar` counts from 0 and only matters for Main and Intro. */
 export function partData(p: Pattern, id: PartId, bar = 0): Lanes {
+  if (id === 'INTRO') {
+    if (bar > 0 && p.introBars?.[bar - 1]) return p.introBars[bar - 1];
+    return p.intro || p;
+  }
   if (id === 'MAIN' && bar > 0 && p.bars?.[bar - 1]) return p.bars[bar - 1];
   if (id === 'VAR' && p.var) return p.var;
   if (id === 'FILL') return p.fill || makeFill(p);
   return p;
 }
 /**
- * The bars Chain loops through, as [part, bar]. Multi-bar beats play every Main bar, then Var (if any) and Fill;
- * one-bar beats loop main, main, var, fill.
+ * The bars Chain loops through, as [part, bar].
+ * If an intro exists, it plays once at the start before looping the main groove, var, and fill.
  */
-export const chainOf = (p: Pattern): [PartId, number][] => p.bars
-  ? [...Array.from({ length: p.bars.length + 1 }, (_, i): [PartId, number] => ['MAIN', i]), ...(p.var ? [['VAR', 0] as [PartId, number]] : []), ['FILL', 0]]
-  : [['MAIN', 0], ['MAIN', 0], [p.var ? 'VAR' : 'MAIN', 0], ['FILL', 0]];
+export const chainOf = (p: Pattern): [PartId, number][] => {
+  const introPart: [PartId, number][] = p.intro
+    ? (p.introBars
+        ? [['INTRO', 0] as [PartId, number], ...p.introBars.map((_, i) => ['INTRO', i + 1] as [PartId, number])]
+        : [['INTRO', 0] as [PartId, number]])
+    : [];
+
+  const mainPart: [PartId, number][] = p.bars
+    ? [...Array.from({ length: p.bars.length + 1 }, (_, i): [PartId, number] => ['MAIN', i]), ...(p.var ? [['VAR', 0] as [PartId, number]] : []), ['FILL', 0]]
+    : [['MAIN', 0], ['MAIN', 0], [p.var ? 'VAR' : 'MAIN', 0], ['FILL', 0]];
+
+  return [...introPart, ...mainPart];
+};
 
 export const DEVS: Device[] = [
   { id: 'SP-404MKII', maker: 'Roland', short: 'SP-404', fam: 'sp', map: { k: 'A1', s: 'A2', h: 'A3', o: 'A4' }, method: 'TR-REC · PADS = STEPS 1–16' },

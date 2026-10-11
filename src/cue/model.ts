@@ -92,7 +92,9 @@ export function derive(s: State): Derived {
   const hasHits = (str: string) => /[xXg]/.test(str);
   const lanes = INST.filter(i => hasHits(sel[i.key]) && (i.core || s.perc));
   const extraN = INST.filter(i => !i.core && hasHits(sel[i.key])).length;
-  const parts: PartId[] = (['MAIN', 'VAR', 'FILL'] as PartId[]).filter(id => id !== 'VAR' || !!base.var);
+  const parts: PartId[] = (['INTRO', 'MAIN', 'VAR', 'FILL'] as PartId[]).filter(
+    id => (id !== 'INTRO' || !!base.intro) && (id !== 'VAR' || !!base.var)
+  );
   const layer = lanes.find(i => i.key === s.layer) || lanes[0] || INST[0], li = lanes.indexOf(layer);
   const q = s.query.trim().toLowerCase();
   let list = LIB.filter(p => s.genre === 'ALL' || p.genre === s.genre);
@@ -158,7 +160,12 @@ export function tick(s: State): { step: number; part: PartId; bar: number; pg: n
   const step = allow[(allow.indexOf(s.step) + 1) % allow.length];
   let part = s.part, bar = s.bar, pg = s.pg;
   if (s.step >= 0 && step === allow[0]) {
-    if (s.chain) { const ch = chainOf(selected(s)); bar = (bar + 1) % ch.length; [part, pg] = ch[bar]; }
+    if (s.chain) {
+      const p = selected(s), ch = chainOf(p);
+      const introN = p.intro ? (p.introBars ? p.introBars.length + 1 : 1) : 0;
+      bar = bar + 1 >= ch.length ? introN : bar + 1;
+      [part, pg] = ch[bar];
+    }
     else if (s.mode === 'play') pg = (pg + 1) % barsOf(selected(s), part);
   }
   return { step, part, bar, pg };

@@ -2,7 +2,7 @@ import { LitElement, css, html, nothing, svg } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { live } from 'lit/directives/live.js';
 import { ref } from 'lit/directives/ref.js';
-import { DEVS, FAM, inspired, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
+import { barsOf, chainOf, DEVS, FAM, inspired, INST, LIB, partData, type LaneKey, type PartId, type Pattern } from './data/library.ts';
 import { audio, click, getVolume, hit, kitById, kitFor, KITS, preview, setVolume } from './engine/audio.ts';
 import { peekDraw } from './engine/peek.ts';
 import { bpmOf, clamp, commitTempo, COUNTIN_KEY, derive, initState, LEVELS, levelOf, RAMP_KEY, rampNext, rampStart, saveDevice, saveFlag, savePeek, selectPattern, selected, stepMs, tick, titleCase, toggleBeat, toggleLearned, type Derived, type Mode, type State } from './model.ts';
@@ -36,7 +36,7 @@ const NOT_AFFILIATED = 'Patterns are simplified interpretations written for prac
 /** The setup line under the keys, in plain words per machine family. */
 const PLAIN: Record<string, string> = { sp: 'step record: pads are steps 1–16', tr: 'step mode: pick the drum, then press steps 1–16', po: 'write mode: one sound per pass', ct: 'the top 16 pads are steps 1–16', dt: 'grid recording: trig keys are steps 1–16' };
 const ORD = ['First', 'Then', 'Then', 'Last'];
-const PART_LABEL:Record<PartId, [string, string]> = { MAIN: ['Main', 'Main groove'], VAR: ['Var', 'Variation bar'], FILL: ['Fill', 'Fill bar'] };
+const PART_LABEL:Record<PartId, [string, string]> = { INTRO: ['Intro', 'Intro bar'], MAIN: ['Main', 'Main groove'], VAR: ['Var', 'Variation bar'], FILL: ['Fill', 'Fill bar'] };
 /** Small down-chevron after the kit and machine names. */
 const caret = html`<svg class="caret" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 1.5 6 6l4.5-4.5"></path></svg>`;
 /** Kit (a drum) and machine (a pad box) icons for the phone header. */
@@ -175,7 +175,12 @@ export class CueApp extends LitElement {
   private openSearch() { this.focusSearch = true; this.set({ search: true, rack: false, themes: false, kitMenu: false }); }
   private setMode(m: Mode) { this.set({ mode: m, step: -1 }, true); }
   private setPart(id: PartId) { this.set({ part: id, chain: false, bar: 0, pg: 0, done: {} }); }
-  private toggleChain() { this.set({ chain: !this.s.chain, part: 'MAIN', bar: 0, pg: 0, done: {} }, true); }
+  private toggleChain() {
+    const nextChain = !this.s.chain;
+    const p = selected(this.s);
+    const ch0 = chainOf(p)[0];
+    this.set({ chain: nextChain, part: nextChain ? ch0[0] : 'MAIN', bar: 0, pg: nextChain ? ch0[1] : 0, done: {} }, true);
+  }
   private setPage(n: number) { this.set({ pg: n, chain: false, bar: 0, done: {} }); }
   private pickDevice(id: string) { saveDevice(id); this.set({ device: id, rack: false, rackPrev: null, done: {} }); }
   private toggleRack() { this.set({ rack: !this.s.rack, rackQ: '', rackPrev: null, search: false, themes: false, info: false, kitMenu: false }); }
@@ -307,7 +312,7 @@ export class CueApp extends LitElement {
                   style="height:30px;background:${s.chain ? CREAM : 'transparent'};color:${s.chain ? INK : MUTED};">
                   ${s.chain ? `Chain · bar ${s.bar + 1}/${x.chainN}` : `Chain · ${x.chainN} bars`}</button>
               </div>
-              ${x.base.bars ? this.barTabs(x, false) : nothing}
+              ${(x.base.bars || x.base.introBars) ? this.barTabs(x, false) : nothing}
               ${x.extraN > 0 ? html`
                 <div class="seg">
                   <button title=${s.perc ? 'Hide extra percussion' : `Show ${x.extraN} extra percussion`} @click=${() => this.set({ perc: !s.perc })}
@@ -324,7 +329,11 @@ export class CueApp extends LitElement {
    * content below doesn't jump. On phones it sits at the right of the Program / Play row, labelled outside.
    */
   private barTabs(x: Derived, compact: boolean) {
-    const s = this.s, live = x.barsN > 1 && !s.chain, n = x.base.bars!.length + 1;
+    const s = this.s;
+    const curBarsN = barsOf(x.base, s.part);
+    const live = curBarsN > 1 && !s.chain;
+    const maxBarsN = Math.max(x.base.bars ? x.base.bars.length + 1 : 1, x.base.introBars ? x.base.introBars.length + 1 : 1);
+    const n = live ? curBarsN : maxBarsN;
     return html`
       <div class="seg bars-seg" style="padding:${compact ? 3 : 2}px;opacity:${live ? 1 : 0.35};pointer-events:${live ? 'auto' : 'none'};" aria-disabled=${live ? 'false' : 'true'}>
         ${compact ? nothing : html`<span class="seg-lbl">Bar</span>`}
@@ -356,7 +365,7 @@ export class CueApp extends LitElement {
           <button class="mode" @click=${() => this.setMode(m)}
             style="height:${compact ? 40 : 60}px;font-size:${compact ? 19 : 30}px;border-bottom-color:${s.mode === m ? ACC : 'transparent'};color:${s.mode === m ? CREAM : MUTED};">${label}</button>`)}
         <span class="spacer"></span>
-        ${compact && x.base.bars ? html`<div class="nav-bars"><span class="bars-lbl">Bar</span>${this.barTabs(x, true)}</div>` : nothing}
+        ${compact && (x.base.bars || x.base.introBars) ? html`<div class="nav-bars"><span class="bars-lbl">Bar</span>${this.barTabs(x, true)}</div>` : nothing}
         ${!prog && !compact ? html`
           <div class="beat-tabs">
             <span class="practise-lbl">Practise</span>

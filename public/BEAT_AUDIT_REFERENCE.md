@@ -1245,6 +1245,11 @@ Tempo 84 BPM (original master ~91 BPM; 84 BPM practice preset). Heavy rock break
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
+[INTRO]
+Kick (k): ................
+Snar (s): ....X.......X...
+Hat  (h): x.x.x.x.x.x.x.x.
+Open (o): .......x.......x
 [MAIN]
 Kick (k): X...x.x.X...x.x.
 Snar (s): ....X.......X...
@@ -1317,6 +1322,12 @@ Tempo 120 BPM (standard 110-120 BPM). Straight rock foundation: kick on 1, 3, 3-
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
+[INTRO]
+Kick (k): ..........X...X.
+Snar (s): ........X...X.x.
+Hat  (h): ................
+Open (o): ................
+Crsh (y): ..............X.
 [MAIN]
 Kick (k): X.X.....X.X.....
 Snar (s): ....X.......X...
@@ -3475,6 +3486,11 @@ Tempo 130 BPM. Fast, syncopated 808 kick; crisp 808 snare on 2 and 4; driving 16
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
+[INTRO]
+Kick (k): X...X...XXXXXXXX
+Snar (s): ................
+Hat  (h): ................
+Open (o): ................
 [MAIN]
 Kick (k): X.X.X.X.X.X.X.X.
 Snar (s): ....X.......X...

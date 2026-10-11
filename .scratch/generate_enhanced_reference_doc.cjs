@@ -92,6 +92,11 @@ for (const g of genreOrder) {
 
     doc += '```text\n';
     doc += 'Beat:     1e&a2e&a3e&a4e&a\n';
+    if (p.intro) {
+      doc += `[INTRO]\n`;
+      doc += `Kick (k): ${p.intro.k || '................'}\nSnar (s): ${p.intro.s || '................'}\nHat  (h): ${p.intro.h || '................'}\nOpen (o): ${p.intro.o || '................'}\n`;
+      if (p.intro.y && p.intro.y !== '................') doc += `Crsh (y): ${p.intro.y}\n`;
+    }
     doc += `[MAIN]\n`;
     doc += `Kick (k): ${p.k}\nSnar (s): ${p.s}\nHat  (h): ${p.h}\nOpen (o): ${p.o}\n`;
     if (p.c && p.c !== '................') doc += `Clap (c): ${p.c}\n`;

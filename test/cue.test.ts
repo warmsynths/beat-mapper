@@ -10,7 +10,8 @@ const state = (patch: Partial<State> = {}): State => ({ ...initState('aubergine'
 describe('Cue library data', () => {
   it('every pattern has 16 steps in every lane, for every part', () => {
     for (const p of LIB) {
-      for (const part of ['MAIN', 'VAR', 'FILL'] as const) {
+      for (const part of ['INTRO', 'MAIN', 'VAR', 'FILL'] as const) {
+        if (part === 'INTRO' && !p.intro) continue;
         for (let bar = 0; bar < barsOf(p, part); bar++) {
           const d = partData(p, part, bar);
           for (const i of INST) assert.match(d[i.key], /^[xXg.]{16}$/, `${p.id} ${part} bar ${bar + 1} ${i.key}`);
@@ -66,7 +67,7 @@ describe('Cue library data', () => {
   });
 
   it('chains main, main, var (when there is one), fill for one-bar beats', () => {
-    const one = LIB.filter(p => !p.bars);
+    const one = LIB.filter(p => !p.bars && !p.intro);
     const withVar = one.find(p => p.var)!, noVar = one.find(p => !p.var)!;
     assert.deepStrictEqual(chainOf(withVar), [['MAIN', 0], ['MAIN', 0], ['VAR', 0], ['FILL', 0]]);
     assert.deepStrictEqual(chainOf(noVar), [['MAIN', 0], ['MAIN', 0], ['MAIN', 0], ['FILL', 0]]);
@@ -106,6 +107,12 @@ describe('Cue model', () => {
   it('offers Var only for patterns that have a variation bar', () => {
     assert.deepStrictEqual(derive(state({ selectedId: 'billie' })).parts, ['MAIN', 'FILL']);
     assert.deepStrictEqual(derive(state({ selectedId: 'amen' })).parts, ['MAIN', 'VAR', 'FILL']);
+  });
+
+  it('offers Intro only for patterns that have an intro bar', () => {
+    assert.deepStrictEqual(derive(state({ selectedId: 'bluemonday' })).parts, ['INTRO', 'MAIN', 'VAR', 'FILL']);
+    assert.deepStrictEqual(derive(state({ selectedId: 'walkthisway' })).parts, ['INTRO', 'MAIN', 'FILL']);
+    assert.deepStrictEqual(derive(state({ selectedId: 'billie' })).parts, ['MAIN', 'FILL']);
   });
 
   it('shows the Accent / Ghost key only when a shown lane has dynamics', () => {
@@ -156,6 +163,13 @@ describe('Cue model', () => {
     const seen: string[] = [];
     for (let i = 0; i < 16 * 6 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) seen.push(s.part + s.pg); }
     assert.deepStrictEqual(seen, ['MAIN0', 'MAIN1', 'MAIN2', 'MAIN3', 'VAR0', 'FILL0', 'MAIN0']);
+  });
+
+  it('chains intro once at the start before looping in chain mode', () => {
+    let s = state({ selectedId: 'bluemonday', chain: true, part: 'INTRO', bar: 0, pg: 0, step: -1 });
+    const seen: string[] = [];
+    for (let i = 0; i < 16 * 6 + 1; i++) { s = { ...s, ...tick(s) }; if (s.step === 0) seen.push(s.part + s.pg); }
+    assert.deepStrictEqual(seen, ['INTRO0', 'MAIN0', 'MAIN0', 'VAR0', 'FILL0', 'MAIN0', 'MAIN0']);
   });
 
   it('play loops through every bar of the part; program stays on the chosen bar', () => {
