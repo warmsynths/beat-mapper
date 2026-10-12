@@ -273,7 +273,7 @@ const AUDIT_DATA = {
     refSong: "All Caps", refArtist: "Madvillain (Madlib & MF DOOM)", refDrummer: "Madlib (Ironside sample)", refYear: 2004,
   },
   "lowclass": {
-    refSong: "Low Class Conspiracy", refArtist: "Quasimoto / Madlib", refDrummer: "Madlib (SP-1200)", refYear: 2000,
+    refSong: "Planned Attack", refArtist: "Quasimoto / Madlib", refDrummer: "Madlib (SP-1200 / SP-303)", refYear: 2013,
   },
   "klipsh": {
     refSong: "Klipsh", refArtist: "Knxwledge", refDrummer: "Knxwledge (Roland SP-404)", refYear: 2015,

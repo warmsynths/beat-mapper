@@ -3097,37 +3097,38 @@ Tempo 92 BPM. Madlib groove: kick on 1, 3, 3-and; snare on 2 and 4; steady 8th-n
 
 ---
 
-#### 86. Low Class Conspiracy (`lowclass`)
-- **Inspired by**: *Low Class Conspiracy* (2000) · Quasimoto / Madlib
-- **Drummer / producer**: Madlib (SP-1200)
-- **Label / Studio**: Stones Throw Records (The Unseen)
-- **Gear & Setup**: E-mu SP-1200, Boss SP-303, pitched-down vocals
-- **Tempo & level**: 89 BPM · Beginner
+#### 86. Planned Attack (`lowclass`)
+- **Inspired by**: *Planned Attack* (2013) · Quasimoto / Madlib
+- **Drummer / producer**: Madlib (SP-1200 / SP-303)
+- **Label / Studio**: Stones Throw Records (Yessir Whatever)
+- **Gear & Setup**: Boss SP-303, Roland SP-404, E-mu SP-1200, vinyl drum chops
+- **Tempo & level**: 88 BPM · Intermediate
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X......x..X.....
+Kick (k): X......xX.X....x
 Snar (s): ....X.......X...
 Hat  (h): x.x.x.x.x.x.x.x.
-Open (o): .......x........
+Open (o): ................
 [FILL]
-Kick (k): X......x..X....x
-Snar (s): ....X.......X...
+Kick (k): X......xX..x...x
+Snar (s): ............X...
 Hat  (h): x.x.x.x.x.x.x...
-Open (o): .......x........
+Open (o): ................
 ```
 
 **Record Reality & Structure:**
-Sample-loop record. Madlib on SP-1200. Hypnotic lo-fi boom bap loop without live fills.
+Classic 4-bar sampled loop from Quasimoto's Planned Attack (88 BPM). Features Madlib's signature swung double-kick pickups on steps 8 and 16, with an alternating syncopated kick (step 11 in Bar 1, step 12 in Bar 2).
 
 **Transcription & Groove Verification:**
-Tempo 88 BPM. Gritty 12-bit kick and snare; lazy offbeat hi-hat.
+Tempo 88 BPM, 60% swing. Bar 1: kick on 1, 8 (pickup into 3), 9, 11 (3-&), and 16 (pickup into 1); Bar 2: kick on 1, 8, 9, 12 (3-a skip into snare), and 16; snare backbeat on 5 and 13; steady swung 8th-note hi-hats.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 
 **Web References & Verified Sources:**
-- [WhoSampled: Quasimoto - Low Class Conspiracy](https://www.whosampled.com/Quasimoto/Low-Class-Conspiracy/)
+- [YouTube: Quasimoto (Madlib) - Planned Attack (Drum Loop) 88 BPM](https://www.youtube.com/watch?v=ondpw0pPgTM)
+- [Stones Throw: Quasimoto - Yessir Whatever](https://www.stonesthrow.com/store/yessir-whatever/)
 
 ---
 

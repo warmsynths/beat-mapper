@@ -153,6 +153,21 @@ describe('Audit & Primary Source Ground Truth Verification', () => {
     assert.deepStrictEqual(bar2Kicks, ['1', '1-e', '2-&', '3'], 'Bar 2 double kick on 1/1-e and push on 2-& into 3');
   });
 
+  it('verifies Planned Attack against Madlib SP-1200 2-bar groove and turnaround kick', () => {
+    const p = LIB.find(x => x.id === 'lowclass')!;
+    assert.ok(p, 'lowclass exists');
+    assert.strictEqual(p.bpm, 88, 'BPM is 88');
+    const kicks = laneHits(p.k);
+    assert.deepStrictEqual(kicks, ['1', '2-a', '3', '3-&', '4-a'], 'Bar 1 kick on 1, 2-a pickup, 3, 3-&, and 4-a turnaround');
+    assert.strictEqual(p.s[4], 'X', 'Snare backbeat accent on 2 (step 5)');
+    assert.strictEqual(p.s[12], 'X', 'Snare backbeat accent on 4 (step 13)');
+    assert.strictEqual(p.h, 'x.x.x.x.x.x.x.x.', 'Steady 8th-note hi-hats');
+    assert.strictEqual(p.o, '................', 'No open hat');
+    assert.strictEqual(p.bars?.length, 1, 'Includes 2-bar loop structure');
+    const bar2Kicks = laneHits(p.bars![0].k);
+    assert.deepStrictEqual(bar2Kicks, ['1', '2-a', '3', '3-a', '4-a'], 'Bar 2 kick with 3-a skip leading into snare on 4');
+  });
+
   it('verifies generated BEAT_AUDIT_REFERENCE.md contains exact note grids from library.ts', () => {
     const doc = fs.readFileSync('public/BEAT_AUDIT_REFERENCE.md', 'utf8');
     for (const p of LIB) {

@@ -361,14 +361,15 @@ const AUDIT_REFS_PART3 = {
     ]
   },
   "lowclass": {
-    refSong: "Low Class Conspiracy", refArtist: "Quasimoto / Madlib", refYear: 2000,
-    refDrummer: "Madlib (SP-1200)",
-    label: "Stones Throw Records (The Unseen)",
-    gear: "E-mu SP-1200, Boss SP-303, pitched-down vocals",
-    recordReality: "Sample-loop record. Madlib on SP-1200. Hypnotic lo-fi boom bap loop without live fills.",
-    transcriptionNotes: "Tempo 88 BPM. Gritty 12-bit kick and snare; lazy offbeat hi-hat.",
+    refSong: "Planned Attack", refArtist: "Quasimoto / Madlib", refYear: 2013,
+    refDrummer: "Madlib (SP-1200 / SP-303)",
+    label: "Stones Throw Records (Yessir Whatever)",
+    gear: "Boss SP-303, Roland SP-404, E-mu SP-1200, vinyl drum chops",
+    recordReality: "Classic 4-bar sampled loop from Quasimoto's Planned Attack (88 BPM). Features Madlib's signature swung double-kick pickups on steps 8 and 16, with an alternating syncopated kick (step 11 in Bar 1, step 12 in Bar 2).",
+    transcriptionNotes: "Tempo 88 BPM, 60% swing. Bar 1: kick on 1, 8 (pickup into 3), 9, 11 (3-&), and 16 (pickup into 1); Bar 2: kick on 1, 8, 9, 12 (3-a skip into snare), and 16; snare backbeat on 5 and 13; steady swung 8th-note hi-hats.",
     sources: [
-      { title: "WhoSampled: Quasimoto - Low Class Conspiracy", url: "https://www.whosampled.com/Quasimoto/Low-Class-Conspiracy/" }
+      { title: "YouTube: Quasimoto (Madlib) - Planned Attack (Drum Loop) 88 BPM", url: "https://www.youtube.com/watch?v=ondpw0pPgTM" },
+      { title: "Stones Throw: Quasimoto - Yessir Whatever", url: "https://www.stonesthrow.com/store/yessir-whatever/" }
     ]
   },
   "klipsh": {

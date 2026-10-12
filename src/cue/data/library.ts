@@ -2010,33 +2010,37 @@ const RAW: RawPattern[] = [
   },
   {
     "id": "lowclass",
-    "name": "Low Class Conspiracy",
+    "name": "Planned Attack",
     "artist": "Quasimoto / Madlib",
     "genre": "Lo-Fi",
-    "bpm": 89,
-    "difficulty": "Beginner",
-    "gear": "Roland SP-303 vinyl sim & vintage jazz records",
-    "tip": "Dusty, muted kick with crackling vinyl hiss. Open hi-hat on the upbeat of 2 provides the breathing room.",
+    "bpm": 88,
+    "difficulty": "Intermediate",
+    "gear": "Boss SP-303 / Roland SP-404 / E-mu SP-1200",
+    "tip": "Madlib's classic swung groove from Planned Attack (88 BPM). Features signature swung double-kick pickups on steps 8 and 16, with Bar 1 landing an offbeat kick on step 11 (3-&) and Bar 2 shifting to step 12 (3-a) before the backbeat snare.",
     "tags": [
           "madlib",
           "quasimoto",
-          "vinyl"
+          "planned attack",
+          "stones throw",
+          "sp-303"
     ],
     "hands": {
           "k": "R",
           "s": "L",
-          "h": "R",
-          "o": "R"
+          "h": "R"
     },
-    "k": "X......x..X.....",
+    "k": "X......xX.X....x",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........",
+    "o": "................",
+    "var": {
+          "k": "X......xX..x...x"
+    },
     "fill": {
-          "k": "X......x..X....x",
-          "s": "....X.......X...",
+          "k": "X......xX..x...x",
+          "s": "............X...",
           "h": "x.x.x.x.x.x.x...",
-          "o": ".......x........"
+          "o": "................"
     }
   },
   {
@@ -4464,10 +4468,10 @@ const inherit = (part: Partial<Lanes>, main: Partial<Lanes>): Lanes =>
 const SW: Record<string, number> = {
   amen: 54, funky: 58, levee: 60, impeach: 54, apache: 54, boombap: 58, onedrop: 62, twostep: 64,
   coldsweat: 54, think: 54, cissy: 56, afrobeat: 52, jungle: 52, imglad: 56,
-  purdie: 60, statikswing: 58, aruarian: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
+  purdie: 60, statikswing: 58, aruarian: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60, lowclass: 60
 };
 // Recorded performances reduced to a 16-step grid.
-const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad', 'longred'];
+const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad', 'longred', 'lowclass'];
 
 /** Busy hat lines (12+ hits, no marked dynamics) get ghosted off-beats so the 16ths breathe. */
 const ghostHats = (l: Partial<Lanes>) => {
@@ -4503,6 +4507,7 @@ const BARS: Record<string, Partial<Lanes>[]> = {
   boombap2bar: [{ k: 'X.....x.....x...', h: 'x.x.x.x.x.x.x.xx', o: '..............x.' }],
   statikswing: [{ k: 'X.....x.x.X.....', s: '....X..g.g..X..g' }],
   aruarian: [{ k: 'Xx....x.X.......' }],
+  lowclass: [{ k: 'X......xX..x...x' }],
   imglad: [{ k: '....X..x..x.....', s: '..x..x..X.x.....', h: 'x.x.x.x.x.......', o: '..........x.....' }],
   longred: [{ k: 'X.x..x.x.xX.....' }]
 };
