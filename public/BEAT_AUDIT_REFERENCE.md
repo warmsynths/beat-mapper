@@ -1201,23 +1201,23 @@ Tempo 71 BPM. John Bonham's thunderous acoustic groove: signature double kick on
 ---
 
 #### 33. The Big Beat (`bigbeat`)
-- **Inspired by**: *The Big Beat* (1980) · Billy Squier
+- **Inspired by**: *The Big Beat* (1980) · Billy Squier / Bobby Chouinard
 - **Drummer / producer**: Bobby Chouinard
 - **Label / Studio**: Capitol Records (The Tale of the Tape, recorded at Power Station, NY, produced by Mack)
 - **Gear & Setup**: Large acoustic rock kit in Power Station Studio A, snare case double-tracking
-- **Tempo & level**: 84 BPM · Beginner
+- **Tempo & level**: 91 BPM · Beginner
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X.X.....X.X.....
+Kick (k): X..x..x.X.......
 Snar (s): ....X.......X...
-Hat  (h): x.x.x.x.x.x.x.x.
+Hat  (h): ................
 Open (o): ................
 [FILL]
-Kick (k): X.X.....X.X..x.x
+Kick (k): X..x..x.X....x.x
 Snar (s): ....X.......X.X.
-Hat  (h): x.x.x.x.x.x.....
+Hat  (h): ................
 Open (o): ................
 ```
 
@@ -1225,7 +1225,7 @@ Open (o): ................
 Massive acoustic drum room sound. Bobby Chouinard plays an unvarying 2-bar intro break with syncopated kick anticipations and huge snare cracks on 2 and 4. NO fills occur during the intro; the drum loop establishes the entire track.
 
 **Transcription & Groove Verification:**
-Tempo 84 BPM (original master ~91 BPM; 84 BPM practice preset). Heavy rock break: driving kick on 1, 1-and, 3, 3-and; big acoustic snare on 2 and 4; steady 8th-note hats.
+Tempo 91 BPM. Heavy rock break: driving kick on 1, 1-a, 2-&, 3; massive acoustic snare cracks on 2 and 4; open room dynamics with no hi-hats in the break.
 
 **Practice Fill in Beat Mapper:** Rock turnaround: the groove runs to beat 4, then the hats stop and snare and kick alternate in 8ths into the next bar.
 

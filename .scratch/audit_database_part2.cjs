@@ -84,7 +84,7 @@ const AUDIT_REFS_PART2 = {
     label: "Capitol Records (The Tale of the Tape, recorded at Power Station, NY, produced by Mack)",
     gear: "Large acoustic rock kit in Power Station Studio A, snare case double-tracking",
     recordReality: "Massive acoustic drum room sound. Bobby Chouinard plays an unvarying 2-bar intro break with syncopated kick anticipations and huge snare cracks on 2 and 4. NO fills occur during the intro; the drum loop establishes the entire track.",
-    transcriptionNotes: "Tempo 84 BPM (original master ~91 BPM; 84 BPM practice preset). Heavy rock break: driving kick on 1, 1-and, 3, 3-and; big acoustic snare on 2 and 4; steady 8th-note hats.",
+    transcriptionNotes: "Tempo 91 BPM. Heavy rock break: driving kick on 1, 1-a, 2-&, 3; massive acoustic snare cracks on 2 and 4; open room dynamics with no hi-hats in the break.",
     sources: [
       { title: "Drumscore: The Big Beat Drum Sheet Music (Bobby Chouinard)", url: "https://drumscore.com/" },
       { title: "Songsterr: Billy Squier - The Big Beat Drum Tab", url: "https://www.songsterr.com/a/wsa/billy-squier-the-big-beat-drum-tab-s23055" },

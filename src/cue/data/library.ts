@@ -493,31 +493,32 @@ const RAW: RawPattern[] = [
   {
     "id": "bigbeat",
     "name": "The Big Beat",
-    "artist": "Billy Squier",
+    "artist": "Billy Squier / Bobby Chouinard",
     "genre": "Rock",
-    "bpm": 84,
+    "bpm": 91,
     "difficulty": "Beginner",
-    "gear": "Bobby Chouinard on oversized Slingerland kit",
-    "tip": "The thunderous boom-boom-clack sampled on Jay-Z (\"99 Problems\") and Alicia Keys. Heavy, simple, monumental dynamics.",
+    "gear": "Bobby Chouinard on oversized Slingerland kit (Power Station Studio A)",
+    "tip": "The thunderous boom-boom-clack sampled on Jay-Z (\"99 Problems\") and Alicia Keys. Massive kick anticipations on 1-a and 2-& with no hi-hats and huge room snare.",
     "tags": [
           "rock",
           "stomp",
+          "breakbeat",
+          "bobby chouinard",
           "hip-hop"
     ],
     "hands": {
           "k": "R",
           "s": "L",
-          "h": "R",
-          "y": "R"
+          "h": "R"
     },
-    "k": "X.X.....X.X.....",
+    "k": "X..x..x.X.......",
     "s": "....X.......X...",
-    "h": "x.x.x.x.x.x.x.x.",
+    "h": "................",
     "o": "................",
     "fill": {
-          "k": "X.X.....X.X..x.x",
+          "k": "X..x..x.X....x.x",
           "s": "....X.......X.X.",
-          "h": "x.x.x.x.x.x.....",
+          "h": "................",
           "o": "................"
     }
   },

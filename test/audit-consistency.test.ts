@@ -124,6 +124,18 @@ describe('Audit & Primary Source Ground Truth Verification', () => {
     assert.deepStrictEqual(bar2Kicks, ['1', '1-&', '2-e', '2-a', '3-e', '3-&']);
   });
 
+  it('verifies The Big Beat against Bobby Chouinard authentic master groove', () => {
+    const p = LIB.find(x => x.id === 'bigbeat')!;
+    assert.ok(p, 'bigbeat exists');
+    assert.ok(p.artist.includes('Bobby Chouinard'), 'Credits Bobby Chouinard');
+    assert.strictEqual(p.bpm, 91, 'BPM is 91');
+    const kicks = laneHits(p.k);
+    assert.deepStrictEqual(kicks, ['1', '1-a', '2-&', '3']);
+    assert.strictEqual(p.s[4], 'X', 'Snare backbeat accent on 2');
+    assert.strictEqual(p.s[12], 'X', 'Snare backbeat accent on 4');
+    assert.strictEqual(p.h, '................', 'No hi-hats on the break');
+  });
+
   it('verifies generated BEAT_AUDIT_REFERENCE.md contains exact note grids from library.ts', () => {
     const doc = fs.readFileSync('public/BEAT_AUDIT_REFERENCE.md', 'utf8');
     for (const p of LIB) {
