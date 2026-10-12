@@ -282,12 +282,12 @@ const AUDIT_REFS_PART3 = {
   // LO-FI & CHILLHOP (16)
   // ==========================================
   "aruarian": {
-    refSong: "Aruarian Dance", refArtist: "Nujabes", refYear: 2004,
+    refSong: "Aruarian Dance", refArtist: "Nujabes / Laurindo Almeida", refYear: 2004,
     refDrummer: "Nujabes (Laurindo Almeida sample)",
     label: "Victor Entertainment (Samurai Champloo Music Record: Departure)",
     gear: "Akai MPC2000XL, vinyl chops, SP-404 tape vinyl sim",
-    recordReality: "Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop. NO drum kit fills on the recording.",
-    transcriptionNotes: "Tempo 88 BPM (original master ~96 BPM; 88 BPM practice preset). Nujabes lo-fi pocket: kick on 1, 2-and, 3; gentle snare on 2 and 4; open hi-hat on 2-a.",
+    recordReality: "Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop with MPC swing. NO drum kit fills on the recording.",
+    transcriptionNotes: "Tempo 99 BPM. Signature Nujabes lo-fi pocket: distinctive 16th double kicks on 1 and 1-e, and syncopated double kicks on 3-and and 3-a into beat 4 (Bar 2 double-kicks on 1/1-e and pushes on 2-and into 3); backbeat snare on 2 and 4; steady 8th-note hi-hat with 58% MPC swing.",
     sources: [
       { title: "WhoSampled: Nujabes - Aruarian Dance (Laurindo Almeida sample)", url: "https://www.whosampled.com/Nujabes/Aruarian-Dance/" }
     ]

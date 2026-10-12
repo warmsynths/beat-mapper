@@ -2858,31 +2858,31 @@ Tempo 110 BPM. Syncopated bounce: kick on 1, 2, 2-a, 3-and, 4; snare on 2 and 4 
 ### Lo-Fi (16)
 
 #### 79. Aruarian Dance (`aruarian`)
-- **Inspired by**: *Aruarian Dance* (2004) · Nujabes
+- **Inspired by**: *Aruarian Dance* (2004) · Nujabes / Laurindo Almeida
 - **Drummer / producer**: Nujabes (Laurindo Almeida sample)
 - **Label / Studio**: Victor Entertainment (Samurai Champloo Music Record: Departure)
 - **Gear & Setup**: Akai MPC2000XL, vinyl chops, SP-404 tape vinyl sim
-- **Tempo & level**: 88 BPM · Beginner
+- **Tempo & level**: 99 BPM · Beginner
 
 ```text
 Beat:     1e&a2e&a3e&a4e&a
 [MAIN]
-Kick (k): X.....x.X.......
+Kick (k): Xx........xx....
 Snar (s): ....X.......X...
 Hat  (h): x.x.x.x.x.x.x.x.
-Open (o): .......x........
+Open (o): ................
 [FILL]
-Kick (k): X.....x.X......x
+Kick (k): Xx........xx...x
 Snar (s): ....X.......X...
 Hat  (h): x.x.x.x.x.x.x...
-Open (o): .......x........
+Open (o): ................
 ```
 
 **Record Reality & Structure:**
-Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop. NO drum kit fills on the recording.
+Sample-loop record. Nujabes sampled Laurindo Almeida's 'The Lamp Is Low' (1969). Unvarying, tranquil boom bap drum loop with MPC swing. NO drum kit fills on the recording.
 
 **Transcription & Groove Verification:**
-Tempo 88 BPM (original master ~96 BPM; 88 BPM practice preset). Nujabes lo-fi pocket: kick on 1, 2-and, 3; gentle snare on 2 and 4; open hi-hat on 2-a.
+Tempo 99 BPM. Signature Nujabes lo-fi pocket: distinctive 16th double kicks on 1 and 1-e, and syncopated double kicks on 3-and and 3-a into beat 4 (Bar 2 double-kicks on 1/1-e and pushes on 2-and into 3); backbeat snare on 2 and 4; steady 8th-note hi-hat with 58% MPC swing.
 
 **Practice Fill in Beat Mapper:** Light variation: the record loops a sample, so there is no fill. The loop drops out after the beat-4 snare and a kick picks up on the last 16th.
 

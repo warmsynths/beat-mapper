@@ -136,6 +136,23 @@ describe('Audit & Primary Source Ground Truth Verification', () => {
     assert.strictEqual(p.h, '................', 'No hi-hats on the break');
   });
 
+  it('verifies Aruarian Dance against Nujabes authentic MPC lo-fi swing groove', () => {
+    const p = LIB.find(x => x.id === 'aruarian')!;
+    assert.ok(p, 'aruarian exists');
+    assert.ok(p.artist.includes('Laurindo Almeida'), 'Credits Laurindo Almeida alongside Nujabes');
+    assert.strictEqual(p.bpm, 99, 'BPM is 99');
+    assert.strictEqual(p.sw, 58, 'Swing is 58%');
+    const kicks = laneHits(p.k);
+    assert.deepStrictEqual(kicks, ['1', '1-e', '3-&', '3-a'], 'Distinctive double kicks on 1/1-e and syncopated double kicks on 3-&/3-a');
+    assert.strictEqual(p.s[4], 'X', 'Snare backbeat accent on 2');
+    assert.strictEqual(p.s[12], 'X', 'Snare backbeat accent on 4');
+    assert.strictEqual(p.h, 'x.x.x.x.x.x.x.x.');
+    assert.strictEqual(p.o, '................', 'No open hat clash on the break');
+    assert.strictEqual(p.bars?.length, 1, 'Includes bar 2 variation with 2-and push');
+    const bar2Kicks = laneHits(p.bars![0].k);
+    assert.deepStrictEqual(bar2Kicks, ['1', '1-e', '2-&', '3'], 'Bar 2 double kick on 1/1-e and push on 2-& into 3');
+  });
+
   it('verifies generated BEAT_AUDIT_REFERENCE.md contains exact note grids from library.ts', () => {
     const doc = fs.readFileSync('public/BEAT_AUDIT_REFERENCE.md', 'utf8');
     for (const p of LIB) {

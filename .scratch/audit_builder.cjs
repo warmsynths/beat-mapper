@@ -252,7 +252,7 @@ const AUDIT_DATA = {
 
   // --- LO-FI & CHILLHOP (16) ---
   "aruarian": {
-    refSong: "Aruarian Dance", refArtist: "Nujabes", refDrummer: "Nujabes (Laurindo Almeida sample)", refYear: 2004,
+    refSong: "Aruarian Dance", refArtist: "Nujabes / Laurindo Almeida", refDrummer: "Nujabes (Laurindo Almeida sample)", refYear: 2004,
   },
   "feather": {
     refSong: "Feather", refArtist: "Nujabes", refDrummer: "Nujabes (Yusef Lateef sample)", refYear: 2005,

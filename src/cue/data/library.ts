@@ -1798,32 +1798,33 @@ const RAW: RawPattern[] = [
   {
     "id": "aruarian",
     "name": "Aruarian Dance",
-    "artist": "Nujabes",
+    "artist": "Nujabes / Laurindo Almeida",
     "genre": "Lo-Fi",
-    "bpm": 88,
+    "bpm": 99,
     "difficulty": "Beginner",
-    "gear": "Akai MPC2000 / Nujabes (Samurai Champloo)",
-    "tip": "The defining anthem of lo-fi hip-hop. Soft acoustic guitar chop with gentle, swinging kick and open hat on beat 2-and.",
+    "gear": "Akai MPC2000XL / Roland SP-404 (Samurai Champloo)",
+    "tip": "The defining anthem of lo-fi hip-hop. Laurindo Almeida acoustic guitar chop ('The Lamp Is Low') with Nujabes' signature double-kick groove on beat 1 (1/1-e) and syncopated double kicks on 3-and/3-a leading into beat 4.",
     "tags": [
           "nujabes",
+          "laurindo almeida",
           "lo-fi classic",
-          "samurai champloo"
+          "samurai champloo",
+          "chillhop"
     ],
     "hands": {
           "k": "R",
           "s": "L",
-          "h": "R",
-          "o": "R"
+          "h": "R"
     },
-    "k": "X.....x.X.......",
+    "k": "Xx........xx....",
     "s": "....X.......X...",
     "h": "x.x.x.x.x.x.x.x.",
-    "o": ".......x........",
+    "o": "................",
     "fill": {
-          "k": "X.....x.X......x",
+          "k": "Xx........xx...x",
           "s": "....X.......X...",
           "h": "x.x.x.x.x.x.x...",
-          "o": ".......x........"
+          "o": "................"
     }
   },
   {
@@ -4463,7 +4464,7 @@ const inherit = (part: Partial<Lanes>, main: Partial<Lanes>): Lanes =>
 const SW: Record<string, number> = {
   amen: 54, funky: 58, levee: 60, impeach: 54, apache: 54, boombap: 58, onedrop: 62, twostep: 64,
   coldsweat: 54, think: 54, cissy: 56, afrobeat: 52, jungle: 52, imglad: 56,
-  purdie: 60, statikswing: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
+  purdie: 60, statikswing: 58, aruarian: 58, donuttime: 58, klipsh: 60, deephouse: 56, jackinhouse: 56, dilla: 60
 };
 // Recorded performances reduced to a 16-step grid.
 const SIMP = ['amen', 'funky', 'levee', 'impeach', 'apache', 'think', 'coldsweat', 'cissy', 'afrobeat', 'songo', 'onedrop', 'imglad', 'longred'];
@@ -4501,6 +4502,7 @@ const BARS: Record<string, Partial<Lanes>[]> = {
   rumbaclave: [{ s: '....X...X.......' }],
   boombap2bar: [{ k: 'X.....x.....x...', h: 'x.x.x.x.x.x.x.xx', o: '..............x.' }],
   statikswing: [{ k: 'X.....x.x.X.....', s: '....X..g.g..X..g' }],
+  aruarian: [{ k: 'Xx....x.X.......' }],
   imglad: [{ k: '....X..x..x.....', s: '..x..x..X.x.....', h: 'x.x.x.x.x.......', o: '..........x.....' }],
   longred: [{ k: 'X.x..x.x.xX.....' }]
 };
